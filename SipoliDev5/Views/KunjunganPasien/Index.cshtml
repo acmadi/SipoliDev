@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Kunjungan";
+}
+
+<h2>Kunjungan Pasien
+    <small>
+        @Html.ActionLink("Kunjungan Baru", "Create", null, new { @class = "btn btn-primary btn-sm" })
+    </small>
+</h2><hr />
+
+            
+<div class="row">
+<div class="col-lg-12">
+        <!--Lokasi Tabel Partial-->
+        <div class="panel panel-default">
+            <!--Default panel Contents-->
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <strong><i class="glyphicon glyphicon-info-sign "></i> Daftar Kunjungan Pasien</strong> &nbsp;
+                            <!--Element Loading-->
+                            <h5 id="hapusLoading" style="display:none"><i>Menghapus data kunjungan...</i></h5>
+                            <!--End-Element Loading-->
+                        </div>
+                        <div class="col-lg-4 pull-right">
+                            <!--Pencarian Nama Pasien-->
+                            @using (Ajax.BeginForm("DaftarKunjunganPasienIndex", "KunjunganPasien",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "Get",
+                                    InsertionMode = InsertionMode.Replace,
+                                    //LoadingElementId="loading",
+                                    UpdateTargetId = "tabelKunjunganPasien"
+                                }))
+                            {
+                                <div class="col-lg-12">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control" name="searchString" placeholder="Ketik nama pasien" />
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="submit">Cari</button>
+                                            </span>
+                                        </div>
+                                </div>                            
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p>
+                            Berikut adalah daftar kunjungan harian pasien Poliklinik Institut Pertanian Bogor.
+                        </p>
+                    </div>
+                    <div class="col-md-4">
+                        Filter Lokasi:
+                        <div class="btn-group" role="group" aria-label="Lokasi Klinik">
+                            @Html.ActionLink("Darmaga", "Index", new { LokasiID = 1 }, new { @class = "btn btn-default btn-sm" })
+                            @Html.ActionLink("Baranangsiang", "Index", new { LokasiID = 2 }, new { @class = "btn btn-default btn-sm" })
+                        </div>
+                    </div>
+                </div>
+                    
+            </div>
+            <!--Table-->
+            <div id="tabelKunjunganPasien">
+                @*Daftar Kunjungan Pasien - A:DaftarKunjunganPasienIndex*@
+                @Html.Action("DaftarKunjunganPasienIndex")
+            </div>
+            @section Scripts{@Scripts.Render("~/bundles/jqueryval")}
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,70 @@
+﻿<!--Tabel Daftar Pasian - Partial-->
+@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<SipoliDev5.Models.ViewModels.RekamMedis>
+
+<div class="row">
+    <div class="col-lg-12" style="margin-left:60px;margin-right:20px;">
+         <h4> <strong><span class="glyphicon glyphicon-info-sign"></span> Riwayat Pemeriksaan</strong></h4>
+        <div class="">
+            <table class="detailrm table">
+                <tr>
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        Waktu Periksa
+                    </th>
+                    @*<th style="min-width:60px">
+                            ID. RM
+                        </th>*@
+                    <th style="text-align: center;">
+                        Anamnesa &amp; Diagnosa
+                    </th>
+                    <th style="text-align: center;">
+                        Therapie
+                    </th>
+                    <th style="min-width:100px;text-align:center">
+                        Dokter
+                    </th>
+                </tr>
+
+                @if (Model.Count() >= 1)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.No)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Tanggal.Day)/@Html.DisplayFor(modelItem => item.Tanggal.Month)/@Html.DisplayFor(modelItem => item.Tanggal.Year)<br /> Pukul @Html.DisplayFor(modelItem => item.Tanggal.TimeOfDay)
+                            </td>
+                            @*<td style="text-align:center">
+                                    @Html.DisplayFor(modelItem => item.ID)
+                                </td>*@
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AnamnesaDiagnosa)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Therapie)
+                            </td>
+                            <td style="text-align:center">
+                                @Html.DisplayFor(modelItem => item.GelarDepan)
+                                @Html.DisplayFor(modelItem => item.NamaDokter)
+                                @Html.DisplayFor(modelItem => item.GelarBelakang)
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5"><center> <i>Tidak ada data</i> </center> </td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+    </div>
+</div>

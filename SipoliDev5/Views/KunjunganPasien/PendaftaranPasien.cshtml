@@ -1,0 +1,364 @@
+﻿<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title"><i class="glyphicon glyphicon-edit"></i> <strong>Pendaftaran Pasien</strong></h4>
+</div>
+<div class="modal-body">
+    <p>
+        Pasien didaftarkan dari data integrasi IPB. Karena tidak semua sivitas Kampus IPB pernah berobat ke Poliklinik IPB.
+        Untuk menambahkan sivitas IPB sebagai pasien, <strong>pilih</strong> tipe pencarian; berdasarkan Nama, NRP/NIM, atau Nomor KTP.
+    </p>
+    <style type="text/css">
+        .ui-autocomplete {
+            z-index: 5000;
+        }
+
+        .loading {
+            background: url(../../Content/Image/ajax-loader.gif) no-repeat right center;
+        }
+    </style>
+    @using (Ajax.BeginForm("CreatePasienBaru", "KunjunganPasien", new AjaxOptions
+                    {
+                        //Confirm = "Data sudah benar?",
+                        HttpMethod = "Post",
+                        InsertionMode = InsertionMode.Replace,
+                        //LoadingElementId = "loading",
+                        //UpdateTargetId = "tabelDaftarPasien"
+                    }))
+    {
+        @Html.AntiForgeryToken()
+    <div class="form">
+        <!--Radio Pilih Tipe Pencarian-->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <center>
+                        <!--Radion Inline-->
+                        <div class="col-sm-12">
+                            <label class="checkbox-inline">
+                                <input type="radio" name="pilihanpencarian" id="radioNama2" checked /> Nama
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" name="pilihanpencarian" id="radioNIM2" /> NRP/NIM
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" name="pilihanpencarian" id="radioKTP2" /> Nomor KTP
+                            </label>
+                        </div>
+                        <!-- end - Radion Inline-->
+                    </center>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="input-group input-group-sm">
+                                <input type="hidden" id="PasienID2" class="PasienID" name="PasienID" />
+                                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                                <input type="text" id="SelectedPasienNama2" class="form-control SelectedPasien" name="SelectedPasien" value="" placeholder="Ketik kata kunci pencarian nama sivitas IPB" />
+                                <input type="text" id="SelectedPasienNIM2" class="form-control SelectedPasien" name="SelectedPasien" value="" placeholder="Ketik kata kunci pencarian NIM Mahasiswa IPB" style="display:none" />
+                                <input type="text" id="SelectedPasienKTP2" class="form-control SelectedPasien" name="SelectedPasien" value="" placeholder="Ketik nomor KTP" style="display:none" />
+                                <input type="datetime" class="hidden" value="@DateTime.Now" name="Tanggal" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end - Radio Pilih Tipe Pencarian-->
+        <!--IDENTITAS PASIEN-->
+        <div class="panel panel-default">
+            <div class="panel-heading"><i class="glyphicon glyphicon-info-sign"></i> Identitas Pasien</div>
+            <div class="panel-body">
+                <div class="row">
+                    <!--icon user-->
+                    <div class="col-sm-3">
+                        <center>
+                            <span class="glyphicon glyphicon-user" style="font-size:9.2em;"></span>
+                        </center>
+                    </div>
+                    <!--end-icon user-->
+                    <!--keterangan identitas-->
+                    <div class="col-sm-9">
+                        <div class="form-group col-sm-12">
+                            <label>Nama Lengkap</label>
+                            <input class="form-control input-sm" id="NamaLengkap2" value="" readonly="readonly" />
+                        </div>
+                        <div class="form-group col-sm-7">
+                            <label>Alamat Asal</label>
+                            <input class="form-control input-sm" id="AlamatAsal2" value="" readonly="readonly" />
+                        </div>
+                        <div class="form-group col-sm-5">
+                            <label for="name">Tanggal Lahir</label>
+                            <input type="datetime" class="form-control input-sm" id="TanggalLahir2" value="" readonly="readonly" />
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <label for="name">Umur</label>
+                            <input class="form-control input-sm" id="Umur2" value="" readonly="readonly" />
+                        </div>
+                        <div class="form-group col-sm-5">
+                            <label for="name">Jenis Kelamin</label>
+                            <input class="form-control input-sm" id="JenisKelamin2" value="" readonly="readonly" />
+                        </div>
+                    </div>
+                    <!--end-keterangan identitas-->
+                </div>
+            </div>
+        </div>
+        <!--END-IDENTITAS PASIEN-->
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+                Cancel
+            </button>
+            <button type="submit" id="approve-btn" class="btn btn-primary">
+                Daftarkan
+            </button>
+        </div>
+    </div>
+    }
+
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#approve-btn').click(function () {
+            $('#modal-container').modal('hide');
+        });
+    });
+</script>
+
+
+@*JS untuk autocomplete sivitas IPB menggunakan jquery UI - berdasarkan nama*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienNama2").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/PencarianOrang",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            //Tahap parsing Tanggal Lahir - JSon
+                            var str = item.tanggal;
+                            var num = parseInt(str.replace(/[^0-9]/g, ""));
+                            var tanggalKomplit = new Date(num);
+                            var hari = tanggalKomplit.getDate();
+                            var bulan = tanggalKomplit.getMonth();
+                            bulan = bulan + 1;
+                            var year = tanggalKomplit.getFullYear();
+                            var tanggal = hari + "/" + bulan + "/" + year;
+                            //var tanggal = tanggalKomplit.toLocaleDateString();
+
+                            //perhitungan umur Orang
+                            var curr = new Date();
+                            //var diff = curr.getTime() - tanggalKomplit.getTime();
+                            //var umur = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+                            //___v.1
+                            //var jumlahBulan = (curr.getMonth() - bulan + (12 * (curr.getFullYear() - year)));
+                            //var umur = Math.round(jumlahBulan / 12);
+                            //___v.2
+                            var umur = curr.getFullYear() - year;
+                            if (curr.getMonth() < bulan || (curr.getMonth() == bulan && curr.getDay() < hari)) umur--;
+
+                            //jenis kelamin
+                            var JK = item.jk;
+                            var JenisKelamin = "Laki-laki";
+                            if (JK == 2) JenisKelamin = "Perempuan";
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                                alamat: item.alamat,
+                                tanggal: tanggal,
+                                umur: umur,
+                                jk: JenisKelamin,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.PasienID").val(ui.item.id);
+                $("input#AlamatAsal2").val(ui.item.alamat);
+                $("input#TanggalLahir2").val(ui.item.tanggal);
+                $("input#Umur2").val(ui.item.umur);
+                $("input#JenisKelamin2").val(ui.item.jk);
+                $("input#NamaLengkap2").val(ui.item.value);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading');}
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienNama2').removeClass('loading');
+        });
+
+    });
+</script>
+@*end - JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
+
+@*JS untuk autocomplete Mahasiswa IPB menggunakan jquery UI - berdasarkan NIM*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienNIM2").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/PencarianMahasiswa",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            //Tahap parsing Tanggal Lahir - JSon
+                            var str = item.tanggal;
+                            var num = parseInt(str.replace(/[^0-9]/g, ""));
+                            var tanggalKomplit = new Date(num);
+                            var hari = tanggalKomplit.getDate();
+                            var bulan = tanggalKomplit.getMonth();
+                            bulan = bulan + 1;
+                            var year = tanggalKomplit.getFullYear();
+                            var tanggal = hari + "/" + bulan + "/" + year;
+
+                            //perhitungan umur Orang
+                            var curr = new Date();
+                            var umur = curr.getFullYear() - year;
+                            if (curr.getMonth() < bulan || (curr.getMonth() == bulan && curr.getDay() < hari)) umur--;
+
+                            //jenis kelamin
+                            var JK = item.jk;
+                            var JenisKelamin = "Laki-laki";
+                            if (JK == 2) JenisKelamin = "Perempuan";
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                                alamat: item.alamat,
+                                tanggal: tanggal,
+                                umur: umur,
+                                jk: JenisKelamin,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.PasienID").val(ui.item.id);
+                $("input#AlamatAsal2").val(ui.item.alamat);
+                $("input#TanggalLahir2").val(ui.item.tanggal);
+                $("input#Umur2").val(ui.item.umur);
+                $("input#JenisKelamin2").val(ui.item.jk);
+                $("input#NamaLengkap2").val(ui.item.value);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading'); }
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienNIM2').removeClass('loading');
+        });
+    });
+</script>
+@*end - JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
+
+
+@*JS untuk autocomplete Tendik IPB menggunakan jquery UI - berdasarkan NIM*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienKTP2").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/PencarianTendik",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            //Tahap parsing Tanggal Lahir - JSon
+                            var str = item.tanggal;
+                            var num = parseInt(str.replace(/[^0-9]/g, ""));
+                            var tanggalKomplit = new Date(num);
+                            var hari = tanggalKomplit.getDate();
+                            var bulan = tanggalKomplit.getMonth();
+                            bulan = bulan + 1;
+                            var year = tanggalKomplit.getFullYear();
+                            var tanggal = hari + "/" + bulan + "/" + year;
+
+                            //perhitungan umur Orang
+                            var curr = new Date();
+                            var umur = curr.getFullYear() - year;
+                            if (curr.getMonth() < bulan || (curr.getMonth() == bulan && curr.getDay() < hari)) umur--;
+
+                            //jenis kelamin
+                            var JK = item.jk;
+                            var JenisKelamin = "Laki-laki";
+                            if (JK == 2) JenisKelamin = "Perempuan";
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                                alamat: item.alamat,
+                                tanggal: tanggal,
+                                umur: umur,
+                                jk: JenisKelamin,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.PasienID").val(ui.item.id);
+                $("input#AlamatAsal2").val(ui.item.alamat);
+                $("input#TanggalLahir2").val(ui.item.tanggal);
+                $("input#Umur2").val(ui.item.umur);
+                $("input#JenisKelamin2").val(ui.item.jk);
+                $("input#NamaLengkap2").val(ui.item.value);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading'); }
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienKTP2').removeClass('loading');
+        });
+    });
+</script>
+@*end - JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
+
+<script type="text/javascript">
+    $(function () {
+        $('#radioNama2').click(function () {
+            $('#SelectedPasienNama2').show();
+            $('#SelectedPasienNIM2').hide();
+            $('#SelectedPasienKTP2').hide();
+        });
+
+        $('#radioNIM2').click(function () {
+            $('#SelectedPasienNIM2').show();
+            $('#SelectedPasienNama2').hide();
+            $('#SelectedPasienKTP2').hide();
+        });
+
+        $('#radioKTP2').click(function () {
+            $('#SelectedPasienKTP2').show();
+            $('#SelectedPasienNama2').hide();
+            $('#SelectedPasienNIM2').hide();
+        });
+    });
+</script>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+

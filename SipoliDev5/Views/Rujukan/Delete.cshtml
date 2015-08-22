@@ -1,0 +1,63 @@
+﻿@model SipoliDev5.Models.RekamMedik
+
+@{
+    ViewBag.Title = "Rujukan";
+}
+
+<h2>Hapus Rujukan Pasien</h2>
+
+<h3>Yakin akan menghapus data Rujukan berikut?</h3>
+<div>
+    <h4>Data Rujukan Pasien</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanggal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tanggal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnamnesaDiagnosa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnamnesaDiagnosa)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Orang.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Orang.Nama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Pegawai.GelarDepan)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pegawai.GelarDepan) @Html.DisplayFor(model => model.Pegawai.Orang.Nama) @Html.DisplayFor(model => model.Pegawai.GelarBelakang)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.trxRujukan.Bagian)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.trxRujukan.Bagian)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

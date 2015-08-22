@@ -1,0 +1,99 @@
+﻿
+
+@{
+    ViewBag.Title = "Rekam Medis";
+}
+
+<h2>Rekam Medis <small>
+    @*CETAK PDF*@
+    @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                    ViewContext.HttpContext.User.IsInRole("Staf") ||
+                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+    {
+        @Html.ActionLink("Cetak PDF", "DetailRMTercetak", new { id = ViewBag.id }, new { @target = "_blank", @class = "btn btn-warning btn-xs" })
+    }
+    </small> </h2>
+
+
+<hr />
+
+
+
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="row">
+            <div class="col-lg-12">
+                <!--Identitas Pasien-->
+                @Html.Action("_IdentitasPasien", new { id = ViewBag.id, page = ViewBag.page })
+                <!--end-Identitas Pasien-->
+            </div>
+        </div>
+        <div id="hasilPeriksa">
+            <!--Hasil Periksa-->
+            @Html.Action("_RmSeseorang", new { id = ViewBag.id })
+            <!--end-Hasil Periksa-->
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <!--Tabulasi Data Riwayat Penyakit-->
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h5>
+                        <a data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseOne" aria-expanded="true"
+                           aria-controls="collapseOne">
+                           <span class="glyphicon glyphicon-retweet"> </span> &nbsp; Riwayat Penyakit Pasien
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in"
+                     role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        @Html.Action("_RiwayatPenyakit", new { id = ViewBag.id })
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <h5>
+                        <a data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseTwo" aria-expanded="true"
+                           aria-controls="collapseTwo">
+                            <span class="glyphicon glyphicon-link"></span>&nbsp; Riwayat Penyakit Keluarga Pasien
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse"
+                     role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        @Html.Action("_RiwayatPenyakitKeluarga", new { id = ViewBag.id })
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <h5>
+                        <a data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseThree" aria-expanded="true"
+                           aria-controls="collapseThree">
+                            <span class="glyphicon glyphicon-tree-conifer"> </span>&nbsp; Kelainan Bawaan
+                        </a>
+                    </h5>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse"
+                     role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        @Html.Action("_KelainanBawaan", new { id = ViewBag.id })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end-Tabulasi Data Riwayat Penyakit-->
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

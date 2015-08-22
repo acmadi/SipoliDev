@@ -1,0 +1,45 @@
+﻿@model SipoliDev5.Models.ViewModels.RekamMedisIdentitasPasien
+
+
+<div class="row">
+    <div class="col-lg-12" style="margin-left:60px;margin-right:400px;">
+        <strong> <h4> <span class="glyphicon glyphicon-info-sign"></span> Identitas Pasien</h4></strong>
+        <table class="table">
+            <tr>
+                <td><strong> @Html.DisplayNameFor(model => model.Nama)</strong></td>
+                <td>@Html.DisplayFor(model => model.Nama)</td>
+            </tr>
+            <tr>
+                <td><strong>Tempat, Tanggal Lahir</strong></td>
+                <td>@Html.DisplayFor(model => model.TempatLahir) &sbquo; @Html.DisplayFor(model => model.TanggalLahir)</td>
+            </tr>
+            <tr>
+                <td><strong>@Html.DisplayNameFor(model => model.Umur)</strong></td>
+                <td>@Html.DisplayFor(model => model.Umur)</td>
+            </tr>
+            <tr>
+                <td><strong>@Html.DisplayNameFor(model => model.JenisKelaminID)</strong></td>
+                <td>
+                    @if (Model.JenisKelaminID == 1)
+                    {
+                        <span>Laki-laki</span>
+                    }
+                    else
+                    {
+                        <span>Perempuan</span>
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+

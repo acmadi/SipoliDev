@@ -1,0 +1,91 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<SipoliDev5.Models.ViewModels.KunjunganConst>
+
+
+@{
+    ViewBag.Title = "Report Kunjungan";
+}
+
+<div class="row">
+    <div class="col-lg-12 thumbnail">
+        <img src="~/Content/Image/kop-sipoli.png" alt="kop-sipoli" />
+    </div>
+</div>
+
+<center>
+    <h3><strong>LAPORAN KUNJUNGAN PASIEN</strong></h3><br />
+</center>
+
+<div>
+    <span>Periode kunjungan pasien: @ViewBag.Bulan @ViewBag.Tahun</span>
+    <span class="pull-right">Lokasi: Poliklinik @ViewBag.LokasiKlinik</span>
+</div>
+
+<div>
+    <table class="table">
+        <tr>
+            <th>No.</th>
+            <th>
+                Waktu Kunjungan
+            </th>
+            <th>
+                Antrian
+            </th>
+            <th>
+                Nama Pasien
+            </th>
+            <th>
+                Status Panggil
+            </th>
+            <th>
+                Klinik
+            </th>
+            <th>
+                Keterangan
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.No)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tanggal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NoUrut)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nama)
+                </td>
+                <td>
+                    @if (item.StatusPanggil == false)
+                    {
+                        <span>Tunggu</span>
+                    }
+                    else
+                    {
+                        <span>Periksa</span>
+                    }
+                </td>
+                <td>
+                    @if (item.KlinikID == 1)
+                    {
+                        <span>Darmaga</span>
+                    }
+                    else
+                    {
+                        <span>Baranangsiang</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ket)
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

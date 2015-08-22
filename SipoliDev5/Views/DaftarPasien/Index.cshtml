@@ -1,0 +1,166 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<SipoliDev5.Models.ViewModels.DaftarPasien>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Daftar Pasien";
+}
+
+<!-- Page Heading -->
+<h2>Pasien <small>Poliklinik IPB</small> </h2><hr />
+
+<div class="row">
+            <!--Tempat Tabel Partial-->
+            <div class="col-lg-8">
+                
+                <!--Lokasi Tabel Daftar Pasien-->
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <strong><i class="glyphicon glyphicon-info-sign "></i> Daftar Pasien</strong>
+                                    <h5 id="tambahLoading" style="display:none"><i>Menambah pasien...</i></h5>
+                                </div>
+                                <div class="col-lg-6">
+                                    <!--Pencarian Nama Pasien-->
+                                    @using (Ajax.BeginForm("DaftarPasienIndex", "DaftarPasien", new AjaxOptions
+                                    {
+                                        HttpMethod = "Get",
+                                        InsertionMode = InsertionMode.Replace,
+                                        //LoadingElementId = "loading",
+                                        UpdateTargetId = "tabelDaftarPasien"
+                                    }))
+                                    {
+                                        <div class="col-lg-12">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" name="searchString" 
+                                                       placeholder="Ketik nama pasien">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="submit">Cari</button>
+                                                </span>
+                                            </div><!-- /input-group -->
+                                        </div><!-- /.col-lg-6 -->
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            Berikut adalah daftar sivitas IPB yang telah terdaftar sebagai Pasien Poliklinik IPB.
+                            Anda dapat melakukan pencarian berdasarkan nama pasien di kotak panel atas. Selain itu Anda
+                            dapat melakukan sorting pada tautan header tabel di bawah ini.
+                        </p>
+                    </div>
+                    <!-- Table -->
+                    <div id="tabelDaftarPasien">
+                        @Html.Action("DaftarPasienIndex")
+                    </div>
+                    @section Scripts {
+                        @Scripts.Render("~/bundles/jqueryval")
+                    }
+                </div>
+                    
+            </div>
+            <div class="col-lg-4">
+                
+                <!--Menu Pilihan-->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4><strong>Registrasi Pasien</strong></h4><hr />
+                                @Html.ActionLink("Tambah Pasien Baru", "PendaftaranPasien",
+                                "DaftarPasien", null, new { @class = "modal-link btn btn-success" })
+                                @*@Html.ActionLink("PDF", "ViewDaftarPasienReport",
+                        "DaftarPasien", null, new { @class = "btn btn-primary", @target="_blank" })*@
+                            </div>
+                        </div>
+
+                    </div>
+                </div>        
+
+
+                
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4><strong>Cetak Laporan Daftar Pasien</strong></h4><hr />
+                                @using (Html.BeginForm("ViewDaftarPasienReport", "DaftarPasien", FormMethod.Get, new { @target = "_blank" }))
+                                {
+                                    <form class="form-inline">
+                                        <div class="form-group col-lg-6">
+                                            <label class="control-label">Periode Bulan</label>
+                                            <select class="form-control" name="bulan">
+                                                <option value="">--Pilih Bulan--</option>
+                                                <option value="1">Januari</option>
+                                                <option value="2">Februari</option>
+                                                <option value="3">Maret</option>
+                                                <option value="4">April</option>
+                                                <option value="5">Mei</option>
+                                                <option value="6">Juni</option>
+                                                <option value="7">Juli</option>
+                                                <option value="8">Agustus</option>
+                                                <option value="9">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">Nopember</option>
+                                                <option value="12">Desember</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-lg-5">
+                                            <label class="control-label">Tahun</label>
+                                            <select class="form-control" name="tahun">
+                                                <option value="">Tahun</option>
+                                                <option value="2015">2015</option>
+                                                <option value="2014">2014</option>
+                                                <option value="2013">2013</option>
+                                            </select>
+                                        </div>
+                                        <button class="col-md-offset-1 btn btn-danger" type="submit">Cetak</button>
+                                        @*<div class="form-group">
+                            <button class="btn btn-danger" type="submit">Cetak</button>
+                        </div>*@
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        <!--end Menu Pilihan-->
+
+                        
+                </div>
+    </div>
+
+
+<!--coba popover-->
+@*<a tabindex="0" id="cobaPopover" class="btn btn-sm btn-danger"
+    role="button" data-toggle="popover" data-trigger="focus"
+    title="Dismissible popover"
+    data-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a>*@
+<!--sumber:: http://stackoverflow.com/questions/12128425/contain-form-within-a-bootstrap-popover-->
+@*<script>
+        $(function () {
+            $("#cobaPopover").popover();
+        });
+    </script>*@
+<!--end - popover-->
+
+
+
+
+
+
+
+
+        
+
+
+
+
+

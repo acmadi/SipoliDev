@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SipoliDev5.Models.RiwayatPenyakit>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Tahun)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Orang.Nama)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Penyakit.Nama)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tahun)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Orang.Nama)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Penyakit.Nama)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

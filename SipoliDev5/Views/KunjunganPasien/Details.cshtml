@@ -1,0 +1,58 @@
+﻿@model SipoliDev5.Models.trxKunjungan
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>trxKunjungan</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanggal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tanggal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NoUrut)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NoUrut)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StatusPanggil)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StatusPanggil)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ket)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ket)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Orang.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Orang.Nama)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,87 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+<!--Daftar Pemeriksa-->
+@model IPagedList<SipoliDev5.Models.ViewModels.Pemeriksa>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+<table class="table">
+    <tr>
+        <th>No.</th>
+        <th>No. KTP</th>
+        <th>Nama</th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.TMT)*@
+            TMT
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.TST)*@
+            TST
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.StatusAktif)*@
+            Status Aktif
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.Pegawai.GelarDepan)
+            </th>*@
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.No)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomorKTP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GelarDepan)  @Html.DisplayFor(modelItem => item.Nama)&sbquo; @Html.DisplayFor(modelItem => item.GelarBelakang)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TMT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TST)
+            </td>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.StatusAktif)*@
+                @if (item.StatusAktif == false)
+                {
+                    <span>Non-aktif</span>
+                }
+                else
+                {
+                    <span>Aktif</span>
+                }
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.Pegawai.GelarDepan)
+                </td>*@
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.PegawaiID }) |
+                @*@Html.ActionLink("Details", "Details", new { id=item.PegawaiID }) |*@
+                @*@Html.ActionLink("Delete", "Delete", new { id = item.PegawaiID })*@
+                @Ajax.ActionLink("Hapus", "Delete", new { id = item.PegawaiID },
+                new AjaxOptions { 
+                    Confirm="Yakin akan menghapus Pemeriksa?"
+                    + " Hasil Periksa dengan pemeriksa yang bersangkutan akan turut dihapus juga.",
+                    HttpMethod = "Post",
+                    UpdateTargetId = "tabelDaftarPemeriksa",
+                    LoadingElementId = "hapusLoading"
+                })
+            </td>
+        </tr>                                                            
+    }
+</table>
+
+<center>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page
+}), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+</center>
+

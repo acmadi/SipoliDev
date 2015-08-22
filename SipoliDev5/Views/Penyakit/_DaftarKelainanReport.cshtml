@@ -1,0 +1,42 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model List<SipoliDev5.Models.ViewModels.KelainanBawaanCons>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+
+
+<table class="table">
+    <tr>
+        <th>
+            No.
+        </th>
+        <th>
+            Nama Kelainan
+        </th>
+    </tr>
+
+    @if (Model.Count() >= 1)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelitem => item.No)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nama) (<i>@Html.DisplayFor(modelItem => item.NamaIlmiah)</i>)
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="3"><i>Tidak ada data</i> </td>
+        </tr>
+    }
+
+</table>
+

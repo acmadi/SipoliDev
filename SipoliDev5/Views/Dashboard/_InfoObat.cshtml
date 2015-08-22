@@ -1,0 +1,113 @@
+﻿@model IEnumerable<SipoliDev5.Models.Obat>
+
+
+
+<div class="col-md-4">
+    <div class="panel">
+        <h2>Informasi Obat <small>Update</small></h2>
+        <p>
+            Anda dapat mengetahui semua obat yang disediakan di Poliklinik Institut Pertanian Bogor.<br />
+        </p>
+
+        <table class="table">
+            <tr>
+                <th>Nama Obat</th>
+                <th>Satuan</th>
+                <th>Kegunaan</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Nama)</td>
+                    <td>@Html.DisplayFor(modelItem => item.SatuanObat.Nama)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Kegunaan)</td>
+                </tr>
+            }
+
+            <tr><td></td><td></td><td><a class="pull-right" href="@Url.Action("Index","Obat")">Selengkapnya &raquo;</a></td></tr>
+        </table>
+        
+    </div>
+</div>
+
+@*<div class="panel col-md-4">
+        <div class="panel-heading">
+            <h2><i class="glyphicon glyphicon-th"></i> Informasi Obat</h2>
+        </div>
+        <div class="panel-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="active" role="presentation"><a href="#info">Info</a></li>
+                <li><a href="#obat">Daftar Obat</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="info" role="tabpanel">
+                    <h3>
+                        Informasi Obat
+                        <small>Persediaan Obat Poliklinik IPB.</small>
+                    </h3>
+                    <p>Anda dapat mengetahui semua obat yang disediakan di Poliklinik Institut Pertanian Bogor.</p>
+
+                    <p>Klik tab <strong>Daftar Obat</strong> untuk melihat daftar Obat.</p>
+                </div>
+                <div class="tab-pane" id="obat" role="tabpanel">
+                    <div class="box-content">
+                        <ul class="dashboard-list">
+                            @foreach (var item in Model)
+                            {
+                                <li>
+                                    <a href="#">
+                                        <img class="dashboard-avatar" alt="FotoObat"
+                                             src="#">
+                                    </a>
+                                    <strong>Nama:</strong> <a href="#">
+                                        @Html.DisplayFor(modelItem => item.Nama)
+                                    </a><br>
+                                    <strong>Satuan:</strong> @Html.DisplayFor(modelItem => item.SatuanObat)<br>
+                                    <strong>Stok:</strong> <span class="label-success label label-default">@Html.DisplayFor(modelItem => item.StokObats)</span>
+                                </li>
+                            }*@
+
+
+
+                            @*<li>
+                                    <a href="#">
+                                        <img class="dashboard-avatar" alt="FotoObat"
+                                             src="#">
+                                    </a>
+                                    <strong>Nama:</strong> <a href="#">
+                                        Nama Obat
+                                    </a><br>
+                                    <strong>Satuan:</strong> Tablet/Kapsul<br>
+                                    <strong>Status:</strong> <span class="label-success label label-default">Tersedia</span>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <img class="dashboard-avatar" alt="FotoObat"
+                                             src="#">
+                                    </a>
+                                    <strong>Nama:</strong> <a href="#">
+                                        Nama Obat
+                                    </a><br>
+                                    <strong>Satuan:</strong> Tablet/Kapsul<br>
+                                    <strong>Status:</strong> <span class="label-success label label-default">Tersedia</span>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <img class="dashboard-avatar" alt="FotoObat"
+                                             src="#">
+                                    </a>
+                                    <strong>Nama:</strong> <a href="#">
+                                        Nama Obat
+                                    </a><br>
+                                    <strong>Satuan:</strong> Tablet/Kapsul<br>
+                                    <strong>Status:</strong> <span class="label-success label label-default">Tersedia</span>
+                                </li>*@
+                        @*</ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>*@
+<!--/span-->

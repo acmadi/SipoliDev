@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "Penyakit";
+}
+
+<h2>Data Penyakit <small>
+    @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+    ViewContext.HttpContext.User.IsInRole("Staf"))
+    {
+        @Html.ActionLink("Cetak Laporan", "DataPenyakitReport", null, new { @target = "_blank", @class="btn btn-warning btn-xs" })
+    }
+    </small> </h2>
+<hr />
+
+
+
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="row">
+            <div class="col-lg-12">
+                <!--Lokasi Tabel DaftarPenyakitIndex-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <strong>Daftar Penyakit</strong>
+                                    <!--Element Loading-->
+                                    <h5 id="hapusLoading" style="display:none"><i> Menghapus data...</i></h5>
+                                    <!--Element Loading-->
+                                </div>
+                                <div class="col-lg-5 pull-right">
+                                    <!--Pencarian Nama Penyakit-->
+                                    @using (Ajax.BeginForm("DaftarPenyakitIndex",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "Get",
+                                    InsertionMode = InsertionMode.Replace,
+                                    //LoadingElementId="loadingSearch",
+                                    UpdateTargetId = "tabelDaftarPenyakit"
+                                }))
+                                    {
+                                        <div class="col-lg-12">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control"
+                                                       name="searchString" placeholder="Ketik nama penyakit" />
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="submit">Cari</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            Berikut adalah daftar data penyakit.
+                        </p>
+                    </div>
+                    <!--Tabel-->
+                    <div id="tabelDaftarPenyakit">
+                        @*Daftar Penyakit - A:DaftarPenyakitIndex*@
+                        @Html.Action("DaftarPenyakitIndex")
+                    </div>
+                    @section Scripts{@Scripts.Render("~/bundles/jqueryval")}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <!--Lokasi Tabel KelainanIndex-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <strong>Daftar Kelainan Bawaan</strong>
+                                    <!--Element Loading-->
+                                    <h5 id="hapusLoading2" style="display:none"><i> Menghapus data...</i></h5>
+                                    <!--Element Loading-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            Berikut adalah daftar data Kelainan Bawaan.
+                        </p>
+                    </div>
+                    <!--Tabel-->
+                    <div id="tabelKelainanBawaan">
+                        @*Daftar Penyakit - A:DaftarPenyakitIndex*@
+                        @Html.Action("KelainanIndex")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-lg-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <!--Create-->
+                @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                    ViewContext.HttpContext.User.IsInRole("Dokter") ||
+                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                {
+                    @Html.Action("_Create")
+                }
+                
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <!--Create-->
+                @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                    ViewContext.HttpContext.User.IsInRole("Dokter") ||
+                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                {
+                    @Html.Action("_CreateKelainan")
+                }
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

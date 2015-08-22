@@ -1,0 +1,71 @@
+﻿
+@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<SipoliDev5.Models.ViewModels.PenyakitView>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+
+        <table class="table">
+            <tr>
+                <th>No.</th>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.Nama)*@
+                    Nama Penyakit
+                </th>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.NamaIlmiah)*@
+                    Nama Ilmiah
+                </th>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.KelompokPenyakit.Nama)*@
+                    Kelompok Penyakit
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.No)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nama)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NamaIlmiah)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.KelompokPenyakit.Nama)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                        @*@Html.ActionLink("Details", "Details", new { id=item.ID }) |*@
+                        @*@Html.ActionLink("Delete", "Delete", new { id = item.ID })*@
+                        @Ajax.ActionLink("Hapus", "Delete", new { id = item.ID },
+                        new AjaxOptions { 
+                            Confirm = "Yakin akan menghapus data penyakit?"
+                            + " Menghapus data penyakit berarti akan menghapus Riwayat Penyakit pasien"
+                            +" dan Riwayat Penyakit Keluarga Pasien.",
+                            HttpMethod = "Post",
+                            UpdateTargetId = "tabelDaftarPenyakit",
+                            InsertionMode = InsertionMode.Replace,
+                            LoadingElementId = "hapusLoading"
+                        })
+                    </td>
+                </tr>
+            }
+
+        </table>
+        <center>
+            @Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page
+}), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+        </center>
+
+
+
+

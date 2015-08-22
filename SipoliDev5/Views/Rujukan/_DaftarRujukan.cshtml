@@ -1,0 +1,75 @@
+﻿@model PagedList.IPagedList<SipoliDev5.Models.ViewModels.RujukanView>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<table class="table">
+    <tr>
+        <th>
+            No
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Tanggal)*@
+            @*Tanggal*@
+            @Html.ActionLink("Tanggal", "Index", 
+            new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.currentFilter })
+        </th>
+        <th>
+            @*@Html.DisplayNameFor(model => model.Orang.Nama)*@
+            @*Nama Pasien*@
+            @Html.ActionLink("Nama Pasien", "Index", 
+            new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.currentFilter })
+        </th>
+        @*<th>
+            ---@Html.DisplayNameFor(model => model.AnamnesaDiagnosa)---
+            Anamnesa &amp; Diagnosa
+        </th>*@
+        <th>
+            @*@Html.DisplayNameFor(model => model.Pegawai.GelarDepan)*@
+            Dokter
+        </th>
+        <th>Tujuan</th>
+        <th>Bagian</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.j)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tanggal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NamaPasien)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.AnamnesaDiagnosa)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.NamaDokter)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tujuan)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bagian)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Cetak", "Cetak", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
+        </tr>
+    }
+
+</table>
+<center>
+    Paged @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+
+</center>
+

@@ -1,0 +1,172 @@
+﻿
+@using PagedList;
+@using PagedList.Mvc;
+
+<!--Tabel Daftar Pasian - Partial-->
+@model IPagedList<SipoliDev5.Models.ViewModels.RekamMedis>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="row">
+    <div class="col-lg-12">
+                
+        <div class="row">
+            <div class="col-lg-12">
+                <!--Hasil Pemeriksaan-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <strong><span class="glyphicon glyphicon-edit"></span> Hasil Periksa</strong>
+                            &nbsp;
+                            @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                                    ViewContext.HttpContext.User.IsInRole("Dokter") ||
+                                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                            {
+                               @Html.ActionLink("Pemeriksaan Baru", "Create", new { id = @ViewBag.PasienID }, new { @class = "btn btn-default btn-xs" })
+                            }
+                                
+                        </div>
+                    </div>
+                    <div class="panel-body"></div>
+                        
+                        @*BENTUK TIMELINE*@
+                        @*@foreach (var item in Model)
+                        {
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <dl class="dl-horizontal">
+                                                <dt>Tanggal</dt>
+                                                <dd>@Html.DisplayFor(modelItem => item.Tanggal)</dd>
+                                                <dt>Anamnesa &amp; Diagnosa</dt>
+                                                <dd>@Html.DisplayFor(modelItem => item.AnamnesaDiagnosa)</dd>
+                                                <dt>Therapie</dt>
+                                                <dd>@Html.DisplayFor(modelItem => item.Therapie)</dd>
+                                                <dt>Dokter</dt>
+                                                <dd>
+                                                    @Html.DisplayFor(modelItem => item.GelarDepan)
+                                                    @Html.DisplayFor(modelItem => item.NamaDokter)
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.ID, idPasien = @ViewBag.id }) <br />
+                                    @Ajax.ActionLink("Hapus", "Delete", new { id = item.ID, OrangID = @ViewBag.PasienID },
+                                    new AjaxOptions
+                                    {
+                                        Confirm = "Yakin akan menghapus Hasil Periksa ini?",
+                                        HttpMethod = "Post",
+                                        UpdateTargetId = "hasilPeriksa",
+                                        InsertionMode = InsertionMode.Replace,
+                                        LoadingElementId = "hapusLoading"
+                                    })
+                                </div>
+                            </div>
+                        }*@
+
+
+                        @*BENTUK TABLE*@
+
+                        <style>
+                            .detailrm,
+                            .table{
+                                font-size:12px;
+                            }
+                        </style>
+                        <div class="table-responsive">
+                            <table class="detailrm table">
+                                <tr>
+                                    <th>
+                                        No.
+                                    </th>
+                                    <th>
+                                        Waktu Periksa
+                                    </th>
+                                    <th style="min-width:60px">
+                                        ID. RM
+                                    </th>
+                                    <th style="text-align: center;">
+                                        Anamnesa &amp; Diagnosa
+                                    </th>
+                                    <th style="text-align: center;">
+                                        Therapie
+                                    </th>
+                                    <th style="min-width:100px;text-align:center">
+                                        Dokter
+                                    </th>
+                                    <th>
+                                    </th>
+                                </tr>
+
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.No)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Tanggal.Day)/@Html.DisplayFor(modelItem => item.Tanggal.Month)/@Html.DisplayFor(modelItem => item.Tanggal.Year)<br /> Pukul @Html.DisplayFor(modelItem => item.Tanggal.TimeOfDay)
+                                        </td>
+                                        <td style="text-align:center">
+                                            @Html.DisplayFor(modelItem => item.ID)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.AnamnesaDiagnosa)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Therapie)
+                                        </td>
+                                        <td style="text-align:center">
+                                            @Html.DisplayFor(modelItem => item.GelarDepan)
+                                            @Html.DisplayFor(modelItem => item.NamaDokter)
+                                            @Html.DisplayFor(modelItem => item.GelarBelakang)
+                                        </td>
+                                        @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                                                ViewContext.HttpContext.User.IsInRole("Dokter") ||
+                                                ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                                        {
+                                            <td>
+                                                <div class="btn-group-vertical">
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.ID, idPasien = @ViewBag.id }, new { @class = "btn btn-warning btn-xs" })
+                                                    @Ajax.ActionLink("Hapus", "Delete", new { id = item.ID, OrangID = @ViewBag.PasienID },
+                                            new AjaxOptions
+                                            {
+                                                Confirm = "Yakin akan menghapus Hasil Periksa ini?",
+                                                HttpMethod = "Post",
+                                                UpdateTargetId = "hasilPeriksa",
+                                                InsertionMode = InsertionMode.Replace,
+                                                LoadingElementId = "hapusLoading"
+                                            }, new { @class = "btn btn-danger btn-xs" })
+                                                    @Html.ActionLink("Resep", "ResepIndex", new { id = item.ID, idPasien = @ViewBag.id }, new { @class = "btn btn-primary btn-xs" })
+                                                </div>
+                                            </td>
+                                        }
+                                        
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
+
+                    
+                </div>
+                <!--Hasil Pemeriksaan-->
+            </div>
+        </div>
+        
+        
+    </div>
+</div>
+
+<center>
+    @Html.PagedListPager(Model, page => Url.Action("DetailRekamMedis", 
+    new {
+         page, id = ViewBag.PasienID
+        }), new PagedListRenderOptions(){
+                                        Display = PagedListDisplayMode.IfNeeded,
+                                        DisplayPageCountAndCurrentLocation = true,
+                                        MaximumPageNumbersToDisplay = 5
+                                        })
+</center>

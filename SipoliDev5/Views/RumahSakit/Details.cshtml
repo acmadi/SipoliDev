@@ -1,0 +1,42 @@
+﻿@model SipoliDev5.Models.RumahSakit
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>RumahSakit</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NoTelepon)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NoTelepon)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Kecamatan.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Kecamatan.Nama)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

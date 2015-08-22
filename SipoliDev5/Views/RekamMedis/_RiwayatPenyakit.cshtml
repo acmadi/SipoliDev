@@ -1,0 +1,78 @@
+﻿@model IEnumerable<SipoliDev5.Models.ViewModels.RekamMedisRiwayatPenyakit>
+
+<!--Loading Element -CSS- Belum berfungsi-->
+<style type="text/css">
+    #loadingRiwayatPenyakitHapus {
+        background: url(../../Content/Image/ajax-loader.gif) no-repeat right center;
+    }
+</style>
+
+<div id="RiwayatPenyakit">
+    <div class="table-responsive">
+        @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                    ViewContext.HttpContext.User.IsInRole("Dokter") ||
+                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+        {
+            @Html.Action("_FormRiwayatPenyakit", new { id = ViewBag.id }) <br />
+        }
+        
+        <table class="table">
+            <tr>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.No)
+                </th>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Tahun)
+                </th>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.NamaPenyakit)
+                </th>
+                <th>
+                    <!--Loading Element - Belum berfungsi-->
+                    <div id="loadingRiwayatPenyakitHapus" style="display:none"></div>
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        @Html.DisplayFor(modelItem => item.No)
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DisplayFor(modelItem => item.Tahun)
+                    </td>
+                    <td style="text-align: center;">
+                        @Html.DisplayFor(modelItem => item.NamaPenyakit)
+                    </td>
+
+                    @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                    ViewContext.HttpContext.User.IsInRole("Dokter") ||
+                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                    {
+                        <td>
+
+                            @Ajax.ActionLink(" Hapus", "DeleteRiwayatPenyakit", new { id = item.ID },
+                        new AjaxOptions
+                        {
+                            Confirm = "Yakin menghapus data?",
+                            HttpMethod = "Post",
+                            UpdateTargetId = "RiwayatPenyakit",
+                            InsertionMode = InsertionMode.Replace,
+                            LoadingElementId = "loadingRiwayatPenyakit"
+                        },
+                        new
+                        {
+                            @class = "glyphicon glyphicon-erase"
+                        })
+                        </td>
+                    }
+                    
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+
+    

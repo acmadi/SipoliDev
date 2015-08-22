@@ -1,0 +1,67 @@
+﻿@model SipoliDev5.Models.RekamMedik
+@*@model SipoliDev3.Models.ViewModels.RekamMedis*@
+
+@{
+    ViewBag.Title = "Hapus Rekam Medis";
+}
+
+<h2>Hapus Rekam Medis</h2>
+
+<h3>Yakin untuk menghapus data ini?</h3>
+<div>
+    <h4>Rekam Medis</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanggal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tanggal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnamnesaDiagnosa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnamnesaDiagnosa)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Therapie)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Therapie)
+        </dd>
+
+        <dt>
+            @*@Html.DisplayNameFor(model => model.Orang.Nama)*@
+            Nama Pasien
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Orang.Nama)
+        </dd>
+
+        <dt>
+            @*@Html.DisplayNameFor(model => model.Pegawai.Orang.Nama)*@
+            Nama Dokter
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pegawai.GelarDepan) @Html.DisplayFor(model => model.Pegawai.Orang.Nama)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,91 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+<!--Tabel Daftar Pasien - Partial-->
+@model IPagedList<SipoliDev5.Models.ViewModels.DaftarPasien>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>No.</th>
+            <th>
+                @*@Ajax.ActionLink("Nama", "DaftarPasienIndex",
+                    new
+                    {
+                        sortOrder = ViewBag.NameSortParm,
+                        currentFilter = ViewBag.currentFilter
+                    },
+                    new AjaxOptions
+                    {
+                        HttpMethod = "Get",
+                        UpdateTargetId = "tabelDaftarPasien",
+                        InsertionMode = InsertionMode.Replace
+                    })*@
+                @Html.ActionLink("Nama", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                @Html.ActionLink("Umur", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                @Html.ActionLink("Alamat Asal", "Index", new { sortOrder = ViewBag.AddressSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                @Html.ActionLink("Jenis Kelamin", "Index", new { sortOrder = ViewBag.JkSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+
+        </tr>
+
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.No)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nama)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TempatLahir)
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.JenisKelaminID)*@
+                    @if (item.JenisKelaminID == 1)
+                    {
+                        <span>Laki-laki</span>
+                    }
+                    else
+                    {
+                        <span>Perempuan</span>
+                    }
+                </td>
+
+                @*HAPUS VIA AJAX
+                <td>
+                    @Ajax.ActionLink("Hapus", "Delete", new { id = item.ID },
+                        new AjaxOptions
+                        {
+                            Confirm = "Yakin akan menghapus data? Menghapus data pasien berarti menghapus seluruh data rekam medis pasien yang bersangkutan.",
+                            HttpMethod = "Post",
+                            UpdateTargetId = "tabelDaftarPasien",
+                            InsertionMode = InsertionMode.Replace
+                        })
+                </td>*@
+            </tr>
+        }
+
+    </table>
+</div>
+
+<center>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page
+}), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+</center>
+
+

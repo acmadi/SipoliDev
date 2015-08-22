@@ -1,0 +1,68 @@
+﻿
+<!--Index-->
+
+
+@{
+    ViewBag.Title = "Pemeriksa";
+}
+
+<h2>Daftar Pemeriksa
+    <small>
+        @Html.ActionLink("Tambah Pemeriksa", "Create", null, new { @class = "btn btn-primary btn-sm" })
+    </small>
+</h2><hr />
+
+<div class="row">
+    <div class="col-lg-12">
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <strong>Daftar Pemeriksa</strong>
+                            <!--Element Loading-->
+                            <h5 id="hapusLoading" style="display:none"><i> Menghapus data...</i></h5>
+                            <!--End-Element Loading-->
+                        </div>
+                        <div class="col-lg-5 pull-right">
+                            <!--Pencarian Nama Pemeriksa-->
+                            @using (Ajax.BeginForm("DaftarPemeriksaIndex",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "Get",
+                                    InsertionMode = InsertionMode.Replace,
+                                    //LoadingElementId="searchLoading",
+                                    UpdateTargetId = "tabelDaftarPemeriksa"
+                                })) { 
+                                <div class="col-lg-12">
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control"
+                                               name="searchString" placeholder="Ketik nama Pemeriksa" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default"type="submit">Cari</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                            <!--End-Pencarian Nama Pemeriksa-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <p>
+                    Berikut adalah daftar Pemeriksa di Poliklinik IPB.
+                </p>
+            </div>
+                <!--Tabel-->
+                <div id="tabelDaftarPemeriksa">
+                    @*Daftar Pemeriksa - A:DaftarPemeriksaIndex*@
+                    @Html.Action("DaftarPemeriksaIndex")
+                </div>
+                @section Scripts{@Scripts.Render("~/bundles/jqueryval")}
+                <!--End-Tabel-->
+            
+        </div>
+    </div>
+</div>

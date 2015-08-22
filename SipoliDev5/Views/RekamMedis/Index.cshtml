@@ -1,0 +1,160 @@
+﻿@*@model IEnumerable<SipoliDev3.Models.ViewModels.DaftarPasien>*@
+
+@using PagedList;
+@using PagedList.Mvc;
+
+<!--Daftar Pasien dengan Link Ke Data Rekam Medis masing2-->
+
+@model IPagedList<SipoliDev5.Models.ViewModels.DaftarPasien>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Rekam Medis";
+}
+
+<h2>Rekam Medis</h2>
+<hr />
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row">
+            
+            <!--Tempat Tabel Partial-->
+            <div class="col-lg-10">
+
+                <!--Lokasi Tabel Daftar Pasien-->
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <strong>Daftar Rekam Medis Pasien</strong>
+                                    @*<h5 id="loading" style="display:none"><i>Memuat data...</i></h5>*@
+                                </div>
+                                <div class="col-lg-5 pull-right">
+                                    <!--Pencarian Nama Pasien-->
+                                    @using (Ajax.BeginForm("DaftarRekamMedis", "RekamMedis", new AjaxOptions
+                                    {
+                                        HttpMethod = "Get",
+                                        InsertionMode = InsertionMode.Replace,
+                                        //LoadingElementId = "loading",
+                                        UpdateTargetId = "tabelDaftarPasien"
+                                    }))
+                                    {
+                                        <div class="col-lg-12">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" name="searchString" placeholder="Ketik nama pasien">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="submit">Cari</button>
+                                                </span>
+                                            </div><!-- /input-group -->
+                                        </div><!-- /.col-lg-6 -->
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            Berikut adalah daftar Rekam Medis Pasien Poliklinik Institut Pertanian Bogor. Anda dapat melihat rincian rekam medis dengan 
+                            melakukan klik pada tautan <strong>nama pasien</strong>  atau tautan <strong>Lihat</strong>.
+                        </p>
+                        <p>
+                            <div class="btn-group" role="group" aria-label="Tampilkan Berdasar">
+                                @Ajax.ActionLink("Semua", "DaftarRekamMedis", null,
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "Get",
+                                    UpdateTargetId = "tabelDaftarPasien",
+                                    LoadingElementId = "loadingFilter",
+                                    InsertionMode = InsertionMode.Replace
+                                },
+                                new { @class = "btn btn-default" })
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Mahasiswa  <span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            @Ajax.ActionLink("Diploma", "DaftarRekamMedisMahasiswaDiploma",
+                                            new AjaxOptions
+                                            {
+                                                HttpMethod = "Get",
+                                                UpdateTargetId = "tabelDaftarPasien",
+                                                LoadingElementId = "loadingFilter",
+                                                InsertionMode = InsertionMode.Replace
+                                            })
+                                        </li>
+                                        <li>
+                                            @Ajax.ActionLink("Sarjana", "DaftarRekamMedisMahasiswaSarjana", 
+                                            new AjaxOptions
+                                            {
+                                                HttpMethod = "Get",
+                                                UpdateTargetId = "tabelDaftarPasien",
+                                                LoadingElementId = "loadingFilter",
+                                                InsertionMode = InsertionMode.Replace
+                                            })
+                                        </li>
+                                        <li>
+                                            @Ajax.ActionLink("Magister", "DaftarRekamMedisMahasiswaMagister",
+                                            new AjaxOptions
+                                            {
+                                                HttpMethod = "Get",
+                                                UpdateTargetId = "tabelDaftarPasien",
+                                                LoadingElementId = "loadingFilter",
+                                                InsertionMode = InsertionMode.Replace
+                                            })
+                                        </li> 
+                                        <li>
+                                            @Ajax.ActionLink("Doktor", "DaftarRekamMedisMahasiswaDoktor",
+                                            new AjaxOptions
+                                            {
+                                                HttpMethod = "Get",
+                                                UpdateTargetId = "tabelDaftarPasien",
+                                                LoadingElementId = "loadingFilter",
+                                                InsertionMode = InsertionMode.Replace
+                                            })
+                                        </li>      
+                                    </ul>
+                                </div>
+                                @Ajax.ActionLink("Dosen", "DaftarRekamMedisDosen", null,
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "Get",
+                                    UpdateTargetId = "tabelDaftarPasien",
+                                    LoadingElementId = "loadingFilter",
+                                    InsertionMode = InsertionMode.Replace
+                                },
+                                new { @class = "btn btn-default" })
+                                @Ajax.ActionLink("Tendik", "DaftarRekamMedisTendik", null,
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "Get",
+                                    UpdateTargetId = "tabelDaftarPasien",
+                                    LoadingElementId = "loadingFilter",
+                                    InsertionMode = InsertionMode.Replace
+                                },
+                                new { @class = "btn btn-default" })
+                            </div>
+                            <h5 id="loadingFilter" style="display:none">Loading..</h5>
+                        </p>
+                    </div>
+                    <!-- Table -->
+                    <div id="tabelDaftarPasien">
+                        @*Daftar Pasien - A:DaftarPasienIndex*@                        
+                        @Html.Action("DaftarRekamMedis")
+                    </div>
+                    @section Scripts {
+                        @Scripts.Render("~/bundles/jqueryval")
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-2">
+
+        </div>
+
+    </div>
+</div>

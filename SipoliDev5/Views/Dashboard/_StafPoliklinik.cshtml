@@ -1,0 +1,57 @@
+﻿@model SipoliDev5.Models.ViewModels.Staf
+
+
+@*awal*@
+@*<div class="col-md-4">
+    
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.GelarDepan @item.Nama</td>
+        </tr>
+    }
+</div>*@
+
+<div class="col-lg-4">
+
+    <div class="panel">
+        <h2>Staf Poliklinik</h2>
+        <div class="card hovercard">
+            <div class="cardheader">
+
+            </div>
+            <div class="avatar">
+                <img alt="" src="~/Content/Image/HeadIcon.jpg">
+            </div>
+            <div class="info">
+                <div class="title">
+                    <a href="#">@Html.DisplayFor(model => model.GelarDepan) @Html.DisplayFor(model => model.Nama)</a>
+                </div>
+                <div class="desc">Kepala Poliklinik</div>
+                <div class="desc">Periode 2015 - 2020</div>
+                <div class="desc">Institut Pertanian Bogor</div>
+            </div>
+            <div class="bottom">
+                <a class="btn btn-primary btn-twitter btn-sm" href="#">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="btn btn-danger btn-sm" rel="publisher"
+                   href="#">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                <a class="btn btn-primary btn-sm" rel="publisher"
+                   href="#">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="btn btn-warning btn-sm" rel="publisher" href="#">
+                    <i class="fa fa-behance"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+

@@ -1,0 +1,45 @@
+﻿
+@model SipoliDev5.Models.RekamMedik
+
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            Nama Pasien
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Orang.Nama)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanggal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tanggal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnamnesaDiagnosa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnamnesaDiagnosa)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Therapie)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Therapie)
+        </dd>
+        <dt>
+            Dokter
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pegawai.GelarDepan) @Html.DisplayFor(model => model.Pegawai.Orang.Nama) @Html.DisplayFor(model => model.Pegawai.GelarBelakang)
+        </dd>
+
+    </dl>
+</div>

@@ -1,0 +1,263 @@
+﻿@model SipoliDev5.Models.RekamMedik
+
+@{
+    ViewBag.Title = "Rujukan";
+}
+
+<h2>Rujukan Pasien</h2>
+<h4>Formulir Rujukan Baru</h4>
+<hr />
+
+<script type="text/javascript">
+    $(function () {
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy'
+        }); //Initialise any date pickers
+    });
+</script>
+
+
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        @using (Html.BeginForm("Create", "Rujukan", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PasienID, null, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        <label class="radio-inline">
+                            <input type="radio" name="pilihanpencarian" id="radioNama" checked /> Nama
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="pilihanpencarian" id="radioNIM" /> NRP/NIM
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="pilihanpencarian" id="radioKTP" /> NomorKTP
+                        </label>
+
+                        <input type="hidden" id="PasienID" class="PasienID" name="PasienID" value="@ViewBag.PasienID2" />
+                        <div class="input-group">
+                            <input type="text" id="SelectedPasienNama" class="form-control SelectedPasien" value="@ViewBag.NamaPasien" placeholder="Ketik nama pasien" />
+                            <input type="text" id="SelectedPasienNIM" class="form-control SelectedPasien" name="SelectedPasien" value="" placeholder="Ketik NRP/NIM Mahasiswa IPB" style="display:none" />
+                            <input type="text" id="SelectedPasienKTP" class="form-control SelectedPasien" name="SelectedPasien" value="" placeholder="Ketik nomor KTP" style="display:none" />
+                            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                        </div>
+
+                        @Html.ValidationMessageFor(model => model.PasienID, null, new { @class = "text-danger" })
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Tanggal, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(model => model.Tanggal, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                        @Html.ValidationMessageFor(model => model.Tanggal, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AnamnesaDiagnosa, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-7">
+                        @Html.TextAreaFor(model => model.AnamnesaDiagnosa, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AnamnesaDiagnosa, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @*LOG F:V 28/04*@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DokterID, null, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-4">
+                        @Html.DropDownList("DokterID", ViewData["isiDokterList"] as List<SelectListItem>, "--Pilih Dokter--", new { @class = "form-control" })
+                        @*@Html.DropDownListFor(model => model.DokterID, new SelectList(Model.Pegawai, "PegawaiID", Model.Pegawai.Orang.Nama , Model.Pegawai.ID))*@
+                        @Html.ValidationMessageFor(model => model.DokterID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*END*@
+
+
+                <div class="form-group">
+                    @*---@Html.LabelFor(model => model.trxRujukan.RumahSakitID, "Tujuan", htmlAttributes: new { @class="control-label col-md-2"})*@
+                    @Html.LabelFor(model => model.Rujukan.RumahSakitID, "Rumah Sakit", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @*---@Html.DropDownListFor(model => model.trxRujukan.RumahSakitID, null, htmlAttributes: new { @class="form-control"}) --- PAKE POPULATE - FAILED---*@
+                        @*---Last Success 2015-07-02---*@
+                        @Html.DropDownListFor(model => model.Rujukan.RumahSakitID, ViewData["isiRSList"] as List<SelectListItem>, "--Pilih Rumah Sakit--", htmlAttributes: new { @class = "form-control" })
+                        @*---@Html.DropDownList("RumahSakitID", (IEnumerable<SelectListItem>)ViewData["Menu"], "--Pilih Rumah Sakit--", htmlAttributes: new { @class = "form-control" })---*@
+                        @Html.ValidationMessageFor(model => model.Rujukan.RumahSakitID, "", new { @class = "text-danger" })
+                        <h5><i>Rumah sakit tujuan belum ada?</i> 
+                            @Html.ActionLink("Tambah", "CreateRS","Rujukan")
+                        </h5>
+                    </div>
+                </div>
+
+                @* *@
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Rujukan.Bagian, "Bagian", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Rujukan.Bagian, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Rujukan.Bagian, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Tambah" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Kembali ke daftar Rujukan", "Index")
+        </div>
+    </div>
+
+    
+</div>
+
+
+@*JS untuk autocomplete nama pasien sivitas IPB menggunakan jquery UI*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#SelectedPasienNama").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Rujukan/SearchPasienNama",
+                        type: "POST",
+                        dataType: "json",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+
+                                return {
+                                    label: item.label + " (" + item.alamat + ")",
+                                    value: item.value,
+                                    id: item.id,
+                                };
+                            }));
+
+                        },
+                        //
+                    })
+                },
+                select: function (event, ui) {
+                    //    //update the jquery selector here to your target hidden field
+                    $("input.PasienID").val(ui.item.id);
+                },
+                search: function () { $(this).addClass('loading'); },
+                open: function () { $(this).removeClass('loading'); }
+            });
+
+            $('body').click(function () {
+                $('#SelectedPasienNama').removeClass('loading');
+            });
+        });
+</script>
+
+@*JS untuk autocomplete NIM Mahasiswa IPB menggunakan jquery UI*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienNIM").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/SearchPasienMahasiswa",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.PasienID").val(ui.item.id);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading'); }
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienNIM').removeClass('loading');
+        });
+    });
+</script>
+
+@*JS untuk autocomplete KTP sivitas IPB menggunakan jquery UI*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienKTP").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/SearchPasienTendik",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.PasienID").val(ui.item.id);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading'); }
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienKTP').removeClass('loading');
+        });
+    });
+</script>
+
+
+
+@*Hide/unHide input*@
+<script type="text/javascript">
+    $(function () {
+        $('#radioNama').click(function () {
+            $('#SelectedPasienNama').show();
+            $('#SelectedPasienNIM').hide();
+            $('#SelectedPasienKTP').hide();
+        });
+
+        $('#radioNIM').click(function () {
+            $('#SelectedPasienNIM').show();
+            $('#SelectedPasienNama').hide();
+            $('#SelectedPasienKTP').hide();
+        });
+
+        $('#radioKTP').click(function () {
+            $('#SelectedPasienKTP').show();
+            $('#SelectedPasienNama').hide();
+            $('#SelectedPasienNIM').hide();
+        });
+    });
+</script>
+

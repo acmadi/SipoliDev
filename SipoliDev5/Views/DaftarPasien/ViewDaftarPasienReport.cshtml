@@ -1,0 +1,82 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<SipoliDev5.Models.ViewModels.DaftarPasien>
+
+@{
+    ViewBag.Title = "Daftar Pasien Report";
+}
+
+<div class="row">
+    <div class="col-lg-12 thumbnail">
+        <img src="~/Content/Image/kop-sipoli.png" alt="kop-sipoli" />
+    </div>
+</div>
+
+<center>
+    <h3><strong>DAFTAR PASIEN</strong></h3>
+</center>
+
+<div>
+    <span>Periode registrasi pasien: @ViewBag.Bulan @ViewBag.Tahun</span>
+</div>
+<div>
+    <table class="table">
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                Nama Lengkap
+            </th>
+            <th>
+                Umur
+            </th>
+            <th>
+                Alamat Asal
+            </th>
+            <th>
+                Jenis Kelamin
+            </th>
+        </tr>
+
+        @if (Model.Count() >= 1)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.No)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nama)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Age)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TempatLahir)
+                    </td>
+                    <td>
+                        @if (item.JenisKelaminID == 1)
+                        {
+                            <span>Laki-laki</span>
+                        }
+                        else
+                        {
+                            <span>Perempuan</span>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">
+                    <center><i>Tidak ada data</i> </center>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

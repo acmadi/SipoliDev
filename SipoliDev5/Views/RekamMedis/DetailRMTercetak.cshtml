@@ -1,0 +1,43 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+
+@{
+    ViewBag.Title = "Detail Rekam Medis";
+}
+
+<div class="row">
+    <div class="col-lg-12 thumbnail">
+        <img src="~/Content/Image/kop-sipoli.png" alt="kop-sipoli" />
+    </div>
+</div>
+
+<center>
+    <h3><strong>REKAM MEDIS</strong></h3><br />
+</center>
+
+<div class="row">
+        <!--Identitas Pasien-->
+        @Html.Action("_IdentitasPasienCetak", new { id = ViewBag.id, page = ViewBag.page })
+        <!--end-Identitas Pasien-->
+</div>
+
+<div class="row">
+    <!--Riwayat penyakit Pasien-->
+    @Html.Action("_RiwayatPenyakitCetak", new { id = ViewBag.id, page = ViewBag.page })
+</div>
+
+<div class="row">
+    <!--Riwayat penyakit keluarga-->
+    @Html.Action("_RiwayatPenyakitKeluargaCetak", new { id = ViewBag.id, page = ViewBag.page })
+</div>
+
+<div class="row">
+    <!--Riwayat kelainan-->
+    @Html.Action("_KelainanBawaanCetak", new { id = ViewBag.id, page = ViewBag.page })
+</div>
+
+<div class="row">
+    <!--Riwayat pemeriksaan-->
+    @Html.Action("_RmSeseorangCetak", new { id = ViewBag.id, page = ViewBag.page })
+</div>

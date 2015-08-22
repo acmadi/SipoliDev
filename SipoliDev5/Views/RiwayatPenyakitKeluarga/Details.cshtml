@@ -1,0 +1,42 @@
+﻿@model SipoliDev5.Models.RiwayatPenyakitKeluarga
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>RiwayatPenyakitKeluarga</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HubunganKeluarga.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HubunganKeluarga.Nama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Orang.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Orang.Nama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Penyakit.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Penyakit.Nama)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

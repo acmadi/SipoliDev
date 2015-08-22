@@ -1,0 +1,63 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<SipoliDev5.Models.ViewModels.ResepObatView>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+<table class="table">
+    <tr>
+        <th>No.</th>
+        <th>Nama Obat</th>
+        <th>Jumlah</th>
+        <th>Pemakaian</th>
+        <th>Wajib Dihabiskan</th>
+        <th>Setelah Makan</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.No)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NamaObat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Jumlah) @Html.DisplayFor(modelItem => item.NamaSatuanObat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pemakaian)
+            </td>
+            <td>
+                <center> @Html.DisplayFor(modelItem => item.isDihabiskan) </center>  
+            </td>
+            <td>
+                <center> @Html.DisplayFor(modelItem => item.isSetelahMakan) </center>
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditResepObat", new { id = item.ID }) |
+                @Ajax.ActionLink("Hapus", "DeleteResepObat", new { id = item.ID, RekamMedikID = item.RekamMedikID },
+                        new AjaxOptions
+                        {
+                            Confirm = "Yakin akan menghapus data resep?",
+                            HttpMethod = "Post",
+                            UpdateTargetId = "tabelResepObat",
+                            InsertionMode = InsertionMode.Replace,
+                            LoadingElementId = "hapusLoading2"
+                        })
+            </td>
+        </tr>
+    }
+
+
+
+</table>
+
+<center>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page
+}), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+</center>

@@ -1,0 +1,57 @@
+﻿@model SipoliDev5.Models.Obat
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Obat</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <label class="col-md-2 control-label">Nama Obat</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nama)
+        </dd>
+
+        <dt>
+            <label class="col-md-2 control-label">Satuan Obat</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SatuanObat.Nama)
+        </dd>
+
+        <dt>
+            <label class="col-md-2 control-label">Golongan Obat</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GolonganObat.Nama)
+        </dd>
+
+       
+        <dt>
+            <label class="col-md-2 control-label">Kegunaan</label>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Kegunaan)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

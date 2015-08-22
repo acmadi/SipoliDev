@@ -1,0 +1,244 @@
+﻿@model SipoliDev5.Models.ViewModels.KunjunganConst
+
+@{
+    ViewBag.Title = "Kunjungan";
+}
+
+<h2>Kunjungan Pasien</h2>
+<h4>Ubah Data Kunjungan</h4>
+<hr />
+
+<style type="text/css">
+    .loading {
+        background: url(../../Content/Image/ajax-loader.gif) 
+        no-repeat 
+        right center;
+    }
+</style>
+
+
+
+<div class="col-md-offset-1 col-lg-7">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ID)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Tanggal, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.EditorFor(model => model.Tanggal, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.Tanggal, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.OrangID, "Nama Pasien", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-7">
+                    @*@Html.DropDownList("OrangID", null, htmlAttributes: new { @class = "form-control" })*@
+                    <label class="radio-inline">
+                        <input type="radio" name="pilihanpencarian" id="radioNama" checked /> Nama
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="pilihanpencarian" id="radioNIM" /> NRP/NIM
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="pilihanpencarian" id="radioKTP" /> Nomor KTP
+                    </label>
+                    <input type="hidden" id="OrangID" class="OrangID" name="OrangID" value="@ViewBag.OrangID" />
+                    <div class="input-group">
+                        <input type="text" id="SelectedPasienNama" class="form-control SelectedPasien" name="SelectedPasien" value="@ViewBag.NamaOrang" placeholder="Ketik nama pasien" />
+                        <input type="text" id="SelectedPasienNIM" class="form-control SelectedPasien" name="SelectedPasien" value="" placeholder="Ketik NRP/NIM Mahasiswa IPB" style="display:none" />
+                        <input type="text" id="SelectedPasienKTP" class="form-control SelectedPasien" name="SelectedPasien" value="" placeholder="Ketik nomor KTP" style="display:none" />
+                        <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.OrangID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.NoUrut, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.EditorFor(model => model.NoUrut, new { htmlAttributes = new { @class = "form-control input-lg", @style = "text-align:center;font-weight:bold", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.NoUrut, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StatusPanggil, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-3">
+                    
+                        @Html.DropDownListFor(model => model.StatusPanggil, Model.StatusPanggilList, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.StatusPanggil, "", new { @class = "text-danger" })
+                    
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.KlinikID, "Klinik", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-4">
+                    @Html.DropDownList("LokasiklinikID", null, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.KlinikID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Ket, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Ket, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Ket, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Edit" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    <div>
+        @Html.ActionLink("Kembali ke Daftar Antrian", "Index")
+    </div>
+    }
+</div>
+
+
+
+@*JS untuk autocomplete nama pasien sivitas IPB menggunakan jquery UI*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienNama").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/SearchPasienNama",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.OrangID").val(ui.item.id);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading'); }
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienNama').removeClass('loading');
+        });
+    });
+</script>
+
+@*JS untuk autocomplete NIM Mahasiswa IPB menggunakan jquery UI*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienNIM").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/SearchPasienMahasiswa",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.OrangID").val(ui.item.id);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading'); }
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienNIM').removeClass('loading');
+        });
+    });
+</script>
+
+@*JS untuk autocomplete KTP sivitas IPB menggunakan jquery UI*@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SelectedPasienKTP").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/KunjunganPasien/SearchPasienTendik",
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+
+                            return {
+                                label: item.label + " (" + item.alamat + ")",
+                                value: item.value,
+                                id: item.id,
+                            };
+                        }));
+
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.OrangID").val(ui.item.id);
+            },
+            search: function () { $(this).addClass('loading'); },
+            open: function () { $(this).removeClass('loading'); }
+        });
+
+        $('body').click(function () {
+            $('#SelectedPasienKTP').removeClass('loading');
+        });
+    });
+</script>
+
+@*Hide/unHide input*@
+<script type="text/javascript">
+    $(function () {
+        $('#radioNama').click(function () {
+            $('#SelectedPasienNama').show();
+            $('#SelectedPasienNIM').hide();
+            $('#SelectedPasienKTP').hide();
+        });
+
+        $('#radioNIM').click(function () {
+            $('#SelectedPasienNIM').show();
+            $('#SelectedPasienNama').hide();
+            $('#SelectedPasienKTP').hide();
+        });
+
+        $('#radioKTP').click(function () {
+            $('#SelectedPasienKTP').show();
+            $('#SelectedPasienNama').hide();
+            $('#SelectedPasienNIM').hide();
+        });
+    });
+</script>

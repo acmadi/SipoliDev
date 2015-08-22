@@ -1,0 +1,27 @@
+﻿
+
+<!DOCTYPE html>
+
+
+@*<style type="text/css">
+    .full{
+        background:url(../../Content/Image/PoliklinikIPB.jpg) no-repeat center center fixed;
+        background-size:cover;
+    }
+</style>*@
+
+<html class="full">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        @RenderBody()
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,81 @@
+﻿@model SipoliDev5.Models.RekamMedik
+
+@{
+    ViewBag.Title = "Cetak Rujukan";
+}
+
+
+
+<!--START-->
+<div class="row" style="margin-left:90px;margin-right:90px;">
+    <div class="col-lg-9 ">
+        
+                <div class="row">
+                    <div class="col-lg-12 thumbnail">
+                        <img src="~/Content/Image/kop-sipoli.png" alt="kop-sipoli" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 pull-left">
+                        Nomor : RM-@Html.DisplayFor(model => model.ID)/PIPB/@DateTime.Now.Month/@DateTime.Now.Year <br />
+                        Hal : Rujukan Medik
+                    </div>
+                </div>
+        <div class="row">
+            <div class="col-lg-4 pull-right">
+                Bogor, @ViewBag.TanggalHari @ViewBag.TanggalBulan @ViewBag.TanggalTahun <br />
+                Kepada: <br />
+                Bagian @Html.DisplayFor(model => model.Rujukan.Bagian) <br />
+                Di @Html.DisplayFor(model => model.Rujukan.RumahSakit.Nama)
+            </div>
+        </div>
+        <div class="row" style="margin-left:20px;margin-right:20px;">
+            <div class="col-lg-10">
+                Dengan hormat, <br />
+                Bersama ini kami mohon pemeriksaan dan penanganan lebih lanjut atas penderita: <br />
+
+                <table class="table" style="margin-left:40px;margin-top:20px;width:500px;">
+                    <tr>
+                        <td style="width:200px">
+                            <strong>Nama</strong>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Orang.Nama)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:200px">
+                            <strong>Umur</strong>
+                        </td>
+                        <td>@ViewBag.UmurPasien</td>
+                    </tr>
+                    <tr>
+                        <td style="width:200px">
+                            <strong>Asal Daerah</strong>
+                        </td>
+                        <td>@Html.DisplayFor(model => model.Orang.TempatLahir)</td>
+                    </tr>
+                    <tr>
+                        <td style="width:200px">
+                            <strong>Anamnesa &amp; Diagnosa</strong>
+                        </td>
+                        <td>@Html.DisplayFor(model => model.AnamnesaDiagnosa)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row" style="margin-left:20px;margin-right:20px;">
+            <div class="col-lg-10">
+                Atas penerimaan dan kesediaannya kami ucapkan terimakasih.
+            </div>
+        </div>
+                <div class="row">
+                    <div class="col-lg-4 pull-right">
+                        <center>Yang Merujuk,</center> <br />
+                        @Html.DisplayFor(model => model.Pegawai.GelarDepan) @Html.DisplayFor(model => model.Pegawai.Orang.Nama) @Html.DisplayFor(model => model.Pegawai.GelarBelakang)
+                    </div>
+                </div>
+            
+    </div>
+</div>
+

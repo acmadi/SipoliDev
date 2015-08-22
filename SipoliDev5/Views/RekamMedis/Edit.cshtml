@@ -1,0 +1,83 @@
+﻿@model SipoliDev5.Models.ViewModels.RekamMedisConst
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Ubah Hasil Periksa</h2>
+<h4>Nama Pasien : @ViewBag.NamaPasien</h4>
+
+<div class="row">
+    <div class="col-lg-7 col-lg-offset-1">
+        @using (Html.BeginForm("Edit", "RekamMedis", new { idPasien = @ViewBag.idPasien }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+
+                <hr />
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(model => model.ID)
+
+                <div class="form-group">
+                    @*@Html.LabelFor(model => model.PasienID, "PasienID", new { @class = "control-label col-md-2" })*@
+                    <div class="col-md-10">
+                        @Html.HiddenFor(model => model.PasienID)
+                        @Html.ValidationMessageFor(model => model.PasienID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Tanggal, new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.Tanggal, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.Tanggal, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AnamnesaDiagnosa, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.AnamnesaDiagnosa, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AnamnesaDiagnosa, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Therapie, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Therapie, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Therapie, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DokterID, null, new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @Html.DropDownList("DokterID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DokterID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.KlinikID, null, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-4">
+                        @Html.DropDownList("LokasiklinikID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.KlinikID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+        
+
+        <div>
+            @Html.ActionLink("Kembali ke Detail Pasien", "DetailRekamMedis", new { id = @ViewBag.idPasien })
+        </div>

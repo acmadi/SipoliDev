@@ -1,0 +1,126 @@
+﻿@model SipoliDev5.Models.RekamMedik
+
+@{
+    ViewBag.Title = "Cetak Rujukan";
+}
+
+<h2>Rujukan Pasien</h2>
+
+<div>
+    <h4>Pencetakan Rujukan Pasien</h4>
+    <hr />
+    
+</div>
+
+
+<!--START-->
+<div class="row">
+    <div class="col-lg-9 ">
+        <div class="row" style="margin-left:5%;margin-right:5%">
+            <div class="thumbnail">
+                <img class="img-responsive" src="~/Content/Image/kop-sipoli.png" alt="kop-sipoli">
+                <div class="caption">
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-1 pull-left">
+                            Nomor : RM-@Html.DisplayFor(model => model.ID)/PIPB/@DateTime.Now.Month/@DateTime.Now.Year <br />
+                            Hal : Rujukan Medik
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 pull-right">
+                            Bogor, @ViewBag.TanggalHari @ViewBag.TanggalBulan @ViewBag.TanggalTahun <br />
+                            Kepada: <br />
+                            Bagian @Html.DisplayFor(model => model.Rujukan.Bagian) <br />
+                            Di @Html.DisplayFor(model => model.Rujukan.RumahSakit.Nama)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            Dengan hormat, <br />
+                            Bersama ini kami mohon pemeriksaan dan penanganan lebih lanjut atas penderita: <br />
+                            <dl class="dl-horizontal col-lg-10 col-lg-offset-1">
+                                <dt>
+                                    Nama
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.Orang.Nama)
+                                </dd>
+                                <dt>
+                                    Umur
+                                </dt>
+                                <dd>
+                                    @ViewBag.UmurPasien
+                                </dd>
+                                <dt>
+                                    Asal Daerah
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.Orang.TempatLahir)
+                                </dd>
+                                <dt>
+                                    Anamnesa &amp; Diagnosa
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.AnamnesaDiagnosa)
+                                </dd>
+                                @*<dt>
+                                    Pengobatan Sementara
+                                </dt>
+                                <dd>
+                                    -----
+                                </dd>
+                                <dt>
+                                    Keadaan waktu dirujuk
+                                </dt>
+                                <dd>
+                                    -----
+                                </dd>*@
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            Atas penerimaan dan kesediaannya kami ucapkan terimakasih.
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5 pull-right">
+                            <center>Yang Merujuk,</center> <br />
+                            @Html.DisplayFor(model => model.Pegawai.GelarDepan) @Html.DisplayFor(model => model.Pegawai.Orang.Nama) @Html.DisplayFor(model => model.Pegawai.GelarBelakang)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="row">
+            <div class="col-md-12">
+                @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                                    ViewContext.HttpContext.User.IsInRole("Staf") ||
+                                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                {
+                    <p>
+                        @Html.ActionLink("Cetak ke PDF", "CetakPDF", new { id = Model.ID }, new { @class = "btn btn-default", @target = "_blank" })
+                    </p>
+                }
+
+                @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
+                                    ViewContext.HttpContext.User.IsInRole("Dokter") ||
+                                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                {
+                    <p>
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary btn-sm" })
+                    </p>
+                }
+
+                <p>
+                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-warning btn-sm" })
+                </p>
+            </div>
+        </div>
+        
+    </div>
+</div>

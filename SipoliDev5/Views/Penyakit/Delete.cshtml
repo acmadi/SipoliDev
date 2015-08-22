@@ -1,0 +1,51 @@
+﻿@model SipoliDev5.Models.Penyakit
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<p class="error">@ViewBag.ConcurrencyErrorMessage</p>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Penyakit</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NamaIlmiah)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NamaIlmiah)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.KelompokPenyakit.Nama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.KelompokPenyakit.Nama)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)   
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

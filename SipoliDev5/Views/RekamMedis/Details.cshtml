@@ -1,0 +1,52 @@
+﻿@model SipoliDev5.Models.RekamMedik
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+
+
+<div>
+    <h4>RekamMedik</h4>
+    <h5>Nama Pasien: @Html.DisplayFor(model => model.Orang.Nama)</h5>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Tanggal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tanggal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AnamnesaDiagnosa)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AnamnesaDiagnosa)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Therapie)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Therapie)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Pegawai.GelarDepan)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pegawai.GelarDepan)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

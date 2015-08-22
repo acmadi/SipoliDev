@@ -1,0 +1,96 @@
+﻿@model SipoliDev5.Models.ViewModels.RujukanConst
+
+@{
+    ViewBag.Title = "Rujukan Pasien";
+}
+
+<h2>Edit Rujukan Pasien</h2>
+<h4>Rujukan Pasien ~ @ViewBag.NamaPasien</h4>
+<hr />
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        $(function () {
+            $('.datepicker').datepicker({
+                format: 'mm/dd/yyyy'
+            }); //Initialise any date pickers
+        });
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-offset-1 col-lg-8">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ID)
+
+                @*<div class="form-group">
+                    @Html.LabelFor(model => model.PasienID, "PasienID", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownList("PasienID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PasienID, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+                
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AnamnesaDiagnosa, "Anamnesa & Diagnosa", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.AnamnesaDiagnosa, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AnamnesaDiagnosa, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DokterID, "Nama Dokter", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-4">
+                        @Html.DropDownList("DokterID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DokterID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Tanggal, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(model => model.Tanggal,"{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                        @Html.ValidationMessageFor(model => model.Tanggal, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Rujukan.RumahSakitID, "Tujuan", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @Html.DropDownList("RumahSakitID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Rujukan.RumahSakitID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Rujukan.Bagian, "Bagian", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-4">
+                        @*@Html.EditorFor(model => model.Rujukan.Bagian, new { htmlAttributes = new { @class = "form-control"} })*@
+                        <input class="form-control text-box single-line" id="Rujukan_Bagian" name="Rujukan.Bagian" type="text" value="@ViewBag.Bagian">
+                        @Html.ValidationMessageFor(model => model.Rujukan.Bagian, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

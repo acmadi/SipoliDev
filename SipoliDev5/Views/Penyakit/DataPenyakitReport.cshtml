@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewBag.Title = "Report Penyakit";
+}
+
+<div class="row">
+    <div class="col-lg-12 thumbnail">
+        <img src="~/Content/Image/kop-sipoli.png" alt="kop-sipoli" />
+    </div>
+</div>
+
+<center>
+    <h3><strong>LAPORAN DATA PENYAKIT</strong></h3><br />
+</center>
+
+<div class="row">
+    <div class="col-lg-12">
+        <p>
+            Tabel di bawah ini adalah daftar penyakit yang terdaftar dalam basisdata sistem.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <!--Data Penyakit-->
+        @Html.Action("_DaftarPenyakitReport")
+        <!--end-Data penyakit-->
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3">
+        <p>
+            Daftar 5 penyakit yang paling banyak diderita oleh pasien di Poliklinik IPB.
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        @*statistik 5 penyakit yg paling banyak*@
+        @Html.Action("_DaftarPenyakitStat")
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <p>
+            Tabel di bawah ini adalah daftar Kelainan bawaan yang terdaftar dalam basisdata sistem.
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <!--Data Kelainan-->
+        @Html.Action("_DaftarKelainanReport")
+        <!--end-Data penyakit-->
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <p>
+            Daftar Kelainan bawaan yang paling banyak diderita oleh pasien Poliklinik IPB.
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        @*statistik 5 kelainan yg paling banyak*@
+        @Html.Action("_DaftarKelainanStat")
+    </div>
+</div>
+

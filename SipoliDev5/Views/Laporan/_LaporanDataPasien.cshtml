@@ -1,0 +1,99 @@
+﻿@model IEnumerable<SipoliDev5.Models.ViewModels.DaftarPasien>
+
+<div class="col-lg-9">
+    <h3>Daftar Pasien <small><a href="#" class="cetak btn btn-default btn-sm">  Cetak</a></small></h3>
+    <!--Filter Berdasarkan Bulan-->
+    <!--DropDownList-->
+    @*<div class="btn-group">
+        <a class="btn btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
+            Pilih Periode
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <!-- dropdown menu links -->
+            <li><a href="#">Januari</a></li>
+            <li><a href="#">Februari</a></li>
+            <li><a href="#">Maret</a></li>
+            <li><a href="#">April</a></li>
+        </ul>
+    </div>*@
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.cetak').on('click', function () {
+                html2canvas(document.body, {
+                    onrendered: function (canvas) {
+
+                        $("#page").hide();
+                        document.body.appendChild(canvas);
+                        window.print();
+                        $('canvas').remove();
+                        $("#page").show();
+                    }
+                });
+
+            });
+        });
+    </script>
+   
+
+    <div class="row">
+        <div class="col-lg-2">
+            <img class="" data-src="holder.js/160x160" src="~/Content/Image/icon-template.png" alt="#" />
+        </div>
+        <div class="col-lg-8">
+            <h1 style="text-align:center">Poliklinik Institut Pertanian Bogor</h1>
+            <h4 style="text-align:center">Jl. Meranti No.3 Dramaga, Bogor</h4>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nama)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Age)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TanggalRegis)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.JenisKelaminID)
+                </th>
+                <th></th>
+
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nama)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Age)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TanggalRegis)
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => item.JenisKelaminID)*@
+                        @if (item.JenisKelaminID == 1)
+                        {
+                            <span>Laki-laki</span>
+                        }
+                        else
+                        {
+                            <span>Perempuan</span>
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+
+

@@ -1,0 +1,103 @@
+﻿@model SipoliDev5.Models.ViewModels.RekamMedis
+
+@{
+    ViewBag.Title = "Rekam Medis";
+}
+
+<h2>Pemeriksaan Baru</h2>
+
+<!--AjaxForm (SEMENTARA NON AKTIF)-->
+<div id="RegistrasiPasien">
+    <!--Loading Bar-->
+    <div id="loading" style="display:none">
+        <div class="progress">
+            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<h4>Rekam Medis ~ @ViewBag.NamaPasien</h4>
+<hr />
+
+<div class="row">
+    <div class="col-lg-7 col-lg-offset-1">
+        <!--Form-->
+        @using (Html.BeginForm("Create", "RekamMedis", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                
+                @Html.ValidationSummary(true)
+
+                <div class="form-group">
+                    @*@Html.LabelFor(model => model.PasienID, "PasienID", new { @class = "control-label col-md-2" })*@
+                    <div class="col-md-10">
+                        <input type="hidden" id="PasienID" class="PasienID" name="PasienID" value="@ViewBag.id" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Tanggal, new { @class = "control-label col-md-2" })
+                    @*<label class="control-label">Tanggal Periksa</label>*@
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.Tanggal, new { htmlAttributes = new { @class = "form-control", @readonly="readonly" } })
+                        @Html.ValidationMessageFor(model => model.Tanggal)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AnamnesaDiagnosa, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.AnamnesaDiagnosa, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AnamnesaDiagnosa)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Therapie, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Therapie, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Therapie)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*@Html.LabelFor(model => model.DokterID, "DokterID", new { @class = "control-label col-md-2" })*@
+                    <label class="control-label col-md-2">Nama Dokter</label>
+                    <div class="col-md-5">
+                        @Html.DropDownList("DokterID",null,"Pilih Dokter", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DokterID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.KlinikID, "Klinik", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-4">
+                        @Html.DropDownList("LokasiklinikID", null,"--Pilih Lokasi--", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.KlinikID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<div>
+    @Html.ActionLink("Kembali ke Detail Pasien", "DetailRekamMedis", new { id=@ViewBag.id})
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Styles.Render("~/Content/themes/base/css")
+}

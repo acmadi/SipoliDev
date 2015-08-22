@@ -1,0 +1,84 @@
+﻿@model SipoliDev5.Models.RiwayatPenyakit
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>RiwayatPenyakit</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.PasienID, "PasienID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="hidden" id="PasienID" class="PasienID" name="PasienID" />
+                <input type="text" id="SelectedPasien" class="SelectedPasien form-control" name="SelectedPasien" value="" />
+                @Html.ValidationMessageFor(model => model.PasienID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PenyakitID, "PenyakitID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("PenyakitID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PenyakitID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tahun, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Tahun, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Tahun, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
+<script type="text/javascript">
+        $(document).ready(function () {
+            $("#SelectedPasien").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/DaftarPasien/SearchDaftarPasien",
+                        type: "POST",
+                        dataType: "json",
+                        data: { term: request.term },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                
+                                return {
+                                    label: item.label,
+                                    value: item.value,
+                                    id: item.id,
+                                };
+                            }));
+
+                        },
+                        //
+                    })
+                },
+                select: function (event, ui) {
+                    //    //update the jquery selector here to your target hidden field
+                    $("input.PasienID").val(ui.item.id);
+                }
+            });
+        });
+</script>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

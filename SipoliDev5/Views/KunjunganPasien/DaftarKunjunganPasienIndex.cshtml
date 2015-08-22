@@ -1,0 +1,111 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<SipoliDev5.Models.ViewModels.KunjunganConst>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>No.</th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Tanggal)*@
+                @*Waktu Kunjungan*@
+                @Html.ActionLink("Waktu Kunjungan", "Index",
+            new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.NoUrut)*@
+                Antrian
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Orang.Nama)*@
+                @*Nama Pasien*@
+                @Html.ActionLink("Nama Pasien", "Index",
+            new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.StatusPanggil)*@
+                Status Panggil
+            </th>
+            <th>
+                Klinik
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Ket)*@
+                Keterangan
+            </th>
+
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.No)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tanggal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NoUrut)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nama)
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.StatusPanggil)*@
+                    @if (item.StatusPanggil == false)
+                    {
+                        <span>Tunggu</span>
+                    }
+                    else
+                    {
+                        <span>Periksa</span>
+                    }
+                </td>
+                <td>
+                    @if (item.KlinikID == 1)
+                    {
+                        <span>Darmaga</span>
+                    }
+                    else
+                    {
+                        <span>Baranangsiang</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ket)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @*@Html.ActionLink("Details", "Details", new { id = item.ID }) |*@
+                    @*@Html.ActionLink("Delete", "Delete", new { id = item.ID })*@
+                    @Ajax.ActionLink("Hapus", "Delete", new { id = item.ID },
+                new AjaxOptions
+                {
+                    HttpMethod = "Post",
+                    InsertionMode = InsertionMode.Replace,
+                    Confirm = "Hapus data kunjungan ini?",
+                    LoadingElementId = "hapusLoading",
+                    UpdateTargetId = "tabelKunjunganPasien"
+                })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+<center>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page
+}), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+</center>
+
+
+
+

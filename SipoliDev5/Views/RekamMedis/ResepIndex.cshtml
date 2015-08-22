@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "Resep Obat";
+}
+
+<h2>Resep Obat</h2>
+<hr />
+
+<div class="row">
+    <div class="col-lg-8">
+        <!--Lokasi Hasil Periksa-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <strong>Hasil Periksa</strong>
+                        </div>
+                        <div class="col-lg-5 pull-right">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                @Html.Action("DetailHasilPeriksa")
+            </div>
+            
+        </div>
+
+            <!--Lokasi Tabel KelainanIndex-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <strong>Resep Obat</strong>
+                                <!--Element Loading-->
+                                <h5 id="hapusLoading2" style="display:none"><i> Menghapus data...</i></h5>
+                                <!--Element Loading-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+
+                </div>
+                <!--Tabel-->
+                <div id="tabelResepObat">
+                    @*Resep Obat - A:DaftarPenyakitIndex*@
+                    @Html.Action("_ResepObat")
+                </div>
+            </div>
+
+    </div>
+    <div class="col-lg-4">
+        <!--Form Resep-->
+        @Html.Action("_CreateDataResep")
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

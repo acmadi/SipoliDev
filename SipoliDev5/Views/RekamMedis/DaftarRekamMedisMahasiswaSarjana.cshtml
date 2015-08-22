@@ -1,0 +1,101 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+<!--Tabel Daftar Pasian - Partial-->
+@model IPagedList<SipoliDev5.Models.ViewModels.DaftarPasien>
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>
+                @*@Html.DisplayNameFor(model => model.ID)*@
+                No.
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Nama)*@
+                @*Nama Pasien*@
+                @Html.ActionLink("Nama Pasien", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                NIM
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.TempatLahir)*@
+                @*Tempat Lahir*@
+                @Html.ActionLink("Tempat Lahir", "Index", new { sortOrder = ViewBag.AddressSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.TanggalLahir)*@
+                @*Tanggal Lahir*@
+                @Html.ActionLink("Tanggal Lahir", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.JenisKelaminID)*@
+                @*Jenis Kelamin*@
+                @Html.ActionLink("Jenis Kelamin", "Index", new { sortOrder = ViewBag.JkSortParm, currentFilter = ViewBag.currentFilter })
+            </th>
+            <th></th>
+        </tr>
+
+        @if (Model.Count() >= 1)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.No)
+                        @*@Html.ActionLink(item.ID.ToString, "Details", "RekamMedis", new { id = item.ID }, null)*@
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => item.Nama)*@
+                        @Html.ActionLink(item.Nama, "DetailRekamMedis", new { id = item.ID })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NIM)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TempatLahir)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TanggalLahir)
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => item.JenisKelaminID)*@
+                        @if (item.JenisKelaminID == 1)
+                        {
+                            <span>Laki-laki</span>
+                        }
+                        else
+                        {
+                            <span>Perempuan</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Lihat", "DetailRekamMedis", new { id = item.ID })
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6"><center><i>Tidak ada data</i> </center> </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<center>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+        new PagedListRenderOptions()
+        {
+            Display = PagedListDisplayMode.IfNeeded,
+            DisplayPageCountAndCurrentLocation = true,
+            MaximumPageNumbersToDisplay = 5
+        })
+</center>
+
+
+

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a918c4cd44f1452db5a1b0459f4f4cb2" Name="Diagram1">
+        <EntityTypeShape EntityType="Model.trx_UserSIPOLI" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.webpages_Membership" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.webpages_OAuthMembership" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.webpages_Roles" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.KelainanBawaan" Width="1.875" PointX="5.25" PointY="23.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.MutasiPegawai" Width="1.5" PointX="7.5" PointY="33.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.RekamMedik" Width="1.5" PointX="7.5" PointY="29" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.ResepObat" Width="1.5" PointX="12.75" PointY="29" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.RiwayatPenyakit" Width="1.5" PointX="5.25" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.RiwayatPenyakitKeluarga" Width="1.5" PointX="5.25" PointY="26.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Dosen" Width="1.5" PointX="9.75" PointY="36.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.JenisPegawai" Width="1.5" PointX="7.5" PointY="38.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Mahasiswa" Width="1.5" PointX="5.25" PointY="30.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.MahasiswaDiploma" Width="1.5" PointX="10.5" PointY="29.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.MahasiswaDoktor" Width="1.5" PointX="10.5" PointY="24.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.MahasiswaMagister" Width="1.5" PointX="12.5" PointY="34.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.MahasiswaSarjana" Width="1.5" PointX="7.5" PointY="25.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Obat" Width="1.5" PointX="10.5" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Orang" Width="1.5" PointX="3" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Pegawai" Width="1.5" PointX="5.25" PointY="37" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Tendik" Width="1.5" PointX="9.75" PointY="40" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.GolonganObat" Width="1.5" PointX="8.25" PointY="19.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.HubunganKeluarga" Width="1.5" PointX="3" PointY="34.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.JalurMasuk" Width="1.5" PointX="8.25" PointY="16.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Kecamatan" Width="1.5" PointX="3" PointY="32.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.KelainanBawaan1" Width="2" PointX="2.625" PointY="27.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.KelompokPenyakit" Width="1.5" PointX="0.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Klinik" Width="1.5" PointX="5.25" PointY="33.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.KotaKabupaten" Width="1.5" PointX="0.75" PointY="24.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Penyakit" Width="1.5" PointX="3" PointY="19.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.SatuanObat" Width="1.5" PointX="8.25" PointY="22" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.mstDokter" Width="1.5" PointX="7.5" PointY="42.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Rujukan" Width="1.5" PointX="9.75" PointY="42.875" IsExpanded="true" />
+        <AssociationConnector Association="Model.FK_KelainanBawaan_KelainanBawaan" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_KelainanBawaan_Orang" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MutasiPegawai_Pegawai" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RekamMedik_Klinik" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RekamMedik_Orang" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RekamMedik_Pegawai" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_ResepObat_RekamMedik" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Rujukan_RekamMedik1" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_ResepObat_Obat" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_ResepObat_SatuanObat" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RiwayatPenyakit_Orang" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RiwayatPenyakit_Penyakit" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RiwayatPenyakitKeluarga_HubunganKeluarga" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RiwayatPenyakitKeluarga_Orang" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_RiwayatPenyakitKeluarga_Penyakit" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Dosen_JenisPegawai" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_JenisPegawai_Pegawai" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Tendik_JenisPegawai" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Mahasiswa_Orang" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaDiploma_Mahasiswa" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaDoktor_Mahasiswa" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaMagister_Mahasiswa" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaSarjana_Mahasiswa" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaDiploma_JalurMasuk" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaDoktor_JalurMasuk" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaMagister_JalurMasuk" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_MahasiswaSarjana_JalurMasuk" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Obat_GolonganObat" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Obat_SatuanObat" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Orang_KotaKabupaten" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Pegawai_Orang" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_mstDokter_Pegawai" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Kecamatan_KotaKabupaten" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_Penyakit_KelompokPenyakit" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.webpages_UsersInRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Model.Kunjungan" Width="1.5" PointX="13.5" PointY="24.875" />
+        <AssociationConnector Association="Model.FK_trxKunjungan_Orang" />
+        <AssociationConnector Association="Model.FK_Kunjungan_Klinik" />
+        <EntityTypeShape EntityType="Model.RumahSakit" Width="1.5" PointX="5.25" PointY="42" />
+        <AssociationConnector Association="Model.FK_RumahSakit_Kecamatan" />
+        <AssociationConnector Association="Model.FK_Rujukan_RumahSakit" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
