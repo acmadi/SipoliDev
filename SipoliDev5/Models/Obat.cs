@@ -17,6 +17,9 @@ namespace SipoliDev5.Models
         public Obat()
         {
             this.ResepObat = new HashSet<ResepObat>();
+            this.PengadaanObat = new HashSet<PengadaanObat>();
+            this.PengeluaranObat = new HashSet<PengeluaranObat>();
+            this.StokObat = new HashSet<StokObat>();
         }
     
         public int ID { get; set; }
@@ -28,5 +31,8 @@ namespace SipoliDev5.Models
         public virtual ICollection<ResepObat> ResepObat { get; set; }
         public virtual GolonganObat GolonganObat { get; set; }
         public virtual SatuanObat SatuanObat { get; set; }
+        public virtual ICollection<PengadaanObat> PengadaanObat { get; set; }
+        public virtual ICollection<PengeluaranObat> PengeluaranObat { get; set; }
+        public virtual ICollection<StokObat> StokObat { get; set; }
     }
 }

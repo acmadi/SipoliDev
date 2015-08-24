@@ -1,0 +1,76 @@
+﻿@model SipoliDev5.Models.PenyediaObat
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h2>Ubah Data Penyedia Obat</h2>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Nama Penyedia Obat</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.Nama, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Nama)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Kota/Kabupaten</label>
+            <div class="col-md-4">
+                @Html.DropDownList("KotaKabupatenID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.KotaKabupatenID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Contact Person</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.ContactPerson, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ContactPerson)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Nomor Contact Person</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.NomorContactPerson, new { @class = "form-control"})
+                @Html.ValidationMessageFor(model => model.NomorContactPerson)
+            </div>
+        </div>
+
+        @Html.Hidden("before", null, htmlAttributes: new { @class = "form-control", @value = @ViewBag.before })
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Simpan" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (@ViewBag.error == true)
+{
+    <br />
+    <div class="alert alert-danger alert-error">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        <strong>Error!</strong>
+        @ViewBag.pesan
+        @ViewBag.pesan2
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Kembali ke List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

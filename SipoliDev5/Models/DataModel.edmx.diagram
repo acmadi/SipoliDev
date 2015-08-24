@@ -79,6 +79,20 @@
         <EntityTypeShape EntityType="Model.RumahSakit" Width="1.5" PointX="5.25" PointY="42" />
         <AssociationConnector Association="Model.FK_RumahSakit_Kecamatan" />
         <AssociationConnector Association="Model.FK_Rujukan_RumahSakit" />
+        <EntityTypeShape EntityType="Model.PengeluaranObat" Width="1.5" PointX="13.5" PointY="21" />
+        <EntityTypeShape EntityType="Model.StokObat" Width="1.5" PointX="7.5" PointY="45.625" />
+        <EntityTypeShape EntityType="Model.PenyediaObat" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Model.PengadaanObat" Width="1.5" PointX="12.75" PointY="17.5" />
+        <AssociationConnector Association="Model.FK_hisPengeluaranObat_Orang" />
+        <AssociationConnector Association="Model.FK_hisPengeluaranObat_refKlinik" />
+        <AssociationConnector Association="Model.FK_PengeluaranObat_Klinik" />
+        <AssociationConnector Association="Model.FK_hisStokObat_refKlinik" />
+        <AssociationConnector Association="Model.FK_PengadaanObat_Obat" />
+        <AssociationConnector Association="Model.FK_PengeluaranObat_Obat" />
+        <AssociationConnector Association="Model.FK_PengeluaranObat_RekamMedik" />
+        <AssociationConnector Association="Model.FK_StokObat_Obat" />
+        <AssociationConnector Association="Model.FK_PengadaanObat_PenyediaObat" />
+        <AssociationConnector Association="Model.FK_PenyediaObat_KotaKabupaten" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

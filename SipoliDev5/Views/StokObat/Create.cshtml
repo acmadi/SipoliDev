@@ -1,0 +1,60 @@
+﻿@model SipoliDev5.Models.StokObat
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>StokObat</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ObatID, "ObatID", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ObatID", String.Empty)
+                @Html.ValidationMessageFor(model => model.ObatID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tanggal, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Tanggal)
+                @Html.ValidationMessageFor(model => model.Tanggal)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.KlinikID, "KlinikID", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("KlinikID", String.Empty)
+                @Html.ValidationMessageFor(model => model.KlinikID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Stok, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Stok)
+                @Html.ValidationMessageFor(model => model.Stok)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

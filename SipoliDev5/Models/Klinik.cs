@@ -18,6 +18,9 @@ namespace SipoliDev5.Models
         {
             this.RekamMedik = new HashSet<RekamMedik>();
             this.Kunjungan = new HashSet<Kunjungan>();
+            this.PengeluaranObat = new HashSet<PengeluaranObat>();
+            this.PengeluaranObat1 = new HashSet<PengeluaranObat>();
+            this.StokObat = new HashSet<StokObat>();
         }
     
         public int ID { get; set; }
@@ -25,5 +28,8 @@ namespace SipoliDev5.Models
     
         public virtual ICollection<RekamMedik> RekamMedik { get; set; }
         public virtual ICollection<Kunjungan> Kunjungan { get; set; }
+        public virtual ICollection<PengeluaranObat> PengeluaranObat { get; set; }
+        public virtual ICollection<PengeluaranObat> PengeluaranObat1 { get; set; }
+        public virtual ICollection<StokObat> StokObat { get; set; }
     }
 }

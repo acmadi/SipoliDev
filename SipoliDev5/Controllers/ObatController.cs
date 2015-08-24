@@ -11,17 +11,24 @@ using PagedList; //paging
 using PagedList.Mvc;
 using System.Text; //paging
 using SipoliDev5.Models.ViewModels;//view model
+using System.Web.Security;
 
 namespace SipoliDev5.Controllers
 {
     public class ObatController : Controller
     {
         private EntitiesConnection db = new EntitiesConnection();
-
-        // GET: /Obat/
-        public ActionResult Index(string Nama, string Satuan, string Golongan, string Sortby, int? page)
+        public JsonResult GetDataObat(string term)
         {
-            var obat = from a in db.Obat.Include(m => m.GolonganObat).Include(m => m.SatuanObat)
+            var obat = (from r in db.Obat
+                        where r.Nama.ToLower().Contains(term.ToLower())
+                        select new { label = r.Nama, value = r.Nama, id = r.ID });//query
+            return Json(obat, JsonRequestBehavior.AllowGet);
+        }
+        // GET: /Obat/
+        public ActionResult Index(string Nama, string Satuan, string Golongan, string Sortby, int? page, string pesan, bool? error, string pesan2)
+        {
+            var obat = from a in db.Obat
                        select new Obat_ViewModel()
                        {
                            ID = a.ID,
@@ -33,6 +40,9 @@ namespace SipoliDev5.Controllers
                            Kegunaan = a.Kegunaan
                        };
 
+            ViewBag.error = error;
+            ViewBag.pesan = pesan;
+            ViewBag.pesan2 = pesan2;
 
             //filtering
             ViewBag.Satuan = new SelectList(db.SatuanObat, "ID", "Nama");//output berupa ID tetapi dalam bentuk string
@@ -54,7 +64,7 @@ namespace SipoliDev5.Controllers
             }
 
             //sorting
-            ViewBag.SortNamaParameter = string.IsNullOrEmpty(Sortby) ? "Nama Desc" : "";
+            ViewBag.SortNamaParameter = Sortby == "Nama" ? "Nama Desc" : "Nama";
             ViewBag.SortSatuanParameter = Sortby == "Satuan" ? "Satuan Desc" : "Satuan";
             ViewBag.SortGolonganParameter = Sortby == "Golongan" ? "Golongan Desc" : "Golongan";
 
@@ -62,6 +72,9 @@ namespace SipoliDev5.Controllers
             {
                 case "Nama Desc":
                     obat = obat.OrderByDescending(b => b.Nama);
+                    break;
+                case "Nama":
+                    obat = obat.OrderBy(b => b.Nama);
                     break;
                 case "Satuan":
                     obat = obat.OrderBy(c => c.SatuanObat);
@@ -76,21 +89,20 @@ namespace SipoliDev5.Controllers
                     obat = obat.OrderByDescending(f => f.GolonganObat);
                     break;
                 default:
-                    obat = obat.OrderBy(g => g.Nama);
+                    obat = obat.OrderByDescending(g => g.ID);
                     break;
             }
 
             //export
             Session["obats"] = obat.ToList<Obat_ViewModel>();
-
-
-            return View(obat.ToList().ToPagedList(page ?? 1, 5));
+            return View(obat.ToList().ToPagedList(page ?? 1, 20));
         }
 
         public ActionResult ExportData()
         {
             var obat = (List<Obat_ViewModel>)Session["obats"];
-            obat.ToList();
+            //obat.ToList();
+            obat.ToList<Obat_ViewModel>();
             StringBuilder sb = new StringBuilder();
             if (obat != null && obat.Any())
             {
@@ -99,18 +111,22 @@ namespace SipoliDev5.Controllers
                 sb.Append("<td colspan='3' style='width:120px', align='center'><b>DATA OBAT POLIKLINIK</b></td>");
                 sb.Append("</tr>");
                 sb.Append("<tr>");
+                sb.Append("<td style='width:30px;'><center><b>NO</b></center></td>");
                 sb.Append("<td style='width:300px;'><center><b>NAMA OBAT</b></center></td>");
                 sb.Append("<td style='width:120px;'><center><b>GOLONGAN OBAT</b></center></td>");
                 sb.Append("<td style='width:120px;'><center><b>SATUAN OBAT</b></center></td>");
                 sb.Append("</tr>");
 
+                int i = 1;
                 foreach (var result in obat)
                 {
                     sb.Append("<tr>");
+                    sb.Append("<td>" + i + "</td>");
                     sb.Append("<td>" + result.Nama + "</td>");
                     sb.Append("<td>" + result.GolonganObat + "</td>");
                     sb.Append("<td>" + result.SatuanObat + "</td>");
                     sb.Append("</tr>");
+                    i++;
                 }
             }
             string sFileName = "DATA OBAT POLIKLINIK.xls";
@@ -122,32 +138,7 @@ namespace SipoliDev5.Controllers
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
             return File(buffer, "application/vnd.ms-excel");
         }
-
-        // GET: /Obat/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Obat obat = db.Obat.Find(id);
-         
-            if (obat == null)
-            {
-                return HttpNotFound();
-            }
-            return View(obat);
-        }
-
-        // GET: /Obat/Create
-        public ActionResult Create()
-        {
-            ViewBag.GolonganObatID = new SelectList(db.GolonganObat, "ID", "Nama");
-            ViewBag.SatuanObatID = new SelectList(db.SatuanObat, "ID", "Nama");
-            return View();
-        }
-
-
+       
         public PartialViewResult _Create()
         {
             ViewBag.GolonganObatID = new SelectList(db.GolonganObat, "ID", "Nama");
@@ -161,18 +152,68 @@ namespace SipoliDev5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="ID,Nama,SatuanObatID,GolonganObatID,Kegunaan")] Obat obat)
+        public ActionResult Create(Obat obat)
         {
-            if (ModelState.IsValid)
+
+            /*var stoks = (from r in db.StokObat
+                        where r.KlinikID == 2
+                        where r.ObatID == 12
+                        select r.ID).ToString();
+            StokObat stok = db.StokObat.Find(stoks);
+            string hasil =  stok.Stok.Value.ToString();*/
+            
+            ViewBag.error = false;
+            string pesan = "";
+            var ada = false;
+            ViewBag.pesan2 = "";
+
+            //nama obat sudah ada
+            if (db.Obat.Any(p => p.Nama == obat.Nama))
+            {
+                ViewBag.error = true;
+                ViewBag.pesan2 += " Nama Obat "+obat.Nama+" sudah ada.";
+            }
+
+            //field kosong
+            if (obat.Nama == null || obat.SatuanObatID == null || obat.GolonganObatID == null)
+            {
+                pesan += "Silakan masukkan:";
+            }
+            
+            if (obat.Nama == null)
+            {
+                ViewBag.error = true;
+                pesan += " Nama Obat";
+                ada = true;
+            }
+
+            if (obat.SatuanObatID == null)
+            {
+                ViewBag.error = true;
+                if (ada == true) pesan += ",";
+                pesan += " Satuan Obat";
+                ada = true;
+            }
+            if (obat.GolonganObatID == null)
+            {
+                ViewBag.error = true;
+                if (ada == true) pesan += ",";
+                pesan += " Golongan Obat";
+                ada = true;
+            }
+
+            //save to database
+            if (ModelState.IsValid && !ViewBag.error)
             {
                 db.Obat.Add(obat);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
+            ViewBag.pesan = pesan;
             ViewBag.GolonganObatID = new SelectList(db.GolonganObat, "ID", "Nama", obat.GolonganObatID);
             ViewBag.SatuanObatID = new SelectList(db.SatuanObat, "ID", "Nama", obat.SatuanObatID);
-            return View(obat);
+
+            return RedirectToAction("Index", new { error = ViewBag.error, pesan = ViewBag.pesan, pesan2 = ViewBag.pesan2 });
         }
 
         // GET: /Obat/Edit/5
@@ -187,8 +228,10 @@ namespace SipoliDev5.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.before = obat.Nama;
             ViewBag.GolonganObatID = new SelectList(db.GolonganObat, "ID", "Nama", obat.GolonganObatID);
             ViewBag.SatuanObatID = new SelectList(db.SatuanObat, "ID", "Nama", obat.SatuanObatID);
+
             return View(obat);
         }
 
@@ -197,14 +240,43 @@ namespace SipoliDev5.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="ID,Nama,SatuanObatID,GolonganObatID,Kegunaan")] Obat obat)
+        public ActionResult Edit(Obat obat, string before)
         {
-            if (ModelState.IsValid)
+            before = Request["before"];
+            ViewBag.error = false;
+            string pesan = "";
+
+            //Nama obat tidak boleh kosong
+            if (obat.Nama == null)
+            {
+                pesan += "Silakan Masukkan";
+            }
+            if (obat.Nama == null)
+            {
+                ViewBag.error = true;
+                pesan += " Nama Obat.";
+            }
+
+            //Nama obat tidak boleh sama
+            if (!String.IsNullOrEmpty(obat.Nama))
+            {
+                if (obat.Nama.ToUpper() != before.ToUpper()) { 
+                    if (db.Obat.Any(p => p.Nama == obat.Nama))
+                    {
+                        ViewBag.error = true;
+                        pesan += " Nama Obat "+obat.Nama+" sudah ada.";
+                    }
+                }   
+            }
+           
+            //save to database
+            if (ModelState.IsValid && !ViewBag.error)
             {
                 db.Entry(obat).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.pesan = pesan;
             ViewBag.GolonganObatID = new SelectList(db.GolonganObat, "ID", "Nama", obat.GolonganObatID);
             ViewBag.SatuanObatID = new SelectList(db.SatuanObat, "ID", "Nama", obat.SatuanObatID);
             return View(obat);
@@ -222,7 +294,8 @@ namespace SipoliDev5.Controllers
             {
                 return HttpNotFound();
             }
-            return View(obat);
+            //return View(obat);
+            return PartialView("_Delete", obat);
         }
 
         // POST: /Obat/Delete/5
@@ -230,6 +303,15 @@ namespace SipoliDev5.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            var pengeluaranobat = db.PengeluaranObat.Where(p => p.ObatID == id).ToList();
+            var pengadaanobat = db.PengadaanObat.Where(p => p.ObatID == id).ToList();
+            var stokobat = db.StokObat.Where(p => p.ObatID == id).ToList();
+            if ((pengeluaranobat != null) || (pengadaanobat != null)){
+                db.PengeluaranObat.RemoveRange(pengeluaranobat);
+                db.PengadaanObat.RemoveRange(pengadaanobat);
+                db.StokObat.RemoveRange(stokobat);
+                db.SaveChanges();
+            }
             Obat obat = db.Obat.Find(id);
             db.Obat.Remove(obat);
             db.SaveChanges();
@@ -244,5 +326,13 @@ namespace SipoliDev5.Controllers
             }
             base.Dispose(disposing);
         }
+
+        // GET: /Obat/Create
+        /*public ActionResult Create()
+        {
+            ViewBag.GolonganObatID = new SelectList(db.GolonganObat, "ID", "Nama");
+            ViewBag.SatuanObatID = new SelectList(db.SatuanObat, "ID", "Nama");
+            return View();
+        }*/
     }
 }

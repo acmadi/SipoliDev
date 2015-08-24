@@ -1,0 +1,48 @@
+﻿@model SipoliDev5.Models.PenyediaObat
+
+
+@using (Html.BeginForm("Create", "PenyediaObat", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        <div class="form-group">
+            <label class="col-md-4 control-label">Nama</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.Nama, new { @class = "form-control" })<!-- BERUBAH -->
+                @Html.ValidationMessageFor(model => model.Nama)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label">Kota/Kabupaten</label>
+            <div class="col-md-8">
+                @Html.DropDownList("KotaKabupatenID", (IEnumerable<SelectListItem>)ViewBag.KotaKabupatenID, "-- Pilih Kota/Kabupaten --", new { @class = "form-control" })<!-- BERUBAH -->
+                @Html.ValidationMessageFor(model => model.KotaKabupatenID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label">CP</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.ContactPerson, new { @class = "form-control" })<!-- BERUBAH -->
+                @Html.ValidationMessageFor(model => model.ContactPerson)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label">No. CP</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.NomorContactPerson, new { @class = "form-control", @type = "number", @min = "0" })<!-- BERUBAH -->
+                @Html.ValidationMessageFor(model => model.NomorContactPerson)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-8">
+                <input type="submit" value="Tambah" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

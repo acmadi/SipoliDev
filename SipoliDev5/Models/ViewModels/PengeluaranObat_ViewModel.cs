@@ -41,5 +41,10 @@ namespace SipoliDev5.Models.ViewModels
         [Range(1, 50, ErrorMessage = "Hanya dalam rentang 1 s/d 50")]
         public Nullable<int> Jumlah { get; set; }
 
+        public Nullable<int> TujuanKlinikID { get; set; }
+
+        public string TujuanKlinik { get; set; }
+        public Nullable<int> Total { get; set; }
+
     }
 }

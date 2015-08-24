@@ -11,18 +11,11 @@ namespace SipoliDev5.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     
     public partial class Rujukan
     {
         public int RekamMedikID { get; set; }
-
-        [Required(ErrorMessage = "Rumah sakit tujuan belum valid.")]
-        [Display(Name = "Rumah Sakit")]
         public int RumahSakitID { get; set; }
-
-        [Required(ErrorMessage = "Bagian di Rumah Sakit belum valid.")]
-        [Display(Name = "Bagian")]
         public string Bagian { get; set; }
     
         public virtual RekamMedik RekamMedik { get; set; }

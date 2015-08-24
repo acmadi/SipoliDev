@@ -1,0 +1,86 @@
+﻿@model SipoliDev5.Models.PengeluaranObat
+
+@{
+    ViewBag.Title = "Delete";
+}
+<style>
+    .modal-content {
+        width: 600px !important;
+        margin: 30px auto !important;
+    }
+</style>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Hapus Pengeluaran Obat</h4>
+        </div>
+        <div class="modal-body">
+            <p>Anda yakin akan menghapus data ini?</p>
+            <div class="row">
+                <div class="col-lg-12">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            <label class="col-md-2 control-label">Tanggal</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.Tanggal)
+                        </dd>
+
+                        <dt>
+                            <label class="col-md-2 control-label">Nama Klinik</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.Klinik.Nama)
+                        </dd>
+
+                        @if (Model.PasienID != null) { 
+                        <dt>
+                            <label class="col-md-2 control-label">Nama Pasien</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.Orang.Nama)
+                        </dd>
+                        }
+                        
+                        @ViewBag.Error
+
+                        <dt>
+                            <label class="col-md-2 control-label">Nama Obat</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.Obat.Nama)
+                        </dd>
+
+                        <dt>
+                            <label class="col-md-2 control-label">Jumlah</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.Jumlah) @Html.DisplayFor(model => model.Obat.SatuanObat.Nama)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+@{
+  
+            using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken() 
+                <button type="submit" value="Hapus" class="btn btn-danger">Hapus</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            }
+}
+
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#approve-btn').click(function () {
+            $('#modal-container').modal('hide');
+        });
+    });
+</script>

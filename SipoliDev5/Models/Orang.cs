@@ -21,6 +21,7 @@ namespace SipoliDev5.Models
             this.RiwayatPenyakit = new HashSet<RiwayatPenyakit>();
             this.RiwayatPenyakitKeluarga = new HashSet<RiwayatPenyakitKeluarga>();
             this.Kunjungan = new HashSet<Kunjungan>();
+            this.PengeluaranObat = new HashSet<PengeluaranObat>();
         }
     
         public int ID { get; set; }
@@ -38,5 +39,6 @@ namespace SipoliDev5.Models
         public virtual KotaKabupaten KotaKabupaten { get; set; }
         public virtual Pegawai Pegawai { get; set; }
         public virtual ICollection<Kunjungan> Kunjungan { get; set; }
+        public virtual ICollection<PengeluaranObat> PengeluaranObat { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace SipoliDev5.Models
         public Nullable<int> BPMP { get; set; }
         public string PembimbingAkademik { get; set; }
         public string PindahanPT { get; set; }
+        public Nullable<int> TahunMasuk { get; set; }
     
         public virtual Mahasiswa Mahasiswa { get; set; }
         public virtual JalurMasuk JalurMasuk { get; set; }

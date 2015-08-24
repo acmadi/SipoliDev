@@ -60,5 +60,9 @@ namespace SipoliDev5.Models
         public virtual DbSet<Rujukan> Rujukan { get; set; }
         public virtual DbSet<Kunjungan> Kunjungan { get; set; }
         public virtual DbSet<RumahSakit> RumahSakit { get; set; }
+        public virtual DbSet<PengeluaranObat> PengeluaranObat { get; set; }
+        public virtual DbSet<StokObat> StokObat { get; set; }
+        public virtual DbSet<PenyediaObat> PenyediaObat { get; set; }
+        public virtual DbSet<PengadaanObat> PengadaanObat { get; set; }
     }
 }

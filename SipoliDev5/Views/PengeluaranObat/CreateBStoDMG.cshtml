@@ -1,0 +1,134 @@
+﻿@model SipoliDev5.Models.ViewModels.PengeluaranObat_ViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Pengeluaran Obat";
+}
+
+@using (Html.BeginForm("Create", "PengeluaranObat", FormMethod.Post, new { @id = "register-form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h2>Tambah Pengeluaran Obat ke Dramaga</h2>
+        <hr />
+
+        @Html.ValidationSummary(true)
+        @Html.TextBoxFor(model => model.KlinikID, new { @Value = "2", @type = "hidden" })
+        @Html.TextBoxFor(model => model.TujuanKlinikID, new { @Value = "1", @type = "hidden" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tanggal, new { @class = "col-md-2 text-primary" })
+            <div class="col-md-4">
+                @Html.TextBox("Tanggal", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", @type = "date" })<!-- BERUBAH -->
+                @Html.ValidationMessageFor(model => model.Tanggal)
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <tr>
+                <th class="text-primary">Nama Obat</th>
+                <th class="text-primary">Jumlah Obat</th>
+            </tr>
+            <tr>
+                 <td>
+                    <div id='DropDownListGroup'>
+                       <div id="DropDownListDiv1">
+                          @Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1" })
+                          @Html.ValidationMessageFor(model => model.ObatID)
+                       </div>
+                    </div>
+                 </td>
+                 <td>
+                    <div id='TextBoxesGroup'>
+                        <div id="TextBoxDiv1">
+                            <input type="text" name="Jumlah1" class="form-control" id="Jumlah1" />
+                            @Html.ValidationMessageFor(model => model.Jumlah)
+                         </div>
+                    </div>
+                    <br/>
+                 <input type="hidden" id="count" name="count" />
+                 <input type='button' value='Tambah Obat' id='addButton' class="btn btn-default">
+                 <input type='button' value='Hapus' id='removeButton' class="btn btn-default" />
+                 <input type="submit" value="Simpan" class="btn btn-primary" />
+                </td>
+            </tr>
+        </table>           
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Kembali", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var counter = 2;
+        if (counter == 2) {
+            $("#removeButton").hide();
+            $("#count").val(1);
+
+        }
+        j = 1;
+        $("#addButton").click(function () {
+            //textbox
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'TextBoxDiv' + counter);
+            newTextBoxDiv.after().html('<br/><input type="text" name="Jumlah' + counter + '" id="Jumlah' + counter + '" value="" class="form-control">');
+            //newTextBoxDiv.after().html('lalala');
+            newTextBoxDiv.appendTo("#TextBoxesGroup");
+            
+            //dropdownlist
+            var newDropDownListDiv = $(document.createElement('div'))
+                 .attr("id", 'DropDownListDiv' + counter);
+            newDropDownListDiv.after().html('<br/><select name="ObatID' + counter + '" id="ObatID' + counter + '" value="" class="form-control"><option value="">--Pilih Obat--</option></select>');
+            newDropDownListDiv.appendTo("#DropDownListGroup");
+
+            // ambil data ajax obat
+            var options = {};
+            options.url = "/PengeluaranObat/GetDataStokObat";
+            options.type = "POST";
+            options.dataType = "json";
+            options.contentType = "application/json";
+            options.success = function (data) {
+               
+                j++;
+                for (k = j; k < counter; k++) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#ObatID' + k).append("<option value='" + data[i].Value + "'>" + data[i].Text +" "+ data[i].Stok + "</option>");
+                    }
+                }
+              
+            };
+            options.error = function () { alert("Error retrieving states!"); };
+            $.ajax(options);
+
+            $("#removeButton").show();
+            $("#count").val(counter);
+            counter++;
+            if (counter > 10) {
+                $("#addButton").hide();
+                return false;
+            }
+
+        });
+
+        $("#removeButton").click(function () {
+            counter--;
+            $("#TextBoxDiv" + counter).remove();
+            $("#DropDownListDiv" + counter).remove();
+            $("#addButton").show();
+            if (counter == 2) {/*diganti jd 2*/
+                $("#removeButton").hide();
+                return false;
+            }
+            $("#count").val(counter - 1);
+        });
+       
+    });
+</script>

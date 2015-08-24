@@ -18,6 +18,7 @@ namespace SipoliDev5.Models
         {
             this.Orang = new HashSet<Orang>();
             this.Kecamatan = new HashSet<Kecamatan>();
+            this.PenyediaObat = new HashSet<PenyediaObat>();
         }
     
         public int ID { get; set; }
@@ -26,5 +27,6 @@ namespace SipoliDev5.Models
     
         public virtual ICollection<Orang> Orang { get; set; }
         public virtual ICollection<Kecamatan> Kecamatan { get; set; }
+        public virtual ICollection<PenyediaObat> PenyediaObat { get; set; }
     }
 }

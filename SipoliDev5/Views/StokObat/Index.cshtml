@@ -1,0 +1,162 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<SipoliDev5.Models.ViewModels.StokObat_ViewModel>
+
+@{
+    ViewBag.Title = "Stok Obat";
+}
+
+<h2>Data Stok Obat</h2>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!--Lokasi Tabel Partial-->
+        <div class="panel panel-default">
+            <!--Default panel Contents-->
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <strong>Data Stok Obat</strong>
+                        </div>
+                        <div class="col-lg-8 pull-right">
+                            <!--Pencarian Nama Obat-->
+                            <div class="col-lg-12">
+                                <div class="col-lg-4">
+                                    @using (Html.BeginForm("Index", "StokObat", FormMethod.Get, new { enctype = "multipart/form-data" }))
+                                    {
+
+                                        <div class="input-group input-group-sm">
+                                            @Html.TextBox("Obat", "", new { @class = "form-control col-md-10" })
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="submit">Cari</button>
+                                            </span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="btn-group" role="group" aria-label="Lokasi Klinik">
+                                        @Html.ActionLink("Darmaga", "Index", new { Klinik = "Darmaga" }, new { @class = "btn btn-default btn-sm" })
+                                        @Html.ActionLink("Baranangsiang", "Index", new { Klinik = "Baranangsiang" }, new { @class = "btn btn-default btn-sm" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    @using (Html.BeginForm("ExportData", "StokObat", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        <button class="btn btn-xs btn-primary col-lg-12" type="submit" name="Export" id="Export"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Ekspor Data Stok Obat</button>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <p>
+                    Berikut adalah data stok obat terupdate Poliklinik Institut Pertanian Bogor.
+                </p>
+
+                <!--Table-->
+                <table class="table table-striped">
+                    <tr>
+                        <th class="text-primary">
+                            No
+                        </th>
+                        <th>
+                            @Html.ActionLink("Tanggal", "Index", new
+                                    {
+                                        Sortby = ViewBag.SortTanggalParameter,
+                                        Date = Request.QueryString["Date"],
+                                        Month = Request.QueryString["Month"],
+                                        Year = Request.QueryString["Year"],
+                                        Obat = Request.QueryString["Obat"],
+                                        Klinik = Request.QueryString["Klinik"],
+                                    })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Nama Obat", "Index", new
+                                    {
+                                        Sortby = ViewBag.SortObatParameter,
+                                        Date = Request.QueryString["Date"],
+                                        Month = Request.QueryString["Month"],
+                                        Year = Request.QueryString["Year"],
+                                        Obat = Request.QueryString["Obat"],
+                                        Klinik = Request.QueryString["Klinik"],
+                                    })
+                        </th>
+                        <th class="text-primary">
+                            Stok
+                        </th>
+                        <th class="text-primary">
+                            Satuan Obat
+                        </th>
+                        <th>
+                            @Html.ActionLink("Klinik", "Index", new
+                                    {
+                                        Sortby = ViewBag.SortKlinikParameter,
+                                        Date = Request.QueryString["Date"],
+                                        Month = Request.QueryString["Month"],
+                                        Year = Request.QueryString["Year"],
+                                        Obat = Request.QueryString["Obat"],
+                                        Klinik = Request.QueryString["Klinik"],
+                                    })
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+
+                    @{ int i = 1;
+                     foreach (var item in Model)
+                     {
+                        <tr>
+                            <td>
+                                @i
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Tanggal)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Obat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Stok)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SatuanObat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Klinik)
+                            </td>
+                            <td>
+                                <div class="btn-group-vertical" role="group" aria-label="...">
+                                    @Html.ActionLink("Ubah", "Edit", new { id = item.ID }, new { @class = "btn btn-warning btn-xs" })
+                                </div>
+                            </td>
+                        </tr>
+                         i = i + 1;
+                     }
+                    }
+
+                </table>
+                <center>
+                    @Html.PagedListPager(Model, page => Url.Action("Index", new
+                            {
+                                page,
+                                Sortby = Request.QueryString["Sortby"],
+                                Date = Request.QueryString["Date"],
+                                Month = Request.QueryString["Month"],
+                                Year = Request.QueryString["Year"],
+                                Obat = Request.QueryString["Obat"],
+                                Klinik = Request.QueryString["Klinik"],
+                            }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+                </center>
+
+
+                @section Scripts{@Scripts.Render("~/bundles/jqueryval")}
+            </div>
+        </div>
+    </div>
+</div>

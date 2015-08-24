@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="trx_UserSIPOLI">
           <Key>
             <PropertyRef Name="PegawaiID" />
@@ -73,6 +73,18 @@
           <Property Name="StatusAktif" Type="tinyint" />
           <Property Name="MutasiPegawaiBKey" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="PengeluaranObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tanggal" Type="date" />
+          <Property Name="KlinikID" Type="int" />
+          <Property Name="PasienID" Type="int" />
+          <Property Name="ObatID" Type="int" />
+          <Property Name="Jumlah" Type="int" />
+          <Property Name="TujuanKlinikID" Type="int" />
+        </EntityType>
         <EntityType Name="RekamMedik">
           <Key>
             <PropertyRef Name="ID" />
@@ -117,6 +129,16 @@
           <Property Name="HubunganKeluargaID" Type="tinyint" Nullable="false" />
           <Property Name="PenyakitID" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="StokObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ObatID" Type="int" />
+          <Property Name="Tanggal" Type="datetime" />
+          <Property Name="KlinikID" Type="int" />
+          <Property Name="Stok" Type="int" />
+        </EntityType>
         <EntityType Name="Dosen">
           <Key>
             <PropertyRef Name="ID" />
@@ -151,6 +173,7 @@
           <Property Name="ProgramKeahlianID" Type="int" />
           <Property Name="JalurMasukID" Type="int" Nullable="false" />
           <Property Name="TanggalMasuk" Type="date" />
+          <Property Name="TahunMasuk" Type="int" />
           <Property Name="BatasStudi" Type="int" />
           <Property Name="SumberBiaya" Type="int" />
           <Property Name="Beasiswa" Type="int" />
@@ -240,6 +263,16 @@
           <Property Name="NomorKTP" Type="varchar" MaxLength="255" />
           <Property Name="NomorRekening" Type="varchar" MaxLength="255" />
           <Property Name="NPWP" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="PenyediaObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nama" Type="varchar" MaxLength="100" />
+          <Property Name="KotaKabupatenID" Type="int" />
+          <Property Name="ContactPerson" Type="varchar" MaxLength="100" />
+          <Property Name="NomorContactPerson" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Tendik">
           <Key>
@@ -354,6 +387,18 @@
           <Property Name="LokasiklinikID" Type="int" />
           <Property Name="Ket" Type="varchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="PengadaanObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ObatID" Type="int" />
+          <Property Name="Jumlah" Type="int" />
+          <Property Name="Tanggal" Type="date" />
+          <Property Name="HET" Type="int" />
+          <Property Name="HargaAktual" Type="int" />
+          <Property Name="PenyediaObatID" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Rujukan">
           <Key>
             <PropertyRef Name="RekamMedikID" />
@@ -371,6 +416,18 @@
             </Principal>
             <Dependent Role="Dosen">
               <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hisStokObat_refKlinik">
+          <End Role="Klinik" Type="Self.Klinik" Multiplicity="0..1" />
+          <End Role="StokObat" Type="Self.StokObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klinik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StokObat">
+              <PropertyRef Name="KlinikID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -446,30 +503,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="Mahasiswa">
-              <PropertyRef Name="ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MahasiswaDiploma_JalurMasuk">
-          <End Role="JalurMasuk" Type="Self.JalurMasuk" Multiplicity="1" />
-          <End Role="MahasiswaDiploma" Type="Self.MahasiswaDiploma" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="JalurMasuk">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MahasiswaDiploma">
-              <PropertyRef Name="JalurMasukID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MahasiswaDiploma_Mahasiswa">
-          <End Role="Mahasiswa" Type="Self.Mahasiswa" Multiplicity="1" />
-          <End Role="MahasiswaDiploma" Type="Self.MahasiswaDiploma" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Mahasiswa">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MahasiswaDiploma">
               <PropertyRef Name="ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -620,6 +653,84 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PengadaanObat_Obat">
+          <End Role="Obat" Type="Self.Obat" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PengadaanObat" Type="Self.PengadaanObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Obat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengadaanObat">
+              <PropertyRef Name="ObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengadaanObat_PenyediaObat">
+          <End Role="PenyediaObat" Type="Self.PenyediaObat" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PengadaanObat" Type="Self.PengadaanObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PenyediaObat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengadaanObat">
+              <PropertyRef Name="PenyediaObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengeluaranObat_Klinik1">
+          <End Role="Klinik" Type="Self.Klinik" Multiplicity="0..1" />
+          <End Role="PengeluaranObat" Type="Self.PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klinik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="KlinikID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengeluaranObat_Klinik2">
+          <End Role="Klinik" Type="Self.Klinik" Multiplicity="0..1" />
+          <End Role="PengeluaranObat" Type="Self.PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klinik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="TujuanKlinikID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengeluaranObat_Obat">
+          <End Role="Obat" Type="Self.Obat" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PengeluaranObat" Type="Self.PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Obat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="ObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengeluaranObat_RekamMedik">
+          <End Role="RekamMedik" Type="Self.RekamMedik" Multiplicity="0..1" />
+          <End Role="PengeluaranObat" Type="Self.PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RekamMedik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="PasienID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Penyakit_KelompokPenyakit">
           <End Role="KelompokPenyakit" Type="Self.KelompokPenyakit" Multiplicity="0..1" />
           <End Role="Penyakit" Type="Self.Penyakit" Multiplicity="*" />
@@ -629,6 +740,18 @@
             </Principal>
             <Dependent Role="Penyakit">
               <PropertyRef Name="KelompokPenyakitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PenyediaObat_KotaKabupaten">
+          <End Role="KotaKabupaten" Type="Self.KotaKabupaten" Multiplicity="0..1" />
+          <End Role="PenyediaObat" Type="Self.PenyediaObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KotaKabupaten">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PenyediaObat">
+              <PropertyRef Name="KotaKabupatenID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -812,6 +935,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_StokObat_Obat">
+          <End Role="Obat" Type="Self.Obat" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="StokObat" Type="Self.StokObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Obat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StokObat">
+              <PropertyRef Name="ObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Tendik_JenisPegawai">
           <End Role="JenisPegawai" Type="Self.JenisPegawai" Multiplicity="1" />
           <End Role="Tendik" Type="Self.Tendik" Multiplicity="0..1" />
@@ -856,10 +993,12 @@
           <EntitySet Name="webpages_UsersInRoles" EntityType="Self.webpages_UsersInRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="KelainanBawaan" EntityType="Self.KelainanBawaan" Schema="his" store:Type="Tables" />
           <EntitySet Name="MutasiPegawai" EntityType="Self.MutasiPegawai" Schema="his" store:Type="Tables" />
+          <EntitySet Name="PengeluaranObat" EntityType="Self.PengeluaranObat" Schema="his" store:Type="Tables" />
           <EntitySet Name="RekamMedik" EntityType="Self.RekamMedik" Schema="his" store:Type="Tables" />
           <EntitySet Name="ResepObat" EntityType="Self.ResepObat" Schema="his" store:Type="Tables" />
           <EntitySet Name="RiwayatPenyakit" EntityType="Self.RiwayatPenyakit" Schema="his" store:Type="Tables" />
           <EntitySet Name="RiwayatPenyakitKeluarga" EntityType="Self.RiwayatPenyakitKeluarga" Schema="his" store:Type="Tables" />
+          <EntitySet Name="StokObat" EntityType="Self.StokObat" Schema="his" store:Type="Tables" />
           <EntitySet Name="Dosen" EntityType="Self.Dosen" Schema="mst" store:Type="Tables" />
           <EntitySet Name="JenisPegawai" EntityType="Self.JenisPegawai" Schema="mst" store:Type="Tables" />
           <EntitySet Name="Mahasiswa" EntityType="Self.Mahasiswa" Schema="mst" store:Type="Tables" />
@@ -870,6 +1009,7 @@
           <EntitySet Name="Obat" EntityType="Self.Obat" Schema="mst" store:Type="Tables" />
           <EntitySet Name="Orang" EntityType="Self.Orang" Schema="mst" store:Type="Tables" />
           <EntitySet Name="Pegawai" EntityType="Self.Pegawai" Schema="mst" store:Type="Tables" />
+          <EntitySet Name="PenyediaObat" EntityType="Self.PenyediaObat" Schema="mst" store:Type="Tables" />
           <EntitySet Name="Tendik" EntityType="Self.Tendik" Schema="mst" store:Type="Tables" />
           <EntitySet Name="GolonganObat" EntityType="Self.GolonganObat" Schema="ref" store:Type="Tables" />
           <EntitySet Name="HubunganKeluarga" EntityType="Self.HubunganKeluarga" Schema="ref" store:Type="Tables" />
@@ -884,10 +1024,15 @@
           <EntitySet Name="SatuanObat" EntityType="Self.SatuanObat" Schema="ref" store:Type="Tables" />
           <EntitySet Name="mstDokter" EntityType="Self.mstDokter" Schema="tmp" store:Type="Tables" />
           <EntitySet Name="Kunjungan" EntityType="Self.Kunjungan" Schema="trx" store:Type="Tables" />
+          <EntitySet Name="PengadaanObat" EntityType="Self.PengadaanObat" Schema="trx" store:Type="Tables" />
           <EntitySet Name="Rujukan" EntityType="Self.Rujukan" Schema="trx" store:Type="Tables" />
           <AssociationSet Name="FK_Dosen_JenisPegawai" Association="Self.FK_Dosen_JenisPegawai">
             <End Role="JenisPegawai" EntitySet="JenisPegawai" />
             <End Role="Dosen" EntitySet="Dosen" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hisStokObat_refKlinik" Association="Self.FK_hisStokObat_refKlinik">
+            <End Role="Klinik" EntitySet="Klinik" />
+            <End Role="StokObat" EntitySet="StokObat" />
           </AssociationSet>
           <AssociationSet Name="FK_JenisPegawai_Pegawai" Association="Self.FK_JenisPegawai_Pegawai">
             <End Role="Pegawai" EntitySet="Pegawai" />
@@ -912,14 +1057,6 @@
           <AssociationSet Name="FK_Mahasiswa_Orang" Association="Self.FK_Mahasiswa_Orang">
             <End Role="Orang" EntitySet="Orang" />
             <End Role="Mahasiswa" EntitySet="Mahasiswa" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MahasiswaDiploma_JalurMasuk" Association="Self.FK_MahasiswaDiploma_JalurMasuk">
-            <End Role="JalurMasuk" EntitySet="JalurMasuk" />
-            <End Role="MahasiswaDiploma" EntitySet="MahasiswaDiploma" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MahasiswaDiploma_Mahasiswa" Association="Self.FK_MahasiswaDiploma_Mahasiswa">
-            <End Role="Mahasiswa" EntitySet="Mahasiswa" />
-            <End Role="MahasiswaDiploma" EntitySet="MahasiswaDiploma" />
           </AssociationSet>
           <AssociationSet Name="FK_MahasiswaDoktor_JalurMasuk" Association="Self.FK_MahasiswaDoktor_JalurMasuk">
             <End Role="JalurMasuk" EntitySet="JalurMasuk" />
@@ -969,9 +1106,37 @@
             <End Role="Orang" EntitySet="Orang" />
             <End Role="Pegawai" EntitySet="Pegawai" />
           </AssociationSet>
+          <AssociationSet Name="FK_PengadaanObat_Obat" Association="Self.FK_PengadaanObat_Obat">
+            <End Role="Obat" EntitySet="Obat" />
+            <End Role="PengadaanObat" EntitySet="PengadaanObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengadaanObat_PenyediaObat" Association="Self.FK_PengadaanObat_PenyediaObat">
+            <End Role="PenyediaObat" EntitySet="PenyediaObat" />
+            <End Role="PengadaanObat" EntitySet="PengadaanObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengeluaranObat_Klinik1" Association="Self.FK_PengeluaranObat_Klinik1">
+            <End Role="Klinik" EntitySet="Klinik" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengeluaranObat_Klinik2" Association="Self.FK_PengeluaranObat_Klinik2">
+            <End Role="Klinik" EntitySet="Klinik" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengeluaranObat_Obat" Association="Self.FK_PengeluaranObat_Obat">
+            <End Role="Obat" EntitySet="Obat" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengeluaranObat_RekamMedik" Association="Self.FK_PengeluaranObat_RekamMedik">
+            <End Role="RekamMedik" EntitySet="RekamMedik" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
           <AssociationSet Name="FK_Penyakit_KelompokPenyakit" Association="Self.FK_Penyakit_KelompokPenyakit">
             <End Role="KelompokPenyakit" EntitySet="KelompokPenyakit" />
             <End Role="Penyakit" EntitySet="Penyakit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PenyediaObat_KotaKabupaten" Association="Self.FK_PenyediaObat_KotaKabupaten">
+            <End Role="KotaKabupaten" EntitySet="KotaKabupaten" />
+            <End Role="PenyediaObat" EntitySet="PenyediaObat" />
           </AssociationSet>
           <AssociationSet Name="FK_RekamMedik_Klinik" Association="Self.FK_RekamMedik_Klinik">
             <End Role="Klinik" EntitySet="Klinik" />
@@ -1032,6 +1197,10 @@
           <AssociationSet Name="FK_RumahSakit_Kecamatan" Association="Self.FK_RumahSakit_Kecamatan">
             <End Role="Kecamatan" EntitySet="Kecamatan" />
             <End Role="RumahSakit" EntitySet="RumahSakit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StokObat_Obat" Association="Self.FK_StokObat_Obat">
+            <End Role="Obat" EntitySet="Obat" />
+            <End Role="StokObat" EntitySet="StokObat" />
           </AssociationSet>
           <AssociationSet Name="FK_Tendik_JenisPegawai" Association="Self.FK_Tendik_JenisPegawai">
             <End Role="JenisPegawai" EntitySet="JenisPegawai" />
@@ -1131,6 +1300,7 @@
           <NavigationProperty Name="Pegawai" Relationship="Self.FK_RekamMedik_Pegawai" FromRole="RekamMedik" ToRole="Pegawai" />
           <NavigationProperty Name="ResepObat" Relationship="Self.FK_ResepObat_RekamMedik" FromRole="RekamMedik" ToRole="ResepObat" />
           <NavigationProperty Name="Rujukan" Relationship="Self.FK_Rujukan_RekamMedik1" FromRole="RekamMedik" ToRole="Rujukan" />
+          <NavigationProperty Name="PengeluaranObat" Relationship="Model.FK_PengeluaranObat_RekamMedik" FromRole="RekamMedik" ToRole="PengeluaranObat" />
         </EntityType>
         <EntityType Name="ResepObat">
           <Key>
@@ -1223,6 +1393,7 @@
           <Property Name="PindahanPT" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Mahasiswa" Relationship="Self.FK_MahasiswaDiploma_Mahasiswa" FromRole="MahasiswaDiploma" ToRole="Mahasiswa" />
           <NavigationProperty Name="JalurMasuk" Relationship="Self.FK_MahasiswaDiploma_JalurMasuk" FromRole="MahasiswaDiploma" ToRole="JalurMasuk" />
+          <Property Name="TahunMasuk" Type="Int32" />
         </EntityType>
         <EntityType Name="MahasiswaDoktor">
           <Key>
@@ -1290,6 +1461,9 @@
           <NavigationProperty Name="ResepObat" Relationship="Self.FK_ResepObat_Obat" FromRole="Obat" ToRole="ResepObat" />
           <NavigationProperty Name="GolonganObat" Relationship="Self.FK_Obat_GolonganObat" FromRole="Obat" ToRole="GolonganObat" />
           <NavigationProperty Name="SatuanObat" Relationship="Self.FK_Obat_SatuanObat" FromRole="Obat" ToRole="SatuanObat" />
+          <NavigationProperty Name="PengadaanObat" Relationship="Model.FK_PengadaanObat_Obat" FromRole="Obat" ToRole="PengadaanObat" />
+          <NavigationProperty Name="PengeluaranObat" Relationship="Model.FK_PengeluaranObat_Obat" FromRole="Obat" ToRole="PengeluaranObat" />
+          <NavigationProperty Name="StokObat" Relationship="Model.FK_StokObat_Obat" FromRole="Obat" ToRole="StokObat" />
         </EntityType>
         <EntityType Name="Orang">
           <Key>
@@ -1309,6 +1483,7 @@
           <NavigationProperty Name="KotaKabupaten" Relationship="Self.FK_Orang_KotaKabupaten" FromRole="Orang" ToRole="KotaKabupaten" />
           <NavigationProperty Name="Pegawai" Relationship="Self.FK_Pegawai_Orang" FromRole="Orang" ToRole="Pegawai" />
           <NavigationProperty Name="Kunjungan" Relationship="Model.FK_trxKunjungan_Orang" FromRole="Orang" ToRole="Kunjungan" />
+          <NavigationProperty Name="PengeluaranObat" Relationship="Model.FK_hisPengeluaranObat_Orang" FromRole="Orang" ToRole="PengeluaranObat" />
         </EntityType>
         <EntityType Name="Pegawai">
           <Key>
@@ -1400,6 +1575,9 @@
           <Property Name="Nama" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="RekamMedik" Relationship="Self.FK_RekamMedik_Klinik" FromRole="Klinik" ToRole="RekamMedik" />
           <NavigationProperty Name="Kunjungan" Relationship="Model.FK_Kunjungan_Klinik" FromRole="Klinik" ToRole="Kunjungan" />
+          <NavigationProperty Name="PengeluaranObat" Relationship="Model.FK_hisPengeluaranObat_refKlinik" FromRole="Klinik" ToRole="PengeluaranObat" />
+          <NavigationProperty Name="PengeluaranObat1" Relationship="Model.FK_PengeluaranObat_Klinik" FromRole="Klinik" ToRole="PengeluaranObat" />
+          <NavigationProperty Name="StokObat" Relationship="Model.FK_hisStokObat_refKlinik" FromRole="Klinik" ToRole="StokObat" />
         </EntityType>
         <EntityType Name="KotaKabupaten">
           <Key>
@@ -1410,6 +1588,7 @@
           <Property Name="ProvinsiID" Type="Int32" />
           <NavigationProperty Name="Orang" Relationship="Self.FK_Orang_KotaKabupaten" FromRole="KotaKabupaten" ToRole="Orang" />
           <NavigationProperty Name="Kecamatan" Relationship="Self.FK_Kecamatan_KotaKabupaten" FromRole="KotaKabupaten" ToRole="Kecamatan" />
+          <NavigationProperty Name="PenyediaObat" Relationship="Model.FK_PenyediaObat_KotaKabupaten" FromRole="KotaKabupaten" ToRole="PenyediaObat" />
         </EntityType>
         <EntityType Name="Penyakit">
           <Key>
@@ -2062,6 +2241,50 @@
             <End Role="RumahSakit" EntitySet="RumahSakit" />
             <End Role="Rujukan" EntitySet="Rujukan" />
           </AssociationSet>
+          <EntitySet Name="PengeluaranObat" EntityType="Model.PengeluaranObat" />
+          <EntitySet Name="StokObat" EntityType="Model.StokObat" />
+          <EntitySet Name="PenyediaObat" EntityType="Model.PenyediaObat" />
+          <EntitySet Name="PengadaanObat" EntityType="Model.PengadaanObat" />
+          <AssociationSet Name="FK_hisPengeluaranObat_Orang" Association="Model.FK_hisPengeluaranObat_Orang">
+            <End Role="Orang" EntitySet="Orang" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hisPengeluaranObat_refKlinik" Association="Model.FK_hisPengeluaranObat_refKlinik">
+            <End Role="Klinik" EntitySet="Klinik" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengeluaranObat_Klinik" Association="Model.FK_PengeluaranObat_Klinik">
+            <End Role="Klinik" EntitySet="Klinik" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hisStokObat_refKlinik" Association="Model.FK_hisStokObat_refKlinik">
+            <End Role="Klinik" EntitySet="Klinik" />
+            <End Role="StokObat" EntitySet="StokObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengadaanObat_Obat" Association="Model.FK_PengadaanObat_Obat">
+            <End Role="Obat" EntitySet="Obat" />
+            <End Role="PengadaanObat" EntitySet="PengadaanObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengeluaranObat_Obat" Association="Model.FK_PengeluaranObat_Obat">
+            <End Role="Obat" EntitySet="Obat" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengeluaranObat_RekamMedik" Association="Model.FK_PengeluaranObat_RekamMedik">
+            <End Role="RekamMedik" EntitySet="RekamMedik" />
+            <End Role="PengeluaranObat" EntitySet="PengeluaranObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StokObat_Obat" Association="Model.FK_StokObat_Obat">
+            <End Role="Obat" EntitySet="Obat" />
+            <End Role="StokObat" EntitySet="StokObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengadaanObat_PenyediaObat" Association="Model.FK_PengadaanObat_PenyediaObat">
+            <End Role="PenyediaObat" EntitySet="PenyediaObat" />
+            <End Role="PengadaanObat" EntitySet="PengadaanObat" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PenyediaObat_KotaKabupaten" Association="Model.FK_PenyediaObat_KotaKabupaten">
+            <End Role="KotaKabupaten" EntitySet="KotaKabupaten" />
+            <End Role="PenyediaObat" EntitySet="PenyediaObat" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Kunjungan">
           <Key>
@@ -2133,6 +2356,187 @@
             </Principal>
             <Dependent Role="Rujukan">
               <PropertyRef Name="RumahSakitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PengeluaranObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tanggal" Type="DateTime" Precision="0" />
+          <Property Name="KlinikID" Type="Int32" />
+          <Property Name="PasienID" Type="Int32" />
+          <Property Name="ObatID" Type="Int32" />
+          <Property Name="Jumlah" Type="Int32" />
+          <Property Name="TujuanKlinikID" Type="Int32" />
+          <NavigationProperty Name="Orang" Relationship="Model.FK_hisPengeluaranObat_Orang" FromRole="PengeluaranObat" ToRole="Orang" />
+          <NavigationProperty Name="Klinik" Relationship="Model.FK_hisPengeluaranObat_refKlinik" FromRole="PengeluaranObat" ToRole="Klinik" />
+          <NavigationProperty Name="Klinik1" Relationship="Model.FK_PengeluaranObat_Klinik" FromRole="PengeluaranObat" ToRole="Klinik" />
+          <NavigationProperty Name="Obat" Relationship="Model.FK_PengeluaranObat_Obat" FromRole="PengeluaranObat" ToRole="Obat" />
+          <NavigationProperty Name="RekamMedik" Relationship="Model.FK_PengeluaranObat_RekamMedik" FromRole="PengeluaranObat" ToRole="RekamMedik" />
+        </EntityType>
+        <EntityType Name="StokObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ObatID" Type="Int32" />
+          <Property Name="Tanggal" Type="DateTime" Precision="3" />
+          <Property Name="KlinikID" Type="Int32" />
+          <Property Name="Stok" Type="Int32" />
+          <NavigationProperty Name="Klinik" Relationship="Model.FK_hisStokObat_refKlinik" FromRole="StokObat" ToRole="Klinik" />
+          <NavigationProperty Name="Obat" Relationship="Model.FK_StokObat_Obat" FromRole="StokObat" ToRole="Obat" />
+        </EntityType>
+        <EntityType Name="PenyediaObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nama" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="KotaKabupatenID" Type="Int32" />
+          <Property Name="ContactPerson" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="NomorContactPerson" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PengadaanObat" Relationship="Model.FK_PengadaanObat_PenyediaObat" FromRole="PenyediaObat" ToRole="PengadaanObat" />
+          <NavigationProperty Name="KotaKabupaten" Relationship="Model.FK_PenyediaObat_KotaKabupaten" FromRole="PenyediaObat" ToRole="KotaKabupaten" />
+        </EntityType>
+        <EntityType Name="PengadaanObat">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ObatID" Type="Int32" />
+          <Property Name="Jumlah" Type="Int32" />
+          <Property Name="Tanggal" Type="DateTime" Precision="0" />
+          <Property Name="HET" Type="Int32" />
+          <Property Name="HargaAktual" Type="Int32" />
+          <Property Name="PenyediaObatID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Obat" Relationship="Model.FK_PengadaanObat_Obat" FromRole="PengadaanObat" ToRole="Obat" />
+          <NavigationProperty Name="PenyediaObat" Relationship="Model.FK_PengadaanObat_PenyediaObat" FromRole="PengadaanObat" ToRole="PenyediaObat" />
+        </EntityType>
+        <Association Name="FK_hisPengeluaranObat_Orang">
+          <End Type="Model.Orang" Role="Orang" Multiplicity="0..1" />
+          <End Type="Model.PengeluaranObat" Role="PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orang">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="PasienID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hisPengeluaranObat_refKlinik">
+          <End Type="Model.Klinik" Role="Klinik" Multiplicity="0..1" />
+          <End Type="Model.PengeluaranObat" Role="PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klinik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="KlinikID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengeluaranObat_Klinik">
+          <End Type="Model.Klinik" Role="Klinik" Multiplicity="0..1" />
+          <End Type="Model.PengeluaranObat" Role="PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klinik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="TujuanKlinikID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hisStokObat_refKlinik">
+          <End Type="Model.Klinik" Role="Klinik" Multiplicity="0..1" />
+          <End Type="Model.StokObat" Role="StokObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Klinik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StokObat">
+              <PropertyRef Name="KlinikID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengadaanObat_Obat">
+          <End Type="Model.Obat" Role="Obat" Multiplicity="0..1" />
+          <End Type="Model.PengadaanObat" Role="PengadaanObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Obat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengadaanObat">
+              <PropertyRef Name="ObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengeluaranObat_Obat">
+          <End Type="Model.Obat" Role="Obat" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.PengeluaranObat" Role="PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Obat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="ObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengeluaranObat_RekamMedik">
+          <End Type="Model.RekamMedik" Role="RekamMedik" Multiplicity="0..1" />
+          <End Type="Model.PengeluaranObat" Role="PengeluaranObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RekamMedik">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengeluaranObat">
+              <PropertyRef Name="PasienID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StokObat_Obat">
+          <End Type="Model.Obat" Role="Obat" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.StokObat" Role="StokObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Obat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StokObat">
+              <PropertyRef Name="ObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengadaanObat_PenyediaObat">
+          <End Type="Model.PenyediaObat" Role="PenyediaObat" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.PengadaanObat" Role="PengadaanObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PenyediaObat">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PengadaanObat">
+              <PropertyRef Name="PenyediaObatID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PenyediaObat_KotaKabupaten">
+          <End Type="Model.KotaKabupaten" Role="KotaKabupaten" Multiplicity="0..1" />
+          <End Type="Model.PenyediaObat" Role="PenyediaObat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KotaKabupaten">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PenyediaObat">
+              <PropertyRef Name="KotaKabupatenID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2285,6 +2689,7 @@
           <EntitySetMapping Name="MahasiswaDiploma">
             <EntityTypeMapping TypeName="Model.MahasiswaDiploma">
               <MappingFragment StoreEntitySet="MahasiswaDiploma">
+                <ScalarProperty Name="TahunMasuk" ColumnName="TahunMasuk" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NIM" ColumnName="NIM" />
                 <ScalarProperty Name="ProgramKeahlianID" ColumnName="ProgramKeahlianID" />
@@ -2526,6 +2931,54 @@
                 <ScalarProperty Name="NoTelepon" ColumnName="NoTelepon" />
                 <ScalarProperty Name="KecamatanID" ColumnName="KecamatanID" />
                 <ScalarProperty Name="Nama" ColumnName="Nama" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PengeluaranObat">
+            <EntityTypeMapping TypeName="Model.PengeluaranObat">
+              <MappingFragment StoreEntitySet="PengeluaranObat">
+                <ScalarProperty Name="TujuanKlinikID" ColumnName="TujuanKlinikID" />
+                <ScalarProperty Name="Jumlah" ColumnName="Jumlah" />
+                <ScalarProperty Name="ObatID" ColumnName="ObatID" />
+                <ScalarProperty Name="PasienID" ColumnName="PasienID" />
+                <ScalarProperty Name="KlinikID" ColumnName="KlinikID" />
+                <ScalarProperty Name="Tanggal" ColumnName="Tanggal" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StokObat">
+            <EntityTypeMapping TypeName="Model.StokObat">
+              <MappingFragment StoreEntitySet="StokObat">
+                <ScalarProperty Name="Stok" ColumnName="Stok" />
+                <ScalarProperty Name="KlinikID" ColumnName="KlinikID" />
+                <ScalarProperty Name="Tanggal" ColumnName="Tanggal" />
+                <ScalarProperty Name="ObatID" ColumnName="ObatID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PenyediaObat">
+            <EntityTypeMapping TypeName="Model.PenyediaObat">
+              <MappingFragment StoreEntitySet="PenyediaObat">
+                <ScalarProperty Name="NomorContactPerson" ColumnName="NomorContactPerson" />
+                <ScalarProperty Name="ContactPerson" ColumnName="ContactPerson" />
+                <ScalarProperty Name="KotaKabupatenID" ColumnName="KotaKabupatenID" />
+                <ScalarProperty Name="Nama" ColumnName="Nama" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PengadaanObat">
+            <EntityTypeMapping TypeName="Model.PengadaanObat">
+              <MappingFragment StoreEntitySet="PengadaanObat">
+                <ScalarProperty Name="PenyediaObatID" ColumnName="PenyediaObatID" />
+                <ScalarProperty Name="HargaAktual" ColumnName="HargaAktual" />
+                <ScalarProperty Name="HET" ColumnName="HET" />
+                <ScalarProperty Name="Tanggal" ColumnName="Tanggal" />
+                <ScalarProperty Name="Jumlah" ColumnName="Jumlah" />
+                <ScalarProperty Name="ObatID" ColumnName="ObatID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

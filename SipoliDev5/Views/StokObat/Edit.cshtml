@@ -1,0 +1,59 @@
+﻿@model SipoliDev5.Models.StokObat
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h2>Ubah Stok Obat</h2>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ID)
+
+       
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tanggal, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBox("Tanggal", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", @type = "date", @readonly = "readonly" })<!-- BERUBAH -->
+                @Html.ValidationMessageFor(model => model.Tanggal)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.KlinikID, "Klinik", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("KlinikID", (IEnumerable<SelectListItem>)ViewBag.KlinikID, new { @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.KlinikID)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ObatID, "Nama Obat", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ObatID", (IEnumerable<SelectListItem>)ViewBag.ObatID, new { @class = "form-control", @readonly="readonly" })
+                @Html.ValidationMessageFor(model => model.ObatID)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Stok, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBox("Stok", null, new {@class="form-control" })
+                @Html.ValidationMessageFor(model => model.Stok)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Simpan" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Kembali", "Index")
+</div>

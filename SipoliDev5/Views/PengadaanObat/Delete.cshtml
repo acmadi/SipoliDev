@@ -1,0 +1,98 @@
+﻿@model SipoliDev5.Models.PengadaanObat
+
+@{
+    ViewBag.Title = "Delete";
+}
+<style>
+    .modal-content {
+        width: 600px !important;
+        margin: 30px auto !important;
+    }
+</style>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-body">
+            <h2>Delete</h2>
+
+            <h3>Are you sure you want to delete this?</h3>
+            <div>
+                <h4>PengadaanObat</h4>
+                <hr />
+                <dl class="dl-horizontal">
+                    <dt>
+                        <label class="col-md-2 control-label">Tanggal</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Tanggal)
+                    </dd>
+
+                    <dt>
+                        <label class="col-md-2 control-label">Nama Penyedia Obat</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.PenyediaObat.Nama)
+                    </dd>
+
+                    <dt>
+                        <label class="col-md-2 control-label">Nama Obat</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Obat.Nama)
+                    </dd>
+
+                    <dt>
+                        <label class="col-md-2 control-label">Jumlah</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Jumlah)
+                    </dd>
+
+                    <dt>
+                        <label class="col-md-2 control-label">Satuan Obat</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Obat.SatuanObat.Nama)
+                    </dd>
+
+                    <dt>
+                        <label class="col-md-2 control-label">Harga Aktual</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.HargaAktual)
+                    </dd>
+
+                    <dt>
+                        <label class="col-md-2 control-label">HET</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.HET)
+                    </dd>
+
+                    <dt>
+                        <label class="col-md-2 control-label">ID</label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ID)
+                    </dd>
+                </dl>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Delete" class="btn btn-default" /> |
+                        @Html.ActionLink("Back to List", "Index")
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#approve-btn').click(function () {
+            $('#modal-container').modal('hide');
+        });
+    });
+</script>

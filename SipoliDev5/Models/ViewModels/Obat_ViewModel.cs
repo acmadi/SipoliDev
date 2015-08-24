@@ -11,7 +11,7 @@ namespace SipoliDev5.Models.ViewModels
     {
         public int ID { get; set; }
 
-        [DisplayName("Nama Obat")]
+        [DisplayName("NamaObat")]
         [Required(ErrorMessage = "Tidak boleh kosong")]
         [StringLength(50, MinimumLength = 5, ErrorMessage = "Minimum 5 karaker, maksimum 50 karakter")]
         public string Nama { get; set; }

@@ -207,12 +207,17 @@
     <Compile Include="Controllers\LaporanController.cs" />
     <Compile Include="Controllers\ObatController.cs" />
     <Compile Include="Controllers\PemeriksaController.cs" />
+    <Compile Include="Controllers\PengadaanObatController.cs" />
+    <Compile Include="Controllers\PengeluaranObatController.cs" />
+    <Compile Include="Controllers\PengeluaranObatDMGController.cs" />
     <Compile Include="Controllers\PenyakitController.cs" />
+    <Compile Include="Controllers\PenyediaObatController.cs" />
     <Compile Include="Controllers\RekamMedisController.cs" />
     <Compile Include="Controllers\RiwayatPenyakitController.cs" />
     <Compile Include="Controllers\RiwayatPenyakitKeluargaController.cs" />
     <Compile Include="Controllers\RujukanController.cs" />
     <Compile Include="Controllers\RumahSakitController.cs" />
+    <Compile Include="Controllers\StokObatController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -298,7 +303,16 @@
     <Compile Include="Models\Pegawai.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PengadaanObat.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PengeluaranObat.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Penyakit.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PenyediaObat.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Register.cs" />
@@ -321,6 +335,9 @@
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SatuanObat.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StokObat.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Tendik.cs">
@@ -360,6 +377,7 @@
     <Compile Include="Models\ViewModels\RujukanConst.cs" />
     <Compile Include="Models\ViewModels\RumahSakitForm.cs" />
     <Compile Include="Models\ViewModels\Staf.cs" />
+    <Compile Include="Models\ViewModels\StokObat_ViewModel.cs" />
     <Compile Include="Models\webpages_Membership.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
@@ -685,12 +703,9 @@
     <Content Include="Views\Penyakit\_CreateKelainan.cshtml" />
     <Content Include="Views\Penyakit\EditKelainan.cshtml" />
     <Content Include="Views\Obat\Create.cshtml" />
-    <Content Include="Views\Obat\Delete.cshtml" />
-    <Content Include="Views\Obat\Details.cshtml" />
     <Content Include="Views\Obat\Edit.cshtml" />
     <Content Include="Views\Obat\Index.cshtml" />
     <Content Include="Views\Obat\_Create.cshtml" />
-    <Content Include="Views\Obat\_Index.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\RekamMedis\Create.cshtml" />
     <Content Include="Views\RekamMedis\DaftarRekamMedis.cshtml" />
@@ -744,6 +759,34 @@
     <Content Include="Views\DaftarPasien\_PendaftaranPasien.cshtml" />
     <Content Include="Views\Rujukan\_CreateRS.cshtml" />
     <Content Include="Views\Rujukan\CreateRS.cshtml" />
+    <Content Include="Views\Obat\_Delete.cshtml" />
+    <Content Include="Views\PengadaanObat\Create.cshtml" />
+    <Content Include="Views\PengadaanObat\Delete.cshtml" />
+    <Content Include="Views\PengadaanObat\Edit.cshtml" />
+    <Content Include="Views\PengadaanObat\Index.cshtml" />
+    <Content Include="Views\PengadaanObat\_Delete.cshtml" />
+    <Content Include="Views\PengeluaranObat\Create.cshtml" />
+    <Content Include="Views\PengeluaranObat\CreateBStoDMG.cshtml" />
+    <Content Include="Views\PengeluaranObat\Edit.cshtml" />
+    <Content Include="Views\PengeluaranObat\Index.cshtml" />
+    <Content Include="Views\PengeluaranObat\_Delete.cshtml" />
+    <Content Include="Views\PengeluaranObatDMG\Create.cshtml" />
+    <Content Include="Views\PengeluaranObatDMG\Edit.cshtml" />
+    <Content Include="Views\PengeluaranObatDMG\Index.cshtml" />
+    <Content Include="Views\PengeluaranObatDMG\MultipleCommand.cshtml" />
+    <Content Include="Views\PengeluaranObatDMG\_Delete.cshtml" />
+    <Content Include="Views\PenyediaObat\Create.cshtml" />
+    <Content Include="Views\PenyediaObat\Delete.cshtml" />
+    <Content Include="Views\PenyediaObat\Edit.cshtml" />
+    <Content Include="Views\PenyediaObat\Index.cshtml" />
+    <Content Include="Views\PenyediaObat\_Create.cshtml" />
+    <Content Include="Views\PenyediaObat\_Delete.cshtml" />
+    <Content Include="Views\StokObat\Create.cshtml" />
+    <Content Include="Views\StokObat\Delete.cshtml" />
+    <Content Include="Views\StokObat\Details.cshtml" />
+    <Content Include="Views\StokObat\Edit.cshtml" />
+    <Content Include="Views\StokObat\Index.cshtml" />
+    <Content Include="Views\StokObat\MultipleCommand.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

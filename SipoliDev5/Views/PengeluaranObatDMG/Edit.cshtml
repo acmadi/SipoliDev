@@ -1,0 +1,90 @@
+﻿@model SipoliDev5.Models.PengeluaranObat
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Ubah Pengeluaran Obat</h2>
+<hr />
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ID)
+        @Html.Hidden("jmlsblmedit", null, new { @value = "@ViewBag.jmlsblmedit" })
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Tanggal</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Tanggal, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Tanggal)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Nama Pasien</label>
+            <div class="col-md-10">
+                @Html.DropDownList("PasienID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PasienID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Nama Obat</label>
+            <div class="col-md-10">
+                @Html.DropDownList("ObatID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ObatID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label">Jumlah</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Jumlah, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Jumlah)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Simpan" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (ViewBag.E == true)
+{
+    <div class="alert alert-danger alert-error">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        @if (ViewBag.E1 == true)
+        {
+            <p><strong>Error!</strong> Masukkan Tanggal Pengeluaran.</p>
+        }
+        @if (ViewBag.E2 == true)
+        {
+            <p><strong>Error!</strong> Masukkan Jumlah Obat.</p>
+        }
+        @if (ViewBag.E3 == true)
+        {
+            <p><strong>Error!</strong> Jumlah Obat harus bilangan positif.</p>
+        }
+        @if (ViewBag.E4 == true)
+        {
+            <p><strong>Error!</strong> Jumlah Obat tidak boleh lebih dari @ViewBag.stoksaat.</p>
+        }
+    </div>
+}
+
+
+<div>
+    @Html.ActionLink("Kembali", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

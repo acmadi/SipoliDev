@@ -11,37 +11,21 @@ namespace SipoliDev5.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     
     public partial class RekamMedik
     {
         public RekamMedik()
         {
             this.ResepObat = new HashSet<ResepObat>();
+            this.PengeluaranObat = new HashSet<PengeluaranObat>();
         }
     
         public int ID { get; set; }
-
-        [Required(ErrorMessage = "Pasien belum valid.")]
-        [Display(Name = "Nama Pasien")]
         public Nullable<int> PasienID { get; set; }
-
-        [Required(ErrorMessage = "Tanggal belum valid.")]
-        [Display(Name = "Tanggal")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd MMMM yyyy}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> Tanggal { get; set; }
-
-        
-        [StringLength(100)]
-        [Display(Name = "Anamnesa & Diagnosa")]
         public string AnamnesaDiagnosa { get; set; }
-
         public string Therapie { get; set; }
         public Nullable<int> LokasiklinikID { get; set; }
-
-        
-        [Display(Name = "Nama Dokter")]
         public Nullable<int> DokterID { get; set; }
     
         public virtual Klinik Klinik { get; set; }
@@ -49,5 +33,6 @@ namespace SipoliDev5.Models
         public virtual Pegawai Pegawai { get; set; }
         public virtual ICollection<ResepObat> ResepObat { get; set; }
         public virtual Rujukan Rujukan { get; set; }
+        public virtual ICollection<PengeluaranObat> PengeluaranObat { get; set; }
     }
 }

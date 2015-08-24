@@ -1,0 +1,67 @@
+﻿@model SipoliDev5.Models.Obat
+
+@{
+    ViewBag.Title = "Delete";
+}
+<style>
+    .modal-content {
+        width: 600px !important;
+        margin: 30px auto !important;
+    }
+</style>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Hapus Pengadaan Obat</h4>
+        </div>
+        <div class="modal-body">
+            <p>Anda yakin akan menghapus data ini?</p>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            <label class="col-md-2 control-label">Nama Obat</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.Nama)
+                        </dd>
+
+                        <dt>
+                            <label class="col-md-2 control-label">Satuan Obat</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.SatuanObat.Nama)
+                        </dd>
+
+                        <dt>
+                            <label class="col-md-2 control-label">Golongan Obat</label>
+                        </dt> 
+                        <dd>
+                            : @Html.DisplayFor(model => model.GolonganObat.Nama)
+                        </dd>
+
+                        <dt>
+                            <label class="col-md-2 control-label">Kegunaan</label>
+                        </dt>
+                        <dd>
+                            : @Html.DisplayFor(model => model.Kegunaan)
+                        </dd>
+                    </dl>
+                    <div class="alert alert-danger"><strong>Perhatian!!</strong> Data obat <strong>@Model.Nama</strong> pada <strong>Pengadaan Obat</strong>, <strong>Pengeluaran Obat</strong>, dan <strong>Stok Obat</strong> juga akan terhapus.</div>
+                    <hr />
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" value="Hapus" class="btn btn-danger col-lg-offset-9">Hapus</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                    }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#approve-btn').click(function () {
+            $('#modal-container').modal('hide');
+        });
+    });
+</script>
+

@@ -1,0 +1,471 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<SipoliDev5.Models.ViewModels.PengeluaranObat_ViewModel>
+
+@{
+    ViewBag.Title = "Pengeluaran Obat";
+}
+
+
+<h2>Data Pengeluaran Obat</h2>
+<hr />
+<div class="row">
+    <div class="col-lg-8">
+        <div class="row">
+            <div class="col-lg-12">
+                <!--Lokasi Tabel Daftar Obat-->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <strong>Daftar Pengeluaran Obat Klinik BS</strong>
+                                </div>
+                                <div class="col-lg-5 pull-right">
+                                    <!--Pencarian Nama Obat-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel-body" id="myTab">
+                        @if (ViewBag.ErrorDelete == true)
+                        {
+                            <div class="alert alert-danger alert-error">
+                                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                                <strong>Error! Data tidak dapat dihapus.</strong><br />
+                                @ViewBag.PesanDelete
+                            </div>
+                        }
+                        <ul class="nav nav-tabs">
+                            <li class="nav active"><a href="#A" data-toggle="tab">Pasien BS</a></li>
+                            <li class="nav"><a href="#B" data-toggle="tab">Klinik DMG</a></li>
+                        </ul>
+                        <br />
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="A">
+                                <p>
+                                    Daftar Pengeluaran Obat di Poliklinik IPB.
+                                </p>
+                                <table class="table">
+                                    <tr>
+                                        <th>
+                                            @Html.ActionLink("Tanggal", "Index", new
+                                            {
+                                                Sortby = ViewBag.SortTanggalParameter,
+                                                Date = Request.QueryString["Date"],
+                                                Month = Request.QueryString["Month"],
+                                                Year = Request.QueryString["Year"],
+                                                Obat = Request.QueryString["Obat"],
+                                                Pasien = Request.QueryString["Pasien"],
+                                            })
+                                        </th>
+                                        <th>
+                                            @Html.ActionLink("Nama Pasien", "Index", new
+                                            {
+                                                Sortby = ViewBag.SortPasienParameter,
+                                                Date = Request.QueryString["Date"],
+                                                Month = Request.QueryString["Month"],
+                                                Year = Request.QueryString["Year"],
+                                                Obat = Request.QueryString["Obat"],
+                                                Pasien = Request.QueryString["Pasien"],
+                                            })
+                                        </th>
+                                        <th>
+                                            @Html.ActionLink("Nama Obat", "Index", new
+                                            {
+                                                Sortby = ViewBag.SortObatParameter,
+                                                Date = Request.QueryString["Date"],
+                                                Month = Request.QueryString["Month"],
+                                                Year = Request.QueryString["Year"],
+                                                Obat = Request.QueryString["Obat"],
+                                                Pasien = Request.QueryString["Pasien"],
+                                            })
+                                        </th>
+                                        <th class="text-primary">
+                                            Jumlah
+                                        </th>
+                                        <th class="text-primary">
+                                            Satuan Obat
+                                        </th>
+                                        <th class="text-primary">
+                                            Klinik
+                                        </th>
+
+                                        <th></th>
+                                    </tr>
+                                   
+                                    @foreach (var item in Model.Where(i=>i.TujuanKlinikID==2))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tanggal)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Pasien)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Obat)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Jumlah)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.SatuanObat)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Klinik)
+                                            </td>
+
+                                            <td>
+                                                <div class="btn-group-vertical" role="group" aria-label="...">
+                                                    @Html.ActionLink("Ubah", "Edit", new { id = item.ID }, new { @class = "btn btn-warning btn-xs" })
+                                                    @Html.ActionLink("Hapus", "Delete", new { @id = item.ID }, new { @class = "modal-link btn btn-danger btn-xs" })
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                                <center>
+                                    @Html.PagedListPager(Model, page => Url.Action("Index", new
+                                {
+                                    page,
+                                    Sortby = Request.QueryString["Sortby"],
+                                    Date = Request.QueryString["Date"],
+                                    Month = Request.QueryString["Month"],
+                                    Year = Request.QueryString["Year"],
+                                    Obat = Request.QueryString["Obat"],
+                                    Pasien = Request.QueryString["Pasien"],
+                                }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+                                </center>
+                            </div>
+                            <div class="tab-pane fade" id="B">
+                                <p>
+                                    Daftar Pengeluaran Obat di Poliklinik IPB.
+                                </p>
+                                <table class="table">
+                                    <tr>
+                                        <th>
+                                            @Html.ActionLink("Tanggal", "Index", new
+                                            {
+                                                Sortby = ViewBag.SortTanggalParameter,
+                                                Date = Request.QueryString["Date"],
+                                                Month = Request.QueryString["Month"],
+                                                Year = Request.QueryString["Year"],
+                                                Obat = Request.QueryString["Obat"],
+                                                Pasien = Request.QueryString["Pasien"],
+                                            })
+                                        </th>
+                                        <th>
+                                            @Html.ActionLink("Nama Obat", "Index", new
+                                            {
+                                                Sortby = ViewBag.SortObatParameter,
+                                                Date = Request.QueryString["Date"],
+                                                Month = Request.QueryString["Month"],
+                                                Year = Request.QueryString["Year"],
+                                                Obat = Request.QueryString["Obat"],
+                                                Pasien = Request.QueryString["Pasien"],
+                                            })
+                                        </th>
+                                        <th class="text-primary">
+                                            Jumlah
+                                        </th>
+                                        <th class="text-primary">
+                                            Satuan Obat
+                                        </th>
+                                        <th class="text-primary">
+                                            Klinik
+                                        </th>
+                                        <th class="text-primary">
+                                            Tujuan Klinik
+                                        </th>
+
+                                        <th></th>
+                                    </tr>
+
+                                    @foreach (var item in Model.Where(i=>i.TujuanKlinikID==1))
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tanggal)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Obat)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Jumlah)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.SatuanObat)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Klinik)
+                                            </td>
+
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.TujuanKlinik)
+                                            </td>
+
+                                            <td>
+                                                <div class="btn-group-vertical" role="group" aria-label="...">
+                                                    @Html.ActionLink("Ubah", "Edit", new { id = item.ID }, new { @class = "btn btn-warning btn-xs" })
+                                                    @Html.ActionLink("Hapus", "Delete", new { @id = item.ID }, new { @class = "modal-link btn btn-danger btn-xs" })
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                                <center>
+                                    @Html.PagedListPager(Model, page => Url.Action("Index", new
+                                {
+                                    page,
+                                    Sortby = Request.QueryString["Sortby"],
+                                    Date = Request.QueryString["Date"],
+                                    Month = Request.QueryString["Month"],
+                                    Year = Request.QueryString["Year"],
+                                    Obat = Request.QueryString["Obat"],
+                                    Pasien = Request.QueryString["Pasien"],
+                                }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                            
+                        </div>
+                    </div>
+        </div>
+    </div>
+   
+    <div class="col-lg-4">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4><strong>Pengeluaran Obat untuk Pasien BS</strong></h4>
+                <hr />
+                <h4>@Html.ActionLink("Tambah Pengeluaran Obat untuk Pasien BS", "Create", "PengeluaranObat", null, new { @class = "btn btn-success col-lg-12" })</h4>
+            </div>
+        </div>
+
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <h4><strong>Pengeluaran Obat untuk Klinik DMG</strong></h4>
+                <hr />
+                <h4>@Html.ActionLink("Tambah Pengeluaran Obat untuk Klinik DMG", "CreateBStoDMG", "PengeluaranObat", null, new { @class = "btn btn-success col-lg-12" })</h4>
+            </div>
+        </div>
+        
+
+        <br />
+        <div class="row">
+            <div class="col-lg-12">
+                @using (Html.BeginForm("Index", "PengeluaranObat", FormMethod.Get, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="form-horizontal">
+                        <h4><strong>Filter dan Ekspor Data Pengeluaran Obat</strong></h4><!-- berubah -->
+                        <hr />
+                        <div class="form-group">
+                            <label class="col-md-3">Pilih Data</label>
+                            <div class="col-md-9">
+                               @Html.DropDownList("Report", new List<SelectListItem> {
+                                                             new SelectListItem{Text = "Pengeluaran Klinik BS", Value="BS"},
+                                                             new SelectListItem{Text = "Distribusi Obat DMG", Value="DMG"},
+                                                             }, "--Pilih Data--", new { @class = "form-control", @id="pilih" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3">Nama Obat</label>
+                            <div class="col-md-9">
+                                @*Html.TextBox("Obat", "", new { @class = "form-control col-md-10" })*@
+
+                                <input type="hidden" class="ObatID"/>
+                                @Html.TextBox("Obat", null, new { @id = "Obat", @class = "form-control pilihan1", @disabled="disabled" })
+                                @*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
+                                <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        $("#Obat").autocomplete({//id textbox
+                                            source: function (request, response) {
+                                                $.ajax({
+                                                    url: "/PengeluaranObat/GetDataObat",//URL action
+                                                    type: "POST",
+                                                    dataType: "json",
+                                                    data: { term: request.term },
+                                                    success: function (data) {
+                                                        response($.map(data, function (item) {
+                                                            return {
+                                                                label: item.label,
+                                                                value: item.value,
+                                                                id: item.id,
+                                                            };
+                                                        }));
+                                                    },
+                                                    //
+                                                })
+                                            },
+                                            select: function (event, ui) {
+                                                //    //update the jquery selector here to your target hidden field
+                                                $("input.ObatID").val(ui.item.id);//class RatingID
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3">Nama Pasien</label>
+                            <div class="col-md-9">
+                                @*Html.TextBox("Pasien", "", new { @class = "form-control col-md-10" })*@
+
+                                <input type="hidden" class="PasienID"/>
+                                @Html.TextBox("Pasien", null, new { @id = "Pasien", @class = "form-control pilihan2", @disabled = "disabled" })
+                                @*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
+                                <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        $("#Pasien").autocomplete({//id textbox
+                                            source: function (request, response) {
+                                                $.ajax({
+                                                    url: "/PengeluaranObat/GetDataPasien",//URL action
+                                                    type: "POST",
+                                                    dataType: "json",
+                                                    data: { term: request.term },
+                                                    success: function (data) {
+                                                        response($.map(data, function (item) {
+                                                            return {
+                                                                label: item.label,
+                                                                value: item.value,
+                                                                id: item.id,
+                                                            };
+                                                        }));
+                                                    },
+                                                    //
+                                                })
+                                            },
+                                            select: function (event, ui) {
+                                                //    //update the jquery selector here to your target hidden field
+                                                $("input.PasienID").val(ui.item.id);//class RatingID
+                                            }
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3">Bulan</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("Month", new List<SelectListItem> {
+                                                             new SelectListItem{Text = "Januari", Value="1"},
+                                                             new SelectListItem{Text = "Februari", Value="2"},
+                                                             new SelectListItem{Text = "Maret", Value="3"},
+                                                             new SelectListItem{Text = "April", Value="4"},
+                                                             new SelectListItem{Text = "Mei", Value="5"},
+                                                             new SelectListItem{Text = "Juni", Value="6"},
+                                                             new SelectListItem{Text = "Juli", Value="7"},
+                                                             new SelectListItem{Text = "Agustus", Value="8"},
+                                                             new SelectListItem{Text = "September", Value="9"},
+                                                             new SelectListItem{Text = "Oktober", Value="10"},
+                                                             new SelectListItem{Text = "November", Value="11"},
+                                                             new SelectListItem{Text = "Desember", Value="12"},
+                                                             }, "--Pilih Bulan--", new { @class = "form-control col-md-10 pilihan3", @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3">Tahun</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("Year", (IEnumerable<SelectListItem>)ViewBag.Year, "--Pilih Tahun--", new { @class = "form-control col-md-10 pilihan4", @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3">Tanggal</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("Date", null, new { @class = "form-control col-md-10 pilihan5", @type = "date", @disabled = "disabled" })
+                            </div>
+                        </div>
+                            <div class="col-md-3"></div>
+                            <div class="col-lg-9">
+                                <button class="btn btn-primary pilihan" type="submit" id="btnSave" name="Command" value="Export">Export</button>
+                                <button class="btn btn-default pilihan" type="submit" id="btnSave" name="Command" value="Filter">Filter</button>
+                                 <!--<button class="btn btn-primary col-lg-12" type="submit" name="Export" id="Export"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Cetak ke Excel</button>-->
+                            </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+
+<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        $('body').on('click', '.modal-link', function (e) {
+            e.preventDefault();
+            $(this).attr('data-target', '#modal-container');
+            $(this).attr('data-toggle', 'modal');
+        });
+        // Attach listener to .modal-close-btn's so that when the button is pressed the modal dialog disappears
+        $('body').on('click', '.modal-close-btn', function () {
+            $('#modal-container').modal('hide');
+        });
+        //clear modal cache, so that new content can be loaded
+        $('#modal-container').on('hidden.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+        $('#CancelModal').on('click', function () {
+            return false;
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (location.hash) {
+            $('a[href=' + location.hash + ']').tab('show');
+        }
+        $(document.body).on("click", "a[data-toggle]", function (event) {
+            location.hash = this.getAttribute("href");
+        });
+    });
+    $(window).on('popstate', function () {
+        var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
+        $('a[href=' + anchor + ']').tab('show');   
+    });
+    window.scrollTo(0, 0);
+</script>
+<script type="text/javascript">
+    var update_pizza = function () {
+        if (document.getElementById("pilih").value == "DMG" && document.getElementById("pilih").value != "") {
+            $('.pilihan1').prop('disabled', false);
+            $('.pilihan2').prop('disabled', 'disabled');
+            $('.pilihan3').prop('disabled', false);
+            $('.pilihan4').prop('disabled', false);
+            $('.pilihan5').prop('disabled', false);
+        }
+        else if (document.getElementById("pilih").value == "BS" && document.getElementById("pilih").value != "") {
+            $('.pilihan1').prop('disabled', false);
+            $('.pilihan3').prop('disabled', false);
+            $('.pilihan4').prop('disabled', false);
+            $('.pilihan5').prop('disabled', false);
+            $('.pilihan2').prop('disabled', false);
+        }
+        else if (document.getElementById("pilih").value == "") {
+            $('.pilihan1').prop('disabled', 'disabled');
+            $('.pilihan3').prop('disabled', 'disabled');
+            $('.pilihan4').prop('disabled', 'disabled');
+            $('.pilihan5').prop('disabled', 'disabled');
+            $('.pilihan2').prop('disabled', 'disabled');
+        }
+    };
+    $(update_pizza);
+    $("#pilih").change(update_pizza);
+</script>
+
+
+
+
+
+
+
