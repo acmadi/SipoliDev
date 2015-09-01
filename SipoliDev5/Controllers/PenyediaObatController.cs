@@ -19,22 +19,29 @@ namespace SipoliDev3.Controllers
         private EntitiesConnection db = new EntitiesConnection();
         public JsonResult GetDataPenyedia(string term)
         {
-            var obat = (from r in db.PenyediaObat
+            var penyediaobat = (from r in db.PenyediaObat
                         where r.Nama.ToLower().Contains(term.ToLower())
-                        select new { label = r.Nama, value = r.Nama, id = r.ID });//query
-            return Json(obat, JsonRequestBehavior.AllowGet);
+                        select new { label = r.Nama, value = r.Nama, id = r.Nama });//query
+            return Json(penyediaobat, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetDataCP(string term)
         {
-            var obat = (from r in db.PenyediaObat
+            var cp = (from r in db.PenyediaObat
                         where r.ContactPerson.ToLower().Contains(term.ToLower())
-                        select new { label = r.ContactPerson, value = r.ContactPerson, id = r.ID });//query
-            return Json(obat, JsonRequestBehavior.AllowGet);
+                        select new { label = r.ContactPerson, value = r.ContactPerson, id = r.ContactPerson });//query
+            return Json(cp, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetDataKotaKabupaten(string term)
+        {
+            var kotakabupaten = (from r in db.KotaKabupaten
+                        where r.Nama.ToLower().Contains(term.ToLower())
+                        select new { label = r.Nama, value = r.Nama, id = r.ID });//query
+            return Json(kotakabupaten, JsonRequestBehavior.AllowGet);
         }
 
         // GET: /PenyediaObat/
-        public ActionResult Index(string Nama, string Kota, string ContactPerson, string Sortby, int? page, string pesan, bool? error, string pesan2, PenyediaObat pobat)
+        public ActionResult Index(string Nama, string Kota, string CP, string Sortby, int? page, string pesan, bool? error, string pesan2, string pesan3)
         {
             var penyediaobat = from a in db.PenyediaObat.Include(p => p.KotaKabupaten)
                                select new PenyediaObat_ViewModel
@@ -50,15 +57,16 @@ namespace SipoliDev3.Controllers
             ViewBag.error = error;
             ViewBag.pesan = pesan;
             ViewBag.pesan2 = pesan2;
-            ViewBag.pobat = pobat;
+            ViewBag.pesan3 = pesan3;
+            //ViewBag.pobat = pobat;
 
             //filtering
-            ViewBag.Kota = new SelectList(db.KotaKabupaten, "ID", "Nama");
+            //ViewBag.Kota = new SelectList(db.KotaKabupaten, "ID", "Nama");
 
             if (!String.IsNullOrEmpty(Kota))
             {
-                int KotaInt = Convert.ToInt32(Kota);
-                penyediaobat = penyediaobat.Where(a => a.KotaKabupatenID == KotaInt);
+                //int KotaInt = Convert.ToInt32(Kota);
+                penyediaobat = penyediaobat.Where(a => a.KotaKabupatenNama.Contains(Kota));
             }
 
             if (!String.IsNullOrEmpty(Nama))
@@ -66,9 +74,9 @@ namespace SipoliDev3.Controllers
                 penyediaobat = penyediaobat.Where(b => b.Nama.Contains(Nama));
             }
 
-            if (!String.IsNullOrEmpty(ContactPerson))
+            if (!String.IsNullOrEmpty(CP))
             {
-                penyediaobat = penyediaobat.Where(c => c.ContactPerson.Contains(ContactPerson));
+                penyediaobat = penyediaobat.Where(c => c.ContactPerson.Contains(CP));
             }
 
             //sorting
@@ -116,31 +124,32 @@ namespace SipoliDev3.Controllers
             int i = 1;
             if (penyediaobat != null && penyediaobat.Any())
             {
-                sb.Append("<table style='1px solid black; font-size:12px;'>");
+                sb.Append("<table style='1px solid black; font-size:20px;'>");
                 sb.Append("<tr>");
-                sb.Append("<td colspan='4' style='width:120px', align='center'><b>DATA PENYEDIA OBAT POLIKLINIK</b></td>");
+                sb.Append("<td colspan='4' style='width:120px;', align='center'><b>DATA PENYEDIA OBAT POLIKLINIK IPB</b></td>");
+                sb.Append("<td style='font-size:15px;'>[<i>Terunduh:</i>" + DateTime.Now + "]</td>");
                 sb.Append("</tr>");
                 sb.Append("<tr>");
-                sb.Append("<td style='width:30px;'><center><b>NO</b></center></td>");
-                sb.Append("<td style='width:300px;'><center><b>NAMA</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>KOTA/KABUPATEN</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>CONTACT PERSON</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>NOMOR CONTACT PERSON</b></center></td>");
+                sb.Append("<td style='width:35px;border:1px solid black;background-color: yellow;'><center><b>NO</b></center></td>");
+                sb.Append("<td style='width:300px;border:1px solid black;background-color: yellow;'><center><b>NAMA</b></center></td>");
+                sb.Append("<td style='width:300px;border:1px solid black;background-color: yellow;'><center><b>KOTA/KABUPATEN</b></center></td>");
+                sb.Append("<td style='width:200px;border:1px solid black;background-color: yellow;'><center><b>CONTACT PERSON</b></center></td>");
+                sb.Append("<td style='width:250px;border:1px solid black;background-color: yellow;'><center><b>NOMOR CONTACT PERSON</b></center></td>");
                 sb.Append("</tr>");
 
                 foreach (var result in penyediaobat)
                 {
                     sb.Append("<tr>");
-                    sb.Append("<td>" + i + "</td>");
-                    sb.Append("<td>" + result.Nama + "</td>");
-                    sb.Append("<td>" + result.KotaKabupatenNama + "</td>");
-                    sb.Append("<td>" + result.ContactPerson + "</td>");
-                    sb.Append("<td>" + result.NomorContactPerson + "</td>");
+                    sb.Append("<td style='border:1px solid black'>" + i + "</td>");
+                    sb.Append("<td style='border:1px solid black'>" + result.Nama + "</td>");
+                    sb.Append("<td style='border:1px solid black'>" + result.KotaKabupatenNama + "</td>");
+                    sb.Append("<td style='border:1px solid black'>" + result.ContactPerson + "</td>");
+                    sb.Append("<td style='border:1px solid black'>" + result.NomorContactPerson + "</td>");
                     sb.Append("</tr>");
                     i++;
                 }
             }
-            string sFileName = "DATA PENYEDIA OBAT POLIKLINIK.xls";
+            string sFileName = "[" + DateTime.Now + "] DATA PENYEDIA OBAT POLIKLINIK IPB.xls";
             HttpContext.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName);
 
             Response.ContentType = "application/ms-excel";
@@ -167,12 +176,16 @@ namespace SipoliDev3.Controllers
             string pesan = "";
             var ada = false;
             string pesan2 = "";
+            string pesan3 = "";
 
             //Nama penyedia obat tidak boleh sama 
-            if (db.PenyediaObat.Any(p => p.Nama == penyediaobat.Nama))
+            if (!String.IsNullOrEmpty(penyediaobat.Nama))
             {
-                ViewBag.error = true;
-                pesan2 += " Nama Penyedia Obat " + penyediaobat.Nama + " sudah ada.";
+                if (db.PenyediaObat.Any(p => p.Nama == penyediaobat.Nama))
+                {
+                   ViewBag.error = true;
+                   pesan2 += " Nama Penyedia Obat " + penyediaobat.Nama + " sudah ada.";
+                }
             }
 
             //Nama penyedia obat dan kota kabupaten tidak boleh kosong
@@ -193,6 +206,16 @@ namespace SipoliDev3.Controllers
                 pesan += " Kota/Kabupaten";
                 ada = true;
             }
+
+            //Nomor CP harus dalam bilangan dan string spasi
+            if (!String.IsNullOrEmpty(penyediaobat.NomorContactPerson))
+            {
+                if (!System.Text.RegularExpressions.Regex.IsMatch(penyediaobat.NomorContactPerson, "^[0-9 ]+$"))
+                {
+                    ViewBag.error = true;
+                    pesan3 += "Masukkan angka pada Nomor Contact Person.";
+                }
+            }
             
             //save to database
             if (ModelState.IsValid && !ViewBag.error)
@@ -204,8 +227,9 @@ namespace SipoliDev3.Controllers
 
             ViewBag.pesan = pesan;
             ViewBag.pesan2 = pesan2;
+            ViewBag.pesan3 = pesan3;
             ViewBag.KotaKabupatenID = new SelectList(db.KotaKabupaten, "ID", "Nama", penyediaobat.KotaKabupatenID);
-            return RedirectToAction("Index", new { error = ViewBag.error, pesan = ViewBag.pesan, pesan2 = ViewBag.pesan2, pobat = penyediaobat });
+            return RedirectToAction("Index", new { error = ViewBag.error, pesan = ViewBag.pesan, pesan2 = ViewBag.pesan2, pesan3 = ViewBag.pesan3 });
         }
 
         // GET: /PenyediaObat/Edit/5

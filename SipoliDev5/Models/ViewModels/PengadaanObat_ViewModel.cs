@@ -50,5 +50,6 @@ namespace SipoliDev5.Models.ViewModels
         public int SatuanObatID { get; set; }
 
         public string SatuanObat { get; set; }
+        public Nullable<int> Total { get; set; }
     }
 }

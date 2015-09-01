@@ -11,7 +11,8 @@ using PagedList; //paging
 using PagedList.Mvc;
 using System.Text; //paging
 using SipoliDev5.Models.ViewModels;
-using System.Data.Entity.Infrastructure;//view model
+using System.Data.Entity.Infrastructure;
+using System.Globalization;//view model
 
 namespace SipoliObat.Controllers
 {
@@ -42,14 +43,14 @@ namespace SipoliObat.Controllers
         }
 
         // GET: /PengeluaranObat/
-        public ActionResult Index(string Command, string Report, string Obat, string Pasien, string Month, DateTime? Date, int? Year, string Sortby, int? page, bool? undeleteable, string stk, string jml)
+        public ActionResult Index(string Command, int? Report, string Obat, string Pasien, string Month, DateTime? Date, int? Year, string Sortby, int? page, bool? undeleteable, string stk, string jml)
         {
             if (undeleteable == true)
             {
                 ViewBag.ErrorDelete = true;
                 ViewBag.PesanDelete = "Jumlah obat yang dihapus lebih besar dari jumlah stok obat saat ini.";
             }
-            var pengeluaranobat = from a in db.PengeluaranObat.Include(h => h.Orang).Include(h => h.Obat).Include(h => h.Klinik)
+            var pengeluaranobat = from a in db.PengeluaranObat
                                   where a.KlinikID == 2
                                   select new PengeluaranObat_ViewModel()
                                   {
@@ -66,11 +67,11 @@ namespace SipoliObat.Controllers
                                       TujuanKlinikID = a.TujuanKlinikID,
                                       TujuanKlinik = a.Klinik1.Nama,
                                   };
-            if (Report == "DMG")
+            if (Report != null)
             {
-                pengeluaranobat = from a in db.PengeluaranObat.Include(h => h.Orang).Include(h => h.Obat).Include(h => h.Klinik)
+                pengeluaranobat = from a in db.PengeluaranObat
                                       where a.KlinikID == 2
-                                      where a.TujuanKlinikID == 1
+                                      where a.TujuanKlinikID == Report
                                       select new PengeluaranObat_ViewModel()
                                       {
                                           ID = a.ID,
@@ -84,31 +85,8 @@ namespace SipoliObat.Controllers
                                           SatuanObat = a.Obat.SatuanObat.Nama,
                                           Klinik = a.Klinik.Nama,
                                           TujuanKlinikID = a.TujuanKlinikID,
-                                          TujuanKlinik = a.Klinik1.Nama,
+                                          //TujuanKlinik = a.Klinik1.Nama,
                                       };
-            }
-
-            if (Report == "BS")
-            {
-                pengeluaranobat = from a in db.PengeluaranObat
-                                  where a.KlinikID == 2
-                                  where a.TujuanKlinikID == 2
-                                  select new PengeluaranObat_ViewModel()
-                                  {
-                                      ID = a.ID,
-                                      Tanggal = a.Tanggal,
-                                      PasienID = a.PasienID,
-                                      ObatID = a.ObatID,
-                                      KlinikID = a.KlinikID,
-                                      Jumlah = a.Jumlah,
-                                      Pasien = a.Orang.Nama,
-                                      Obat = a.Obat.Nama,
-                                      SatuanObat = a.Obat.SatuanObat.Nama,
-                                      Klinik = a.Klinik.Nama,
-                                      TujuanKlinikID = a.TujuanKlinikID,
-                                      Total = db.PengeluaranObat.Where(i=>i.KlinikID==2).Where(i=>i.TujuanKlinikID==2).Sum(i=>i.Jumlah),
-                                      //TujuanKlinik = a.TujuanKlinik.Klinik.Nama,
-                                  };
             }
 
             //filtering
@@ -174,27 +152,65 @@ namespace SipoliObat.Controllers
 
                
             
-            if (Command == "Export" && Report=="BS")
+            if (Command == "Export" && Report!=null)
             {
                 //var pengeluaranobat = (List<PengeluaranObat_ViewModel>)Session["pengeluaranobats"];
                 //pengeluaranobat.ToList();
+                
                 pengeluaranobat.ToList<PengeluaranObat_ViewModel>();
                 StringBuilder sb = new StringBuilder();
+                string title = "";
+                int colspan1 = 5;
+                int colspan2 = 2;
+                var Month1 = "";
+                if (Report == 2){ title = "DATA PENGELUARAN OBAT POLIKLINIK BARANANGSIANG";}
+                else { title = "DISTRIBUSI OBAT POLIKLINIK BARANANGSIANG KE POLIKLINIK DRAMAGA"; colspan1 = 4; colspan2 = 1; }
                 if (pengeluaranobat != null && pengeluaranobat.Any())
                 {
                     sb.Append("<table style='font-size:20px;'>");
+                    //row1
                     sb.Append("<tr style='height:15px'></tr>");
+                    //row2
                     sb.Append("<tr>");
                     sb.Append("<td></td>");
-                    sb.Append("<td colspan='5' style='border:1px solid black; width:120px', align='center'><b>DATA PENGELUARAN OBAT POLIKLINIK BARANANGSIANG</b></td>");
+                    sb.Append("<td colspan='"+colspan1+"'style='border:1px solid black; width:120px', align='center'><b>"+title+"</b></td>");
                     sb.Append("</tr>");
+                    //row3
+                    if (!string.IsNullOrEmpty(Obat) || !string.IsNullOrEmpty(Pasien) || Year != null || !string.IsNullOrEmpty(Month) || Date != null)
+                    {
+                        if (!string.IsNullOrEmpty(Month)) { switch (Month) { case "1":Month1 = "Januari"; break; case "2":Month1 = "Februari"; break; case "3":Month1 = "Maret"; break; case "4":Month1 = "April"; break; case "5":Month1 = "Mei"; break; case "6":Month1 = "Juni"; break; case "7":Month1 = "Juli"; break; case "8":Month1 = "Agustus"; break; case "9":Month1 = "September"; break; case "10":Month1 = "Oktober"; break; case "11":Month1 = "November"; break; case "12":Month1 = "Desember"; break; default: Month1 = "-"; break; } }
+                        sb.Append("<tr>");
+                        sb.Append("<td style='width:15px'></td>");
+                        sb.Append("<td style='width:150px; border:1px solid black'><b>TANGGAL</b></td>");
+                        sb.Append("<td style='width:300px; border:1px solid black'>"+Date+"</td>");
+                        sb.Append("<td style='width:120px; border:1px solid black'><b>BULAN</b></td>");
+                        sb.Append("<td colspan='" + colspan2 + "'style='width:120px; border:1px solid black'>"+Month1+"</td>");
+                        sb.Append("</tr>");
+                        sb.Append("<tr>");
+                        sb.Append("<td style='width:15px'></td>");
+                        sb.Append("<td style='width:150px; border:1px solid black'><b>NAMA OBAT</b></td>");
+                        sb.Append("<td style='width:300px; border:1px solid black'>"+Obat+"</td>");
+                        sb.Append("<td style='width:120px; border:1px solid black'><b>TAHUN</b></td>");
+                        sb.Append("<td colspan='" + colspan2 + "'style='width:120px; border:1px solid black;text-align: left;'>" + Year + "</td>");
+                        sb.Append("</tr>");
+                        if (Report == 2)
+                        {
+                            sb.Append("<tr>");
+                            sb.Append("<td style='width:15px'></td>");
+                            sb.Append("<td style='width:150px; border:1px solid black'><b>NAMA PASIEN</b></td>");
+                            sb.Append("<td style='width:120px; border:1px solid black'>"+Pasien+"</td>");
+                            sb.Append("<td colspan='3' style='border:1px solid black'></td>");
+                            sb.Append("</tr>");
+                        }
+                    }
+                    //row4
                     sb.Append("<tr>");
                     sb.Append("<td style='width:15px'></td>");
-                    sb.Append("<td style='width:150px; border:1px solid black'><center><b>TANGGAL</b></center></td>");
-                    sb.Append("<td style='width:300px; border:1px solid black'><center><b>NAMA PASIEN</b></center></td>");
-                    sb.Append("<td style='width:300px; border:1px solid black'><center><b>NAMA OBAT</b></center></td>");
-                    sb.Append("<td style='width:120px; border:1px solid black'><center><b>JUMLAH</b></center></td>");
-                    sb.Append("<td style='width:200px; border:1px solid black'><center><b>SATUAN OBAT</b></center></td>");
+                    sb.Append("<td style='width:150px; border:1px solid black; background-color: yellow;'><center><b>TANGGAL</b></center></td>");
+                    if (Report == 2) { sb.Append("<td style='width:300px; border:1px solid black; background-color: yellow;'><center><b>NAMA PASIEN</b></center></td>"); }
+                    sb.Append("<td style='width:300px; border:1px solid black; background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
+                    sb.Append("<td style='width:120px; border:1px solid black; background-color: yellow;'><center><b>JUMLAH</b></center></td>");
+                    sb.Append("<td style='width:200px; border:1px solid black; background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
                     sb.Append("</tr>");
 
                     foreach (var result in pengeluaranobat)
@@ -202,110 +218,337 @@ namespace SipoliObat.Controllers
                         sb.Append("<tr>");
                         sb.Append("<td style='width:15px'></td>");
                         sb.Append("<td style='border:1px solid black;'>" + result.Tanggal + "</td>");
-                        sb.Append("<td style='border:1px solid black;'>" + result.Pasien + "</td>");
+                        if (Report == 2) { sb.Append("<td style='border:1px solid black;'>" + result.Pasien + "</td>"); }
                         sb.Append("<td style='border:1px solid black;'>" + result.Obat + "</td>");
                         sb.Append("<td style='border:1px solid black;'>" + result.Jumlah + "</td>");
                         sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
                         sb.Append("</tr>");
                     }
 
-                    if (Obat != null || Pasien != null || Year != null || Date != null || Month != null)
-                    {
-                        if (Obat!=null && Pasien!=null && Year!=null && Date!=null && Month!=null)
+                    if (!string.IsNullOrEmpty(Obat) || !string.IsNullOrEmpty(Pasien) || Year != null || !string.IsNullOrEmpty(Month) || Date != null)
+                   {
+                       if (!string.IsNullOrEmpty(Obat))
+                       {
+                           pengeluaranobat = (from a in db.PengeluaranObat
+                                              where a.KlinikID == 2
+                                              where a.TujuanKlinikID == Report
+                                              where a.Obat.Nama == Obat
+                                              group a by new { b = Obat, c = a.Obat.SatuanObat.Nama } into g
+                                              select new PengeluaranObat_ViewModel()
+                                              {
+                                                  Obat = g.Key.b,
+                                                  SatuanObat = g.Key.c,
+                                                  Total = g.Select(m => m.Jumlah).Sum()
+                                              });
+                       }
+                       if (!string.IsNullOrEmpty(Pasien))
+                       {
+                           pengeluaranobat = (from a in db.PengeluaranObat
+                                              where a.KlinikID == 2
+                                              where a.TujuanKlinikID == Report
+                                              where a.Orang.Nama == Pasien
+                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                              select new PengeluaranObat_ViewModel()
+                                              {
+                                                  Obat = g.Key.b,
+                                                  SatuanObat = g.Key.c,
+                                                  Total = g.Select(m => m.Jumlah).Sum()
+                                              });
+                       }
+                       if (Year != null)
+                       {
+                           pengeluaranobat = (from a in db.PengeluaranObat
+                                              where a.KlinikID == 2
+                                              where a.TujuanKlinikID == Report
+                                              where a.Tanggal.Value.Year == Year
+                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                              select new PengeluaranObat_ViewModel()
+                                              {
+                                                  Obat = g.Key.b,
+                                                  SatuanObat = g.Key.c,
+                                                  Total = g.Select(m => m.Jumlah).Sum()
+                                              });
+                       }
+                       if (!string.IsNullOrEmpty(Month))
+                       {
+                           var intmonth = int.Parse(Month);
+                           pengeluaranobat = (from a in db.PengeluaranObat
+                                              where a.KlinikID == 2
+                                              where a.TujuanKlinikID == Report
+                                              where a.Tanggal.Value.Month == intmonth
+                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                              select new PengeluaranObat_ViewModel()
+                                              {
+                                                  Obat = g.Key.b,
+                                                  SatuanObat = g.Key.c,
+                                                  Total = g.Select(m => m.Jumlah).Sum()
+                                              });
+                       }
+                       if (Date != null )
+                       {
+                           pengeluaranobat = (from a in db.PengeluaranObat
+                                              where a.KlinikID == 2
+                                              where a.TujuanKlinikID == Report
+                                              where a.Tanggal == Date
+                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                              select new PengeluaranObat_ViewModel()
+                                              {
+                                                  Obat = g.Key.b,
+                                                  SatuanObat = g.Key.c,
+                                                  Total = g.Select(m => m.Jumlah).Sum()
+                                              });
+                       }
+                       if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Pasien))
                         {
-                            int MonthInt = int.Parse(Month);
                             pengeluaranobat = (from a in db.PengeluaranObat
-                                          select new PengeluaranObat_ViewModel()
-                                          {
-                                              SatuanObat = a.Obat.SatuanObat.Nama,
-                                              Total = db.PengeluaranObat.Where(i => i.KlinikID == 2).Where(i => i.TujuanKlinikID == 2).
-                                              Where(i => i.Obat.Nama == Obat).
-                                              Where(i => i.Orang.Nama == Pasien).
-                                              Where(i => i.Tanggal.Value.Year == Year).
-                                              Where(i => i.Tanggal == Date).
-                                              Where(i => i.Tanggal.Value.Month == MonthInt).
-                                              Sum(i => i.Jumlah),
-                                          }).Distinct();
-                        }
-                        if (Obat != null && Pasien != null && Year != null )
-                        {
-                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Orang.Nama == Pasien
+                                               group a by new { b=a.Obat.Nama, c=a.Obat.SatuanObat.Nama} into g
                                                select new PengeluaranObat_ViewModel()
                                                {
-                                                   SatuanObat = a.Obat.SatuanObat.Nama,
-                                                   Total = db.PengeluaranObat.Where(i => i.KlinikID == 2).Where(i => i.TujuanKlinikID == 2).
-                                                   Where(i => i.Obat.Nama == Obat).
-                                                   Where(i => i.Orang.Nama == Pasien).
-                                                   Where(i => i.Tanggal.Value.Year == Year).
-                                                   Sum(i => i.Jumlah),
-                                               }).Distinct();
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
                         }
-                        if (Obat != null && Pasien != null)
+                       if (!string.IsNullOrEmpty(Obat) && Year != null)
+                       {
+                           pengeluaranobat = (from a in db.PengeluaranObat
+                                              where a.KlinikID == 2
+                                              where a.TujuanKlinikID == Report
+                                              where a.Obat.Nama == Obat
+                                              where a.Tanggal.Value.Year == Year
+                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                              select new PengeluaranObat_ViewModel()
+                                              {
+                                                  Obat = g.Key.b,
+                                                  SatuanObat = g.Key.c,
+                                                  Total = g.Select(m => m.Jumlah).Sum()
+                                              });
+                       }
+                       if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Month))
+                       {
+                           var intmonth = int.Parse(Month);
+                           pengeluaranobat = (from a in db.PengeluaranObat
+                                              where a.KlinikID == 2
+                                              where a.TujuanKlinikID == Report
+                                              where a.Obat.Nama == Obat
+                                              where a.Tanggal.Value.Month == intmonth
+                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                              select new PengeluaranObat_ViewModel()
+                                              {
+                                                  Obat = g.Key.b,
+                                                  SatuanObat = g.Key.c,
+                                                  Total = g.Select(m => m.Jumlah).Sum()
+                                              });
+                       }
+                       if (!string.IsNullOrEmpty(Obat) && Date != null)
                         {
                             pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal == Date
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
                                                select new PengeluaranObat_ViewModel()
                                                {
-                                                   SatuanObat = a.Obat.SatuanObat.Nama, 
-                                                   Total = db.PengeluaranObat.Where(i => i.KlinikID == 2).Where(i => i.TujuanKlinikID == 2).
-                                                   Where(i => i.Obat.Nama == Obat).
-                                                   Where(i => i.Orang.Nama == Pasien).
-                                                   Sum(i => i.Jumlah),
-                                               }).Distinct();
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
                         }
-                    
+
+                        if (!string.IsNullOrEmpty(Pasien) && Year != null)
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal.Value.Year == Year
+                                               where a.Orang.Nama == Pasien
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Pasien) && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal.Value.Month == intmonth
+                                               where a.Orang.Nama == Pasien
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Pasien) && Date != null)
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal == Date
+                                               where a.Orang.Nama == Pasien
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal.Value.Month == intmonth
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Pasien) && Year != null)
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Orang.Nama == Pasien
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Pasien) && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Orang.Nama == Pasien
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Pasien) && Date != null)
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Orang.Nama == Pasien
+                                               where a.Tanggal == Date
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Pasien) && Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal.Value.Year == Year
+                                               where a.Orang.Nama == Pasien
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Pasien) && Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Orang.Nama == Pasien
+                                               where a.Tanggal.Value.Year == Year
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        sb.Append("<tr></tr>");
+                        sb.Append("<tr>");
+                        sb.Append("<td></td>");
+                        sb.Append("<td></td>");
+                        if (Report == 2) { sb.Append("<td></td>"); }
+                        sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
+                        sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>TOTAL</b></center></td>");
+                        sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
+                        sb.Append("</tr>");
                         foreach (var result in pengeluaranobat)
                         {
                             sb.Append("<tr>");
                             sb.Append("<td></td>");
                             sb.Append("<td></td>");
-                            sb.Append("<td></td>");
-                            sb.Append("<td><b>TOTAL</b></td>");
-                            sb.Append("<td>" + result.Total + "</td>");
-                            sb.Append("<td>" + result.SatuanObat + "</td>");
+                            if (Report == 2) { sb.Append("<td></td>"); }
+                            sb.Append("<td style='border:1px solid black;'><b>" + result.Obat + "</b></td>");
+                            sb.Append("<td style='border:1px solid black;'>" + result.Total + "</td>");
+                            sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
                             sb.Append("</tr>");
                         }
-                    }
+                   }
+
+                    
                 }
-                string sFileName = "DATA PENGELUARAN OBAT POLIKLINIK BARANANGSIANG.xls";
-                HttpContext.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName);
-
-                Response.ContentType = "application/ms-excel";
-                Response.Charset = "";
-
-                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
-                return File(buffer, "application/vnd.ms-excel");
-            }
-
-            if (Command == "Export" && Report == "DMG")
-            {
-                //var pengeluaranobat = (List<PengeluaranObat_ViewModel>)Session["pengeluaranobats"];
-                //pengeluaranobat.ToList();
-                pengeluaranobat.ToList<PengeluaranObat_ViewModel>();
-                StringBuilder sb = new StringBuilder();
-                if (pengeluaranobat != null && pengeluaranobat.Any())
-                {
-                    sb.Append("<table style='1px solid black; font-size:12px;'>");
-                    sb.Append("<tr>");
-                    sb.Append("<td colspan='5' style='width:120px', align='center'><b>DATA DISTRIBUSI OBAT POLIKLINIK DMG</b></td>");
-                    sb.Append("</tr>");
-                    sb.Append("<tr>");
-                    sb.Append("<td style='width:120px;'><center><b>TANGGAL</b></center></td>");
-                    sb.Append("<td style='width:300px;'><center><b>NAMA OBAT</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>JUMLAH</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>SATUAN OBAT</b></center></td>");
-                    sb.Append("</tr>");
-
-                    foreach (var result in pengeluaranobat)
-                    {
-                        sb.Append("<tr>");
-                        sb.Append("<td>" + result.Tanggal + "</td>");
-                        sb.Append("<td>" + result.Obat + "</td>");
-                        sb.Append("<td>" + result.Jumlah + "</td>");
-                        sb.Append("<td>" + result.SatuanObat + "</td>");
-                        sb.Append("</tr>");
-                    }
-                }
-                string sFileName = "DATA DISTRIBUSI OBAT POLIKLINIK DMG.xls";
+                string sFileName = "[" + DateTime.Now + "] DATA PENGELUARAN OBAT POLIKLINIK BARANANGSIANG.xls";
                 HttpContext.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName);
 
                 Response.ContentType = "application/ms-excel";
@@ -322,24 +565,15 @@ namespace SipoliObat.Controllers
         // GET: /PengeluaranObat/Create
         public ActionResult Create()
         {
-            //ViewBag.PasienID = new SelectList(db.Orang, "ID", "Nama");
             ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
             ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama");
-
-            //var query = (from a in db.hisPengeluaranObats orderby a.ID descending select a.Orang.Nama).FirstOrDefault();
-            //ViewBag.SelectedPasien = query;
             return View();
         }
 
         public PartialViewResult CreateBStoDMG()
         {
-            //ViewBag.PasienID = new SelectList(db.Orang, "ID", "Nama");
             ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
             ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama");
-
-            //var query = (from a in db.hisPengeluaranObats orderby a.ID descending select a.Orang.Nama).FirstOrDefault();
-            //ViewBag.SelectedPasien = query;
-
             return PartialView();
         }
 

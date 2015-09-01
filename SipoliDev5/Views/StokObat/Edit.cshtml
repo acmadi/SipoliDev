@@ -4,8 +4,6 @@
     ViewBag.Title = "Edit";
 }
 
-
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -15,32 +13,18 @@
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.ID)
-
+        @Html.HiddenFor(model => model.KlinikID)
+        @Html.HiddenFor(model => model.ObatID)
        
         <div class="form-group">
             @Html.LabelFor(model => model.Tanggal, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBox("Tanggal", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", @type = "date", @readonly = "readonly" })<!-- BERUBAH -->
-                @Html.ValidationMessageFor(model => model.Tanggal)
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.KlinikID, "Klinik", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("KlinikID", (IEnumerable<SelectListItem>)ViewBag.KlinikID, new { @class = "form-control", @readonly = "readonly" })
-                @Html.ValidationMessageFor(model => model.KlinikID)
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.ObatID, "Nama Obat", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ObatID", (IEnumerable<SelectListItem>)ViewBag.ObatID, new { @class = "form-control", @readonly="readonly" })
-                @Html.ValidationMessageFor(model => model.ObatID)
+            <div class="col-md-4">
+                @Html.TextBox("Tanggal", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", @type="date"})
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Stok, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-4">
                 @Html.TextBox("Stok", null, new {@class="form-control" })
                 @Html.ValidationMessageFor(model => model.Stok)
             </div>
@@ -53,7 +37,16 @@
         </div>
     </div>
 }
-
+@if (ViewBag.E == true)
+{
+    <div class="alert alert-danger alert-error">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        @if (ViewBag.E1 == true)
+        {
+            <p><strong>Error!</strong> Jumlah obat harus bilangan positif.</p>
+        }
+    </div>
+}
 <div>
     @Html.ActionLink("Kembali", "Index")
 </div>

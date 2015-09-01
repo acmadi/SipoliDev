@@ -106,30 +106,31 @@ namespace SipoliDev5.Controllers
             StringBuilder sb = new StringBuilder();
             if (obat != null && obat.Any())
             {
-                sb.Append("<table style='1px solid black; font-size:12px;'>");
+                sb.Append("<table style='1px solid black; font-size:20px;'>");
                 sb.Append("<tr>");
-                sb.Append("<td colspan='3' style='width:120px', align='center'><b>DATA OBAT POLIKLINIK</b></td>");
+                sb.Append("<td colspan='3' style='width:120px;' align='center'><b>DATA OBAT POLIKLINIK</b></td>");
+                sb.Append("<td style='font-size:15px;'>[<i>Terunduh:</i>" + DateTime.Now + "]</td>");
                 sb.Append("</tr>");
                 sb.Append("<tr>");
-                sb.Append("<td style='width:30px;'><center><b>NO</b></center></td>");
-                sb.Append("<td style='width:300px;'><center><b>NAMA OBAT</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>GOLONGAN OBAT</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>SATUAN OBAT</b></center></td>");
+                sb.Append("<td style='width:35px; border:1px solid black;background-color: yellow;'><center><b>NO</b></center></td>");
+                sb.Append("<td style='width:300px;border:1px solid black;background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
+                sb.Append("<td style='width:200px;border:1px solid black;background-color: yellow;'><center><b>GOLONGAN OBAT</b></center></td>");
+                sb.Append("<td style='width:210px;border:1px solid black;background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
                 sb.Append("</tr>");
 
                 int i = 1;
                 foreach (var result in obat)
                 {
                     sb.Append("<tr>");
-                    sb.Append("<td>" + i + "</td>");
-                    sb.Append("<td>" + result.Nama + "</td>");
-                    sb.Append("<td>" + result.GolonganObat + "</td>");
-                    sb.Append("<td>" + result.SatuanObat + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + i + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.Nama + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.GolonganObat + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
                     sb.Append("</tr>");
                     i++;
                 }
             }
-            string sFileName = "DATA OBAT POLIKLINIK.xls";
+            string sFileName = "[" + DateTime.Now + "] DATA OBAT POLIKLINIK IPB.xls";
             HttpContext.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName);
 
             Response.ContentType = "application/ms-excel";

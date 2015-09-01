@@ -8,7 +8,7 @@
     <div class="form-horizontal">
         @Html.ValidationSummary(true)
         <div class="form-group">
-            <label class="col-md-4 control-label">Nama</label>
+            <label class="col-md-4">Nama</label>
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.Nama, new { @class = "form-control" })<!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.Nama)
@@ -16,7 +16,7 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Kota/Kabupaten</label>
+            <label class="col-md-4">Kota/Kabupaten</label>
             <div class="col-md-8">
                 @Html.DropDownList("KotaKabupatenID", (IEnumerable<SelectListItem>)ViewBag.KotaKabupatenID, "-- Pilih Kota/Kabupaten --", new { @class = "form-control" })<!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.KotaKabupatenID)
@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">CP</label>
+            <label class="col-md-4">CP</label>
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.ContactPerson, new { @class = "form-control" })<!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.ContactPerson)
@@ -32,9 +32,9 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">No. CP</label>
+            <label class="col-md-4">No. CP</label>
             <div class="col-md-8">
-                @Html.TextBoxFor(model => model.NomorContactPerson, new { @class = "form-control", @type = "number", @min = "0" })<!-- BERUBAH -->
+                @Html.TextBoxFor(model => model.NomorContactPerson, new { @class = "form-control"})<!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.NomorContactPerson)
             </div>
         </div>

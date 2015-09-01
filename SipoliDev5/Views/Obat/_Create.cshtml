@@ -9,7 +9,7 @@
         @Html.ValidationSummary(true)
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Nama Obat</label>
+            <label class="col-md-4">Nama Obat</label>
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.Nama, new {@class="form-control" })<!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.Nama)
@@ -17,7 +17,7 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Satuan Obat</label>
+            <label class="col-md-4">Satuan Obat</label>
             <div class="col-md-8">
                 @Html.DropDownList("SatuanObatID", (IEnumerable<SelectListItem>)ViewBag.SatuanObatID, "-- Pilih Satuan --", new { @class = "form-control" }) <!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.SatuanObatID)
@@ -25,7 +25,7 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Golongan Obat</label>
+            <label class="col-md-4">Golongan Obat</label>
             <div class="col-md-8">
                 @Html.DropDownList("GolonganObatID", (IEnumerable<SelectListItem>)ViewBag.GolonganObatID, "-- Pilih Golongan --", new { @class = "form-control" }) <!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.GolonganObatID)
@@ -33,7 +33,7 @@
         </div>
 
         <div class="form-group">
-            <label class="col-md-4 control-label">Kegunaan</label>
+            <label class="col-md-4">Kegunaan</label>
             <div class="col-md-8">
                 @Html.TextAreaFor(model => model.Kegunaan, new { @class = "form-control" })<!-- BERUBAH -->
                 @Html.ValidationMessageFor(model => model.Kegunaan)

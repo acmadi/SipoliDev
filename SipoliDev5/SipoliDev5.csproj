@@ -200,6 +200,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DaftarPasienController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\GolonganObatController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KelainanBawaan1Controller.cs" />
     <Compile Include="Controllers\KelainanBawaanController.cs" />
@@ -788,6 +789,12 @@
     <Content Include="Views\StokObat\Edit.cshtml" />
     <Content Include="Views\StokObat\Index.cshtml" />
     <Content Include="Views\StokObat\MultipleCommand.cshtml" />
+    <Content Include="Views\GolonganObat\Create.cshtml" />
+    <Content Include="Views\GolonganObat\Delete.cshtml" />
+    <Content Include="Views\GolonganObat\Details.cshtml" />
+    <Content Include="Views\GolonganObat\Edit.cshtml" />
+    <Content Include="Views\GolonganObat\Index.cshtml" />
+    <Content Include="Views\GolonganObat\_Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

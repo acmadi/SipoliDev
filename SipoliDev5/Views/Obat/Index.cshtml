@@ -6,6 +6,11 @@
 @{
     ViewBag.Title = "Data Obat";
 }
+<style type="text/css">
+    ::-webkit-input-placeholder {
+         font-style: italic;
+     }
+</style>
 <h2>Data Obat</h2>
 <hr />
 <div class="row">
@@ -39,7 +44,7 @@
                                     <div class="col-md-4">
                                         @*Html.TextBox("Nama", null, new { @class = "form-control" })*@
                                         <input type="hidden" class="PasienID" name="PasienID" />
-                                        @Html.TextBox("Nama", null, new { @id = "Obat", @class = "form-control" })
+                                        @Html.TextBox("Nama", null, new { @id = "Obat", @class = "form-control", @placeholder="Masukkan nama obat" })
                                         @*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
                                         <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
                                         <script type="text/javascript">
@@ -204,6 +209,24 @@
                                 @ViewBag.pesan2
                             </div>
                         }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <strong>Golongan Obat</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        @Html.Action("Index", "GolonganObat")
                     </div>
                 </div>
             </div>

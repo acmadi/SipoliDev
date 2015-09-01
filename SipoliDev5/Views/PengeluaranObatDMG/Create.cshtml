@@ -85,7 +85,8 @@
                 <td>
                     <div id='DropDownListGroup'>
                         <div id="DropDownListDiv1">
-                            @Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1" })
+                            @*Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1" })*@
+                            <select name="ObatID1" id="ObatID1" class="form-control"><option value="">--Pilih Obat--</option></select>
                             @Html.ValidationMessageFor(model => model.ObatID)
                         </div>
                     </div>
@@ -162,6 +163,24 @@
                 return false;
             }
 
+        });
+
+        $(document).ready(function () {
+            var options = {};
+            options.url = "/PengeluaranObatDMG/GetDataStokObat";
+            options.type = "POST";
+            options.dataType = "json";
+            options.contentType = "application/json";
+            options.success = function (data) {
+                var count = $("#count").val();
+                for (var k = 1; k <= count; k++) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#ObatID' + k).append("<option value='" + data[i].Value + "'>" + data[i].Text + " " + data[i].Stok + "</option>");
+                    }
+                }
+            };
+            options.error = function () { alert("Error retrieving states!"); };
+            $.ajax(options);
         });
 
         $("#removeButton").click(function () {

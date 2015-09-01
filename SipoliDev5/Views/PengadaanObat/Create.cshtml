@@ -29,7 +29,6 @@
             </div>
         </div>
 
-
         <table class="table table-striped">
             <tr>
                 <th class="text-primary">Nama Obat</th>
@@ -40,61 +39,84 @@
             <tr>
                 <td>
                     <div id='DropDownListGroup'>
-                        <div id="DropDownListDiv1">
-                            @Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1", @value = "@ViewBag.ObatID1" })
-                            @Html.ValidationMessageFor(model => model.ObatID)
-                        </div>
+                        @{
+                            for (int i = 1; i <= ViewBag.count;i++)
+                            {
+                                <br />
+                                <div id="DropDownListDiv1">
+                                    @*Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1", })*@
+                                    <select name="ObatID@{@i}" id="ObatID@{@i}" class="form-control"><option value="">--Pilih Obat--</option></select>
+                                    @Html.ValidationMessageFor(model => model.ObatID)
+                                </div>
+                            }
+                        }
                     </div>
                 </td>
-                <td>
-                    <div id='TextBoxesGroup'>
-                        <div id="TextBoxDiv1">
-                            <input type="text" name="Jumlah1" class="form-control" id="Jumlah1" value="@ViewBag.Jumlah1" />
-                            @Html.ValidationMessageFor(model => model.Jumlah)
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div id='TextBoxes1Group'>
-                        <div id="TextBox1Div1">
-                            <input type="text" name="HargaAktual1" class="form-control" id="HargaAktual1" value="@ViewBag.HargaAktual1" />
-                            @Html.ValidationMessageFor(model => model.HargaAktual)
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div id='TextBoxes2Group'>
-                        <div id="TextBox2Div1">
-                            <input type="text" name="HET1" class="form-control" id="HET1" value="@ViewBag.HET1" />
-                            @Html.ValidationMessageFor(model => model.HET)
-                        </div>
-                    </div>
-                    <br />
-                    <input type="hidden" id="count" name="count" />
-                    <input type='button' value='Tambah Obat' id='addButton' class="btn btn-default">
-                    <input type='button' value='Hapus' id='removeButton' class="btn btn-default" />
-                    <input type="submit" value="Simpan" class="btn btn-primary" />
-                </td>
-            </tr>
-        </table>
-    </div>
+               
+                        <td>
+                            <div id='TextBoxesGroup'>
+                            @{
+                        for(int i=1;i<=ViewBag.count;i++){
+                            <br />
+                            <div id="TextBoxDiv1">
+                                <input type="text" name="Jumlah@{@i}" class="form-control" id="Jumlah@{@i}" value="" />
+                                        @Html.ValidationMessageFor(model => model.Jumlah)
+                                    </div>
+                        }
+                    }
+                            </div>
+                        </td>
+                        <td>
+                            <div id='TextBoxes1Group'>
+                            @{
+                        for(int i=1;i<=ViewBag.count;i++){
+                            <br />
+                            <div id="TextBox1Div1">
+                                <input type="text" name="HargaAktual@{@i}" class="form-control" id="HargaAktual@{@i}" value="" />
+                                        @Html.ValidationMessageFor(model => model.HargaAktual)
+                                    </div>
+                        }
+                    }
+                            </div>
+                        </td>
+                        <td>
+                            <div id='TextBoxes2Group'>
+                             @{
+                        for(int i=1;i<=ViewBag.count;i++){
+                            <br />
+                            <div id="TextBox2Div1">
+                                <input type="text" name="HET@{@i}" class="form-control" id="HET@{@i}" value="" />
+                                        @Html.ValidationMessageFor(model => model.HET)
+                                    </div>
+                        }
+                     }
+                            </div>
+                            <br />
+                            <input type="hidden" id="count" value="@ViewBag.count" name="count" />
+                            <input type='button' value='Tambah Obat' id='addButton' class="btn btn-default">
+                            <input type='button' value='Hapus' id='removeButton' class="btn btn-default" />
+                            <input type="submit" value="Simpan" class="btn btn-primary" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
 }
 
-<div>
-    @Html.ActionLink("Kembali", "Index")
-</div>
+        <div>
+            @Html.ActionLink("Kembali", "Index")
+        </div>
 
-<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+        <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var counter = 2;
-        if (counter == 2) {
+        var counter = $("#count").val();
+        //alert(counter);
+        if (counter == 1) {
             $("#removeButton").hide();
-            $("#count").val(1);
-
         }
         j = 1;
         $("#addButton").click(function () {
+            counter++;
             //textbox
             var newTextBoxDiv = $(document.createElement('div'))
                  .attr("id", 'TextBoxDiv' + counter);
@@ -128,7 +150,7 @@
             options.success = function (data) {
 
                 j++;
-                for (k = j; k < counter; k++) {
+                for (k = j; k <= counter; k++) {
                     for (var i = 0; i < data.length; i++) {
                         $('#ObatID' + k).append("<option value='" + data[i].Value + "'>" + data[i].Text + " " + data[i].Stok + "</option>");
                     }
@@ -137,15 +159,39 @@
             };
             options.error = function () { alert("Error retrieving states!"); };
             $.ajax(options);
-
+           
             $("#removeButton").show();
             $("#count").val(counter);
-            counter++;
+            
             if (counter > 10) {
                 $("#addButton").hide();
                 return false;
             }
 
+            $('#ObatID' + counter).change(function () {
+                alert($('#ObatID' + counter + ' option:selected').val());
+            });
+        });
+        
+
+        
+
+        $(document).ready(function () {
+            var options = {};
+            options.url = "/PengadaanObat/GetDataStokObat";
+            options.type = "POST";
+            options.dataType = "json";
+            options.contentType = "application/json";
+            options.success = function (data) {
+                var count = $("#count").val();
+                for (var k = 1; k <= count; k++) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#ObatID'+k).append("<option value='" + data[i].Value + "'>" + data[i].Text + " " + data[i].Stok + "</option>");
+                    }
+                }
+            };
+            options.error = function () { alert("Error retrieving states!"); };
+            $.ajax(options);
         });
 
         $("#removeButton").click(function () {

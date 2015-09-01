@@ -59,7 +59,7 @@ namespace SipoliDev5.Controllers
             
             }
 
-            if (!String.IsNullOrEmpty(Klinik))
+            if (Klinik!=null)
             {
                 stokobat = stokobat.Where(b => b.Klinik == Klinik);
             }
@@ -163,34 +163,36 @@ namespace SipoliDev5.Controllers
             StringBuilder sb = new StringBuilder();
             if (stokobat != null && stokobat.Any())
             {
-                sb.Append("<table style='1px solid black; font-size:12px;'>");
+                sb.Append("<table style='1px solid black; font-size:20px;'>");
                 sb.Append("<tr>");
-                sb.Append("<td colspan='3' style='width:120px', align='center'><b>DATA OBAT POLIKLINIK</b></td>");
+                sb.Append("<td colspan='5' style='width:120px', align='center'><b>DATA STOK OBAT POLIKLINIK</b></td>");
+                sb.Append("<td style='font-size:15px;'>[<i>Terunduh:</i> " + DateTime.Now + "]</td>");
                 sb.Append("</tr>");
                 sb.Append("<tr>");
-                sb.Append("<td style='width:30px;'><center><b>NO</b></center></td>");
-                sb.Append("<td style='width:300px;'><center><b>TANGGAL</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>NAMA OBAT</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>STOK OBAT</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>SATUAN OBAT</b></center></td>");
-                sb.Append("<td style='width:120px;'><center><b>KLINIK</b></center></td>");
+                sb.Append("<td style='width:35px;border:1px solid black;background-color: yellow;'><center><b>NO</b></center></td>");
+                sb.Append("<td style='width:175px;border:1px solid black;background-color: yellow;'><center><b>TANGGAL</b></center></td>");
+                sb.Append("<td style='width:300px;border:1px solid black;background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
+                sb.Append("<td style='width:150px;border:1px solid black;background-color: yellow;'><center><b>STOK OBAT</b></center></td>");
+                sb.Append("<td style='width:150px;border:1px solid black;background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
+                sb.Append("<td style='width:210px;border:1px solid black;background-color: yellow;'><center><b>KLINIK</b></center></td>");
                 sb.Append("</tr>");
 
                 int i = 1;
                 foreach (var result in stokobat)
                 {
                     sb.Append("<tr>");
-                    sb.Append("<td>" + i + "</td>");
-                    sb.Append("<td>" + result.Tanggal + "</td>");
-                    sb.Append("<td>" + result.Obat + "</td>");
-                    sb.Append("<td>" + result.Stok + "</td>");
-                    sb.Append("<td>" + result.SatuanObat + "</td>");
-                    sb.Append("<td>" + result.Klinik + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + i + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.Tanggal + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.Obat + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.Stok + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
+                    sb.Append("<td style='border:1px solid black;'>" + result.Klinik + "</td>");
+                    
                     sb.Append("</tr>");
                     i++;
                 }
             }
-            string sFileName = "DATA STOK OBAT POLIKLINIK.xls";
+            string sFileName = "["+ DateTime.Now +"] DATA STOK OBAT POLIKLINIK.xls";
             HttpContext.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName);
 
             Response.ContentType = "application/ms-excel";
@@ -198,48 +200,6 @@ namespace SipoliDev5.Controllers
 
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
             return File(buffer, "application/vnd.ms-excel");
-        }
-
-        // GET: /StokObat/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            StokObat stokobat = db.StokObat.Find(id);
-            if (stokobat == null)
-            {
-                return HttpNotFound();
-            }
-            return View(stokobat);
-        }
-
-        // GET: /StokObat/Create
-        public ActionResult Create()
-        {
-            ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama");
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
-            return View();
-        }
-
-        // POST: /StokObat/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(StokObat stokobat)
-        {
-            if (ModelState.IsValid)
-            {
-                db.StokObat.Add(stokobat);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", stokobat.KlinikID);
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama", stokobat.ObatID);
-            return View(stokobat);
         }
 
         // GET: /StokObat/Edit/5
@@ -266,7 +226,18 @@ namespace SipoliDev5.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(StokObat stokobat)
         {
-            if (ModelState.IsValid)
+            ViewBag.E = false;
+            //jumlah obat harus bilangan positif
+            string jumlah = stokobat.Stok.ToString();
+            if (stokobat.Stok != null)
+            {
+                if (!System.Text.RegularExpressions.Regex.IsMatch(jumlah, "^[0-9]+$"))
+                {
+                    ViewBag.E = true;
+                    ViewBag.E1 = true;
+                }
+            }
+            if (ModelState.IsValid && !ViewBag.E)
             {
                 db.Entry(stokobat).State = EntityState.Modified;
                 db.SaveChanges();
@@ -275,32 +246,6 @@ namespace SipoliDev5.Controllers
             ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", stokobat.KlinikID);
             ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama", stokobat.ObatID);
             return View(stokobat);
-        }
-
-        // GET: /StokObat/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            StokObat stokobat = db.StokObat.Find(id);
-            if (stokobat == null)
-            {
-                return HttpNotFound();
-            }
-            return View(stokobat);
-        }
-
-        // POST: /StokObat/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            StokObat stokobat = db.StokObat.Find(id);
-            db.StokObat.Remove(stokobat);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

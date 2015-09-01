@@ -91,50 +91,8 @@ namespace SipoliDev5.Controllers
 
             if (!String.IsNullOrEmpty(Month))
             {
-                int MonthInt;
-                switch (Month)
-                {
-                    case "Januari":
-                        MonthInt = 1;
-                        break;
-                    case "Februari":
-                        MonthInt = 2;
-                        break;
-                    case "Maret":
-                        MonthInt = 3;
-                        break;
-                    case "April":
-                        MonthInt = 4;
-                        break;
-                    case "Mei":
-                        MonthInt = 5;
-                        break;
-                    case "Juni":
-                        MonthInt = 6;
-                        break;
-                    case "Juli":
-                        MonthInt = 7;
-                        break;
-                    case "Agustus":
-                        MonthInt = 8;
-                        break;
-                    case "September":
-                        MonthInt = 9;
-                        break;
-                    case "Oktober":
-                        MonthInt = 10;
-                        break;
-                    case "November":
-                        MonthInt = 11;
-                        break;
-                    case "Desember":
-                        MonthInt = 12;
-                        break;
-                    default:
-                        MonthInt = 0;
-                        break;
-                }
-                pengadaanobat = pengadaanobat.Where(e => e.Tanggal.Value.Month == MonthInt);
+               var MonthInt = Int32.Parse(Month);
+               pengadaanobat = pengadaanobat.Where(e => e.Tanggal.Value.Month == MonthInt);
             }
 
             //sorting
@@ -171,40 +129,352 @@ namespace SipoliDev5.Controllers
                 pengadaanobat.ToList<PengadaanObat_ViewModel>();
                 //pengadaanobat.ToList();
                 StringBuilder sb = new StringBuilder();
+                var Month1 = "";
                 if (pengadaanobat != null && pengadaanobat.Any())
                 {
-                    sb.Append("<table style='1px solid black; font-size:12px;'>");
+                    sb.Append("<table style='1px solid black; font-size:20px;'>");
+                    sb.Append("<tr style='width:15px'></tr>");
                     sb.Append("<tr>");
-                    sb.Append("<td colspan='5' style='width:120px', align='center'><b>DATA PENGADAAN OBAT POLIKLINIK</b></td>");
+                    sb.Append("<td style='width:15px'></td>");
+                    sb.Append("<td colspan='8' style='width:120px;background-color: yellow;border:1px solid black', align='center'><b>DATA PENGADAAN OBAT POLIKLINIK</b></td>");
                     sb.Append("</tr>");
+                    if (!string.IsNullOrEmpty(Obat) || !string.IsNullOrEmpty(PenyediaObat) || Year != null || !string.IsNullOrEmpty(Month) || Date != null)
+                    {
+                        if (!string.IsNullOrEmpty(Month)) { switch (Month) { case "1":Month1 = "Januari"; break; case "2":Month1 = "Februari"; break; case "3":Month1 = "Maret"; break; case "4":Month1 = "April"; break; case "5":Month1 = "Mei"; break; case "6":Month1 = "Juni"; break; case "7":Month1 = "Juli"; break; case "8":Month1 = "Agustus"; break; case "9":Month1 = "September"; break; case "10":Month1 = "Oktober"; break; case "11":Month1 = "November"; break; case "12":Month1 = "Desember"; break; default: Month1 = "-"; break; } }
+                        sb.Append("<tr>");
+                        sb.Append("<td style='width:15px'></td>");
+                        sb.Append("<td colspan='2' style='width:190px; border:1px solid black'><b>TANGGAL</b></td>");
+                        sb.Append("<td style='width:300px; border:1px solid black'>" + Date + "</td>");
+                        sb.Append("<td colspan='2'style='width:120px; border:1px solid black'><b>BULAN</b></td>");
+                        sb.Append("<td colspan='3'style='width:120px; border:1px solid black'>" + Month1 + "</td>");
+                        sb.Append("</tr>");
+                        sb.Append("<tr>");
+                        sb.Append("<td style='width:15px'></td>");
+                        sb.Append("<td colspan='2' style='width:190px; border:1px solid black'><b>NAMA OBAT</b></td>");
+                        sb.Append("<td style='width:300px; border:1px solid black'>" + Obat + "</td>");
+                        sb.Append("<td colspan='2'style='width:120px; border:1px solid black'><b>TAHUN</b></td>");
+                        sb.Append("<td colspan='3'style='width:120px; border:1px solid black;text-align: left;'>" + Year + "</td>");
+                        sb.Append("</tr>");
+                        sb.Append("<tr>");
+                        sb.Append("<td style='width:15px'></td>");
+                        sb.Append("<td colspan='2' style='width:190px; border:1px solid black'><b>PENYEDIA OBAT</b></td>");
+                        sb.Append("<td style='width:120px; border:1px solid black'>" + PenyediaObat + "</td>");
+                        sb.Append("<td colspan='5' style='border:1px solid black'></td>");
+                        sb.Append("</tr>");
+                    }
                     sb.Append("<tr>");
-                    sb.Append("<td style='width:30px;'><center><b>NO</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>TANGGAL</b></center></td>");
-                    sb.Append("<td style='width:300px;'><center><b>NAMA OBAT</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>JUMLAH</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>SATUAN OBAT</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>HARGA AKTUAL</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>HET</b></center></td>");
-                    sb.Append("<td style='width:120px;'><center><b>PENYEDIA OBAT</b></center></td>");
+                    sb.Append("<td style='width:15px'></td>");
+                    sb.Append("<td style='width:35px;border:1px solid black;background-color: yellow;'><center><b>NO</b></center></td>");
+                    sb.Append("<td style='width:150px;border:1px solid black;background-color: yellow;'><center><b>TANGGAL</b></center></td>");
+                    sb.Append("<td style='width:300px;border:1px solid black;background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
+                    sb.Append("<td style='width:120px;border:1px solid black;background-color: yellow;'><center><b>JUMLAH</b></center></td>");
+                    sb.Append("<td style='width:120px;border:1px solid black;background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
+                    sb.Append("<td style='width:120px;border:1px solid black;background-color: yellow;'><center><b>HARGA AKTUAL</b></center></td>");
+                    sb.Append("<td style='width:120px;border:1px solid black;background-color: yellow;'><center><b>HET</b></center></td>");
+                    sb.Append("<td style='width:120px;border:1px solid black;background-color: yellow;'><center><b>PENYEDIA OBAT</b></center></td>");
                     sb.Append("</tr>");
 
                     int i = 1;
                     foreach (var result in pengadaanobat)
                     {
                         sb.Append("<tr>");
-                        sb.Append("<td>" + i + "</td>");
-                        sb.Append("<td>" + result.Tanggal + "</td>");
-                        sb.Append("<td>" + result.Obat + "</td>");
-                        sb.Append("<td>" + result.Jumlah + "</td>");
-                        sb.Append("<td>" + result.SatuanObat + "</td>");
-                        sb.Append("<td>" + result.HargaAktual + "</td>");
-                        sb.Append("<td>" + result.HET + "</td>");
-                        sb.Append("<td>" + result.PenyediaObat + "</td>");
+                        sb.Append("<td style='width:15px'></td>");
+                        sb.Append("<td style='border:1px solid black'>" + i + "</td>");
+                        sb.Append("<td style='border:1px solid black'>" + result.Tanggal + "</td>");
+                        sb.Append("<td style='border:1px solid black'>" + result.Obat + "</td>");
+                        sb.Append("<td style='border:1px solid black'>" + result.Jumlah + "</td>");
+                        sb.Append("<td style='border:1px solid black'>" + result.SatuanObat + "</td>");
+                        sb.Append("<td style='border:1px solid black'>" + result.HargaAktual + "</td>");
+                        sb.Append("<td style='border:1px solid black'>" + result.HET + "</td>");
+                        sb.Append("<td style='border:1px solid black'>" + result.PenyediaObat + "</td>");
                         sb.Append("</tr>");
                         i++;
                     }
+                    if (!string.IsNullOrEmpty(Obat) || !string.IsNullOrEmpty(PenyediaObat) || Year != null || !string.IsNullOrEmpty(Month) || Date != null)
+                    {
+                        if (!string.IsNullOrEmpty(Obat))
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               group a by new { b = Obat, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(PenyediaObat))
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (Year != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (Date != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal == Date
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(PenyediaObat))
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && Year != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && Date != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal == Date
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+
+                        if (!string.IsNullOrEmpty(PenyediaObat) && Year != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal.Value.Year == Year
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(PenyediaObat) && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(PenyediaObat) && Date != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal == Date
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(PenyediaObat) && Year != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(PenyediaObat) && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(PenyediaObat) && Date != null)
+                        {
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               where a.Tanggal == Date
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(PenyediaObat) && Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Tanggal.Value.Year == Year
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(PenyediaObat) && Year != null && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengadaanobat = (from a in db.PengadaanObat
+                                               where a.Obat.Nama == Obat
+                                               where a.PenyediaObat.Nama == PenyediaObat
+                                               where a.Tanggal.Value.Year == Year
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengadaanObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        sb.Append("<tr></tr>");
+                        sb.Append("<tr>");
+                        sb.Append("<td></td>");
+                        sb.Append("<td></td>");
+                        sb.Append("<td></td>");
+                        sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
+                        sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>TOTAL</b></center></td>");
+                        sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
+                        sb.Append("</tr>");
+                        foreach (var result in pengadaanobat)
+                        {
+                            sb.Append("<tr>");
+                            sb.Append("<td></td>");
+                            sb.Append("<td></td>");
+                            sb.Append("<td></td>");
+                            sb.Append("<td style='border:1px solid black;'><b>" + result.Obat + "</b></td>");
+                            sb.Append("<td style='border:1px solid black;'>" + result.Total + "</td>");
+                            sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
+                            sb.Append("</tr>");
+                        }
+                    }
+
                 }
-                string sFileName = "DATA PENGADAAN OBAT POLIKLINIK.xls";
+                string sFileName = "[" + DateTime.Now + "] DATA PENGADAAN OBAT POLIKLINIK IPB.xls";
                 HttpContext.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName);
 
                 Response.ContentType = "application/ms-excel";
@@ -222,10 +492,7 @@ namespace SipoliDev5.Controllers
         {
             ViewBag.PenyediaObatID = new SelectList(db.PenyediaObat, "ID", "Nama");
             ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
-            ViewBag.Jumlah1 = "";
-            ViewBag.ObatID1 = "";
-            ViewBag.HET1 = "";
-            ViewBag.HargaAktual1 = "";
+            ViewBag.count = 1;
             return View();
         }
 
@@ -248,6 +515,7 @@ namespace SipoliDev5.Controllers
             if (ModelState.IsValid)
             {
                 int count = Int32.Parse(Request["count"]);
+                ViewBag.count = count;
                 for (int kepo = 1; kepo <= count; kepo++)
                 {
                     var Jumlah = Request["Jumlah" + kepo + ""].ToString();
@@ -266,7 +534,11 @@ namespace SipoliDev5.Controllers
                     db.PengadaanObat.Add(pengadaanobat);
                     db.SaveChanges();
                 }
-                return RedirectToAction("Index");
+                
+                ViewBag.PenyediaObatID = new SelectList(db.PenyediaObat, "ID", "Nama", pengadaanobat.PenyediaObatID);
+                return View(pengadaanobat);
+                
+                //return RedirectToAction("Index");
             }
 
             ViewBag.PenyediaObatID = new SelectList(db.PenyediaObat, "ID", "Nama", pengadaanobat.PenyediaObatID);

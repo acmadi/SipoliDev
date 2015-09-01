@@ -19,15 +19,15 @@
 
         <div class="form-group">
             <label class="col-md-2 control-label">Tanggal</label>
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Tanggal, new { @class = "form-control" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.Tanggal, "{0:yyyy/MM/dd}", new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Tanggal)
             </div>
         </div>
 
         <div class="form-group">
             <label class="col-md-2 control-label">Nama Pasien</label>
-            <div class="col-md-10">
+            <div class="col-md-4">
                 @Html.DropDownList("PasienID", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.PasienID)
             </div>
@@ -35,7 +35,7 @@
 
         <div class="form-group">
             <label class="col-md-2 control-label">Nama Obat</label>
-            <div class="col-md-10">
+            <div class="col-md-4">
                 @Html.DropDownList("ObatID", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ObatID)
             </div>
@@ -43,7 +43,7 @@
 
         <div class="form-group">
             <label class="col-md-2 control-label">Jumlah</label>
-            <div class="col-md-10">
+            <div class="col-md-4">
                 @Html.TextBoxFor(model => model.Jumlah, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Jumlah)
             </div>

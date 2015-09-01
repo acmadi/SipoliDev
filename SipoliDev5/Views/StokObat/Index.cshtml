@@ -6,11 +6,16 @@
 @{
     ViewBag.Title = "Stok Obat";
 }
+    <style type="text/css">
+      ::-webkit-input-placeholder {
+      font-style: italic;
+      }
+    </style>
 
 <h2>Data Stok Obat</h2>
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-12">
         <!--Lokasi Tabel Partial-->
         <div class="panel panel-default">
             <!--Default panel Contents-->
@@ -24,29 +29,29 @@
                             <!--Pencarian Nama Obat-->
                             <div class="col-lg-12">
                                 <div class="col-lg-4">
+                                    @using (Html.BeginForm("ExportData", "StokObat", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        <button class="btn btn-sm btn-default col-lg-12" type="submit" name="Export" id="Export"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Ekspor Data Stok Obat</button>
+                                    }
+
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="btn-group" role="group" aria-label="Lokasi Klinik">
+                                        @Html.ActionLink("Darmaga", "Index", new { Klinik = "Dramaga" }, new { @class = "btn btn-default btn-sm" })
+                                        @Html.ActionLink("Baranangsiang", "Index", new { Klinik = "Baranang Siang" }, new { @class = "btn btn-default btn-sm" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
                                     @using (Html.BeginForm("Index", "StokObat", FormMethod.Get, new { enctype = "multipart/form-data" }))
                                     {
 
                                         <div class="input-group input-group-sm">
-                                            @Html.TextBox("Obat", "", new { @class = "form-control col-md-10" })
+                                            @Html.TextBox("Obat", "", new { @class = "form-control col-md-10", @placeholder="Masukkan nama obat" })
                                             <span class="input-group-btn">
                                                 <button class="btn btn-default" type="submit">Cari</button>
                                             </span>
                                         </div>
                                     }
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="btn-group" role="group" aria-label="Lokasi Klinik">
-                                        @Html.ActionLink("Darmaga", "Index", new { Klinik = "Darmaga" }, new { @class = "btn btn-default btn-sm" })
-                                        @Html.ActionLink("Baranangsiang", "Index", new { Klinik = "Baranangsiang" }, new { @class = "btn btn-default btn-sm" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    @using (Html.BeginForm("ExportData", "StokObat", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                    {
-                                        <button class="btn btn-xs btn-primary col-lg-12" type="submit" name="Export" id="Export"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Ekspor Data Stok Obat</button>
-                                    }
-
                                 </div>
                             </div>
                         </div>

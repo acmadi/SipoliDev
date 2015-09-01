@@ -1,0 +1,33 @@
+﻿@model IEnumerable<SipoliDev5.Models.GolonganObat>
+
+@{
+    ViewBag.Title = "Index";
+}
+<div class="row">
+    <div class="col-lg-8"><h4>Daftar Golongan Obat</h4></div>
+    <div class="col-lg-4">@Html.ActionLink("Tambah", "Create", "", new { @class = "btn btn-default btn-xs" })</div>
+</div>
+
+    
+<br />
+<table class="table">
+    <tr>
+        <th>
+           Nama
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nama)
+        </td>
+        <td>
+            @Html.ActionLink("Ubah", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Hapus", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

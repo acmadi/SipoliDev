@@ -18,7 +18,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label">Tanggal</label>
             <div class="col-md-4">
-                @Html.TextBoxFor(model => model.Tanggal, new { @class = "form-control", @id = "datepicker" })
+                @Html.TextBoxFor(model => model.Tanggal, "{0:yyyy/MM/dd}", new { @class = "form-control"})
                 @Html.ValidationMessageFor(model => model.Tanggal)
             </div>
         </div>
