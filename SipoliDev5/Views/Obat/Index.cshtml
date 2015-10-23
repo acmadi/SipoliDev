@@ -8,9 +8,10 @@
 }
 <style type="text/css">
     ::-webkit-input-placeholder {
-         font-style: italic;
-     }
+        font-style: italic;
+    }
 </style>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 <h2>Data Obat</h2>
 <hr />
 <div class="row">
@@ -28,7 +29,7 @@
                                 <div class="col-lg-3">
                                     @using (Html.BeginForm("ExportData", "Obat", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                     {
-                                        <button class="btn btn-xs btn-primary col-lg-12" type="submit" name="Export" id="Export"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Ekspor Data Obat</button>
+                                        <button class="btn btn-xs btn-primary col-lg-12" type="submit" name="Export" id="Export"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Ekspor Daftar Obat</button>
                                     }
                                    
                                 </div>
@@ -42,39 +43,8 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Nama Obat</label>
                                     <div class="col-md-4">
-                                        @*Html.TextBox("Nama", null, new { @class = "form-control" })*@
-                                        <input type="hidden" class="PasienID" name="PasienID" />
+                                        <input type="hidden" class="ObatID"/>
                                         @Html.TextBox("Nama", null, new { @id = "Obat", @class = "form-control", @placeholder="Masukkan nama obat" })
-                                        @*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
-                                        <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-                                        <script type="text/javascript">
-                                            $(document).ready(function () {
-                                                $("#Obat").autocomplete({//id textbox
-                                                    source: function (request, response) {
-                                                        $.ajax({
-                                                            url: "/Obat/GetDataObat",//URL action
-                                                            type: "POST",
-                                                            dataType: "json",
-                                                            data: { term: request.term },
-                                                            success: function (data) {
-                                                                response($.map(data, function (item) {
-                                                                    return {
-                                                                        label: item.label,
-                                                                        value: item.value,
-                                                                        id: item.id,
-                                                                    };
-                                                                }));
-                                                            },
-                                                            //
-                                                        })
-                                                    },
-                                                    select: function (event, ui) {
-                                                        //    //update the jquery selector here to your target hidden field
-                                                        $("input.PasienID").val(ui.item.id);//class RatingID
-                                                    }
-                                                });
-                                            });
-                                        </script>
                                     </div>
 
                                     <label class="col-md-2 control-label">Golongan</label>
@@ -89,8 +59,8 @@
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-4">
-                                        <button class="btn btn-md btn-default" type="submit">Cari</button>
-                                        @*Html.ActionLink("Refresh", "Index", "Obat", new { @class = "btn btn-md btn-success" })*@
+                                        <button class="btn btn-md btn-success" type="submit">Filter</button>
+                                        @Html.ActionLink("Reset", "Index", "Obat", new { @class = "btn btn-md btn-default" })
                                     </div> 
                                 </div>
                             </div>
@@ -153,10 +123,13 @@
                                             @Html.DisplayFor(modelItem => item.Kegunaan)
                                         </td>
                                         <td>
+                                        @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("Stafbaranangsiang"))
+                                        {
                                             <div class="btn-group-vertical" role="group" aria-label="...">
                                                 @Html.ActionLink("Ubah", "Edit", new { id = item.ID }, new { @class = "btn btn-warning btn-xs" })
                                                 @Html.ActionLink("Hapus", "Delete", new { @id = item.ID }, new { @class = "modal-link btn btn-danger btn-xs" })
                                             </div>
+                                        }
                                         </td>
                                     </tr>
                                     i = i+1;
@@ -181,6 +154,8 @@
     </div>
 
     <div class="col-lg-4">
+@if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+{
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
@@ -213,6 +188,7 @@
                 </div>
             </div>
         </div>
+}
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
@@ -233,28 +209,39 @@
         </div>
      </div>
 </div>  
+                     @*AUTOCOMPLETE AJAX NAMA OBAT*@
+                     <script type="text/javascript">
+                         $(document).ready(function () {
+                             $("#Obat").autocomplete({
+                                 source: function (request, response) {
+                                     $.ajax({
+                                         url: "/Obat/GetDataObat",
+                                         type: "POST",
+                                         dataType: "json",
+                                         data: { term: request.term },
+                                         success: function (data) {
+                                             response($.map(data, function (item) {
 
-<div class="modal fade" id="modal-container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+                                                 return {
+                                                     label: item.label,
+                                                     value: item.value,
+                                                     id: item.id,
+                                                 };
+                                             }));
 
-<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-    $(function () {
-        $('body').on('click', '.modal-link', function (e) {
-            e.preventDefault();
-            $(this).attr('data-target', '#modal-container');
-            $(this).attr('data-toggle', 'modal');
-        });
-        // Attach listener to .modal-close-btn's so that when the button is pressed the modal dialog disappears
-        $('body').on('click', '.modal-close-btn', function () {
-            $('#modal-container').modal('hide');
-        });
-        //clear modal cache, so that new content can be loaded
-        $('#modal-container').on('hidden.bs.modal', function () {
-            $(this).removeData('bs.modal');
-        });
-        $('#CancelModal').on('click', function () {
-            return false;
-        });
-    });
-</script>
-         
+                                         },
+                                         //
+                                     })
+                                 },
+                                 select: function (event, ui) {
+                                     $("input.ObatID").val(ui.item.id);
+                                 },
+                             });
+
+                         });
+                     </script>
+<!--munculin modal-->
+
+
+                    
+

@@ -15,6 +15,7 @@ using System.Web.Security;
 
 namespace SipoliDev5.Controllers
 {
+    [Authorize]
     public class ObatController : Controller
     {
         private EntitiesConnection db = new EntitiesConnection();
@@ -139,7 +140,8 @@ namespace SipoliDev5.Controllers
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
             return File(buffer, "application/vnd.ms-excel");
         }
-       
+
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public PartialViewResult _Create()
         {
             ViewBag.GolonganObatID = new SelectList(db.GolonganObat, "ID", "Nama");
@@ -151,6 +153,7 @@ namespace SipoliDev5.Controllers
         // POST: /Obat/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Obat obat)
@@ -218,6 +221,7 @@ namespace SipoliDev5.Controllers
         }
 
         // GET: /Obat/Edit/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -239,6 +243,7 @@ namespace SipoliDev5.Controllers
         // POST: /Obat/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Obat obat, string before)
@@ -284,6 +289,7 @@ namespace SipoliDev5.Controllers
         }
 
         // GET: /Obat/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -300,6 +306,7 @@ namespace SipoliDev5.Controllers
         }
 
         // POST: /Obat/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

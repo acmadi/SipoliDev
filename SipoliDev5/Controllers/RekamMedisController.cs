@@ -98,8 +98,8 @@ namespace SipoliDev5.Models
             var j = 1;
             foreach (var itemData in data1)
             {
-                data2.Add(new DaftarPasien(j,itemData.ID,itemData.Nama,itemData.TanggalLahir,
-                    itemData.TempatLahir,itemData.JenisKelaminID,null,null,null,null,null));
+                data2.Add(new DaftarPasien(j, itemData.ID, itemData.Nama, itemData.TanggalLahir,
+                    itemData.TempatLahir, itemData.JenisKelaminID, null, null, null, null, null));
                 j++;
             }
 
@@ -173,18 +173,18 @@ namespace SipoliDev5.Models
                     data1 = data1.OrderBy(s => s.Nama);
                     break;
             }
-            
-            
+
+
             var j = 1;
-            
+
             List<DaftarPasien> data2 = new List<DaftarPasien>();
             foreach (var itemData in data1)
             {
                 data2.Add(new DaftarPasien(j, itemData.ID, itemData.Nama, itemData.TanggalLahir, itemData.TempatLahir,
-                    itemData.JenisKelaminID, null, itemData.NIM,null,null,null));
+                    itemData.JenisKelaminID, null, itemData.NIM, null, null, null));
                 j++;
             }
- 
+
 
             return PartialView(data2.ToList().ToPagedList(page ?? 1, 10));
         }
@@ -256,7 +256,7 @@ namespace SipoliDev5.Models
                     data1 = data1.OrderBy(s => s.Nama);
                     break;
             }
-            
+
 
             var j = 1;
 
@@ -264,7 +264,7 @@ namespace SipoliDev5.Models
             foreach (var itemData in data1)
             {
                 data2.Add(new DaftarPasien(j, itemData.ID, itemData.Nama, itemData.TanggalLahir, itemData.TempatLahir,
-                    itemData.JenisKelaminID, null, itemData.NIM,null,null,null));
+                    itemData.JenisKelaminID, null, itemData.NIM, null, null, null));
                 j++;
             }
 
@@ -345,7 +345,7 @@ namespace SipoliDev5.Models
             foreach (var itemData in data1)
             {
                 data2.Add(new DaftarPasien(j, itemData.ID, itemData.Nama, itemData.TanggalLahir, itemData.TempatLahir,
-                    itemData.JenisKelaminID, null, itemData.NIM,null,null,null));
+                    itemData.JenisKelaminID, null, itemData.NIM, null, null, null));
                 j++;
             }
 
@@ -426,14 +426,14 @@ namespace SipoliDev5.Models
             foreach (var itemData in data1)
             {
                 data2.Add(new DaftarPasien(j, itemData.ID, itemData.Nama, itemData.TanggalLahir, itemData.TempatLahir,
-                    itemData.JenisKelaminID, null, itemData.NIM,null,null,null));
+                    itemData.JenisKelaminID, null, itemData.NIM, null, null, null));
                 j++;
             }
 
             return PartialView(data2.ToList().ToPagedList(page ?? 1, 10));
         }
 
-        [Authorize(Roles="Admin,Staf,Dokter,Pemeriksa")]
+        [Authorize(Roles = "Admin,Staf,Dokter,Pemeriksa")]
         public PartialViewResult _RmSeseorang(int? id, int? page)
         {
             var data1 = (from Rm in db.RekamMedik
@@ -476,7 +476,7 @@ namespace SipoliDev5.Models
 
         }
 
-        [Authorize(Roles="Admin,Staf,Dokter,Pemeriksa")]
+        [Authorize(Roles = "Admin,Staf,Dokter,Pemeriksa")]
         public ActionResult DetailRekamMedis(int? id, int? page)
         {
             ViewBag.id = id;
@@ -492,7 +492,7 @@ namespace SipoliDev5.Models
             ViewBag.id = id;
             ViewBag.page = page;
 
-            return new ViewAsPdf("DetailRMTercetak","Empty",null);
+            return new ViewAsPdf("DetailRMTercetak", "Empty", null);
         }
 
         [Authorize(Roles = "Admin,Staf,Pemeriksa")]
@@ -746,8 +746,8 @@ namespace SipoliDev5.Models
             List<DaftarPasien> data2 = new List<DaftarPasien>();
             foreach (var itemData in data1)
             {
-                data2.Add(new DaftarPasien(j,itemData.ID,itemData.Nama,itemData.TanggalLahir,
-                    itemData.TempatLahir,itemData.JenisKelaminID,null,null,itemData.NIDN,itemData.NoKTP,null));
+                data2.Add(new DaftarPasien(j, itemData.ID, itemData.Nama, itemData.TanggalLahir,
+                    itemData.TempatLahir, itemData.JenisKelaminID, null, null, itemData.NIDN, itemData.NoKTP, null));
                 j++;
             }
 
@@ -827,8 +827,8 @@ namespace SipoliDev5.Models
             List<DaftarPasien> data2 = new List<DaftarPasien>();
             foreach (var itemData in data1)
             {
-                data2.Add(new DaftarPasien(j,itemData.ID,itemData.Nama,itemData.TanggalLahir,itemData.TempatLahir,
-                    itemData.JenisKelaminID,null,null,null,itemData.NoKTP,null));
+                data2.Add(new DaftarPasien(j, itemData.ID, itemData.Nama, itemData.TanggalLahir, itemData.TempatLahir,
+                    itemData.JenisKelaminID, null, null, null, itemData.NoKTP, null));
                 j++;
             }
 
@@ -844,7 +844,7 @@ namespace SipoliDev5.Models
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        [Authorize(Roles="Admin,Staf,Pemeriksa,Dokter")]
+        [Authorize(Roles = "Admin,Staf,Pemeriksa,Dokter")]
         public PartialViewResult _IdentitasPasien(int? id)
         {
             /*
@@ -927,7 +927,7 @@ namespace SipoliDev5.Models
             return PartialView("_RiwayatPenyakit", listRiwayatPenyakit);
         }
 
-        
+
         public PartialViewResult _FormRiwayatPenyakit(int? id)
         {
             ViewBag.id = id;
@@ -1017,7 +1017,7 @@ namespace SipoliDev5.Models
             return PartialView("_RiwayatPenyakitKeluarga", listRiwayatPenyakitKeluarga);
         }
 
-       
+
         public PartialViewResult _FormRiwayatPenyakitKeluarga(int? id)
         {
             ViewBag.id = id;
@@ -1123,7 +1123,7 @@ namespace SipoliDev5.Models
             return PartialView("_KelainanBawaan", listKelainan);
         }
 
-        
+
         public PartialViewResult _FormKelainanBawaan(int? id)
         {
             ViewBag.id = id;
@@ -1207,7 +1207,7 @@ namespace SipoliDev5.Models
 
         public PartialViewResult DetailHasilPeriksa(int? id, int? idPasien)
         {
-            
+
             RekamMedik rekammedik = db.RekamMedik.Find(id);
 
             return PartialView(rekammedik);
@@ -1242,8 +1242,8 @@ namespace SipoliDev5.Models
             var j = 1;
             foreach (var item in data1)
             {
-                data2.Add(new ResepObatView(j,item.ID,item.RekamMedisID,item.ObatID,item.NamaObat,item.Jumlah,
-                    item.SatuanObatID,item.NamaSatuanObat,item.Pemakaian,item.isDihabiskan,item.isSetelahMakan));
+                data2.Add(new ResepObatView(j, item.ID, item.RekamMedisID, item.ObatID, item.NamaObat, item.Jumlah,
+                    item.SatuanObatID, item.NamaSatuanObat, item.Pemakaian, item.isDihabiskan, item.isSetelahMakan));
                 j++;
             }
 
@@ -1255,7 +1255,8 @@ namespace SipoliDev5.Models
         public PartialViewResult _CreateDataResep(int? id)
         {
             ViewBag.RekamMedikID = id;
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
+            var obat = from r in db.StokObat where r.KlinikID == 2 select new {ID=r.Obat.ID, Nama=r.Obat.Nama+" [sisa:"+r.Stok+"]" };
+            ViewBag.ObatID = new SelectList(obat, "ID", "Nama");
             ViewBag.SatuanObatID = new SelectList(db.SatuanObat, "ID", "Nama");
 
             var selectListItemDihabiskan = new List<SelectListItem>();
@@ -1274,8 +1275,10 @@ namespace SipoliDev5.Models
         [Authorize(Roles = "Admin,Dokter,Pemeriksa")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult _CreateDataResep([Bind(Include="ID,RekamMedikID,ObatID,Jumlah,SatuanObatID,Pemakaian,isDihabiskan,isSetelahMakan")] ResepObat resepObat){
-            if(ModelState.IsValid){
+        public ActionResult _CreateDataResep([Bind(Include = "ID,RekamMedikID,ObatID,Jumlah,SatuanObatID,Pemakaian,isDihabiskan,isSetelahMakan")] ResepObat resepObat)
+        {
+            if (ModelState.IsValid)
+            {
                 db.ResepObat.Add(resepObat);
                 db.SaveChanges();
             }
@@ -1337,10 +1340,10 @@ namespace SipoliDev5.Models
         public ActionResult DeleteResepObat(int id, int RekamMedikID)
         {
             ResepObat resepObat = db.ResepObat.Find(id);
-            
+
             db.ResepObat.Remove(resepObat);
             db.SaveChanges();
-            return RedirectToAction("_ResepObat", new { id = RekamMedikID});
+            return RedirectToAction("_ResepObat", new { id = RekamMedikID });
         }
 
 
@@ -1425,7 +1428,7 @@ namespace SipoliDev5.Models
                 return HttpNotFound();
             }
 
-            RekamMedisConst rekamMedis = new RekamMedisConst(data.ID,data.LokasiklinikID, (int)data.PasienID, (DateTime)data.Tanggal,
+            RekamMedisConst rekamMedis = new RekamMedisConst(data.ID, data.LokasiklinikID, (int)data.PasienID, (DateTime)data.Tanggal,
                 data.AnamnesaDiagnosa, data.Therapie, (int)data.DokterID);
 
             //ViewBag.PasienID = new SelectList(db.Orangs, "ID", "Nama", rekammedik.PasienID);
@@ -1458,7 +1461,7 @@ namespace SipoliDev5.Models
         }
 
         // GET: /RekamMedis/Delete/5
-        [Authorize(Roles = "Admin,Dokter,Pemeriksa")]
+        [Authorize(Roles = "Admin,Dokter,Pemeriksa,stafbaranangsiang")]
         public ActionResult Delete(int? id, int? OrangID)
         {
             if (id == null)

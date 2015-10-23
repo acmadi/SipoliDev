@@ -11,10 +11,12 @@ namespace SipoliDev5.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class PengeluaranObat
     {
         public int ID { get; set; }
+        [Required(ErrorMessage = "Tidak boleh kosong")]
         public Nullable<System.DateTime> Tanggal { get; set; }
         public Nullable<int> KlinikID { get; set; }
         public Nullable<int> PasienID { get; set; }

@@ -14,6 +14,7 @@ using SipoliDev5.Models.ViewModels;
 using System.Data.Entity.Infrastructure;//view model
 namespace SipoliDev5.Controllers
 {
+    [Authorize]
     public class PengeluaranObatDMGController : Controller
     {
         private EntitiesConnection db = new EntitiesConnection();
@@ -33,10 +34,22 @@ namespace SipoliDev5.Controllers
 
         public JsonResult GetDataObat(string term)
         {
-            var obat = (from r in db.Obat
-                        where r.Nama.ToLower().Contains(term.ToLower())
-                        select new { label = r.Nama, value = r.Nama, id = r.ID });//query
+            var obat = (from r in db.StokObat
+                        where r.Obat.Nama.ToLower().Contains(term.ToLower())
+                        where r.KlinikID == 1
+                        select new { label = r.Obat.Nama, value = r.Obat.Nama, id = r.ID });//query
             return Json(obat, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetDataPasienFilter(string term)
+        {
+            var result = (from r in db.Orang
+                          from i in db.PengeluaranObat
+                          where r.ID == i.PasienID
+                          where i.KlinikID == 1
+                          where r.Nama.ToLower().Contains(term.ToLower())
+                          select new { label = r.Nama, value = r.Nama, id = r.ID }).Distinct();//query
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         // GET: /PengeluaranObat/
@@ -166,7 +179,7 @@ namespace SipoliDev5.Controllers
                     sb.Append("<tr>");
                     sb.Append("<td style='width:15px'></td>");
                     sb.Append("<td style='width:150px; border:1px solid black; background-color: yellow;'><center><b>TANGGAL</b></center></td>");
-                    sb.Append("<td style='width:300px; border:1px solid black; background-color: yellow;'><center><b>NAMA PASIEN</b></center></td>"); 
+                    sb.Append("<td style='width:300px; border:1px solid black; background-color: yellow;'><center><b>NAMA PASIEN</b></center></td>");
                     sb.Append("<td style='width:300px; border:1px solid black; background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
                     sb.Append("<td style='width:120px; border:1px solid black; background-color: yellow;'><center><b>JUMLAH</b></center></td>");
                     sb.Append("<td style='width:200px; border:1px solid black; background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
@@ -177,7 +190,7 @@ namespace SipoliDev5.Controllers
                         sb.Append("<tr>");
                         sb.Append("<td style='width:15px'></td>");
                         sb.Append("<td style='border:1px solid black;'>" + result.Tanggal + "</td>");
-                        sb.Append("<td style='border:1px solid black;'>" + result.Pasien + "</td>"); 
+                        sb.Append("<td style='border:1px solid black;'>" + result.Pasien + "</td>");
                         sb.Append("<td style='border:1px solid black;'>" + result.Obat + "</td>");
                         sb.Append("<td style='border:1px solid black;'>" + result.Jumlah + "</td>");
                         sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
@@ -487,7 +500,7 @@ namespace SipoliDev5.Controllers
                         sb.Append("<tr>");
                         sb.Append("<td></td>");
                         sb.Append("<td></td>");
-                        sb.Append("<td></td>"); 
+                        sb.Append("<td></td>");
                         sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
                         sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>TOTAL</b></center></td>");
                         sb.Append("<td style='border:1px solid black;background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
@@ -497,7 +510,7 @@ namespace SipoliDev5.Controllers
                             sb.Append("<tr>");
                             sb.Append("<td></td>");
                             sb.Append("<td></td>");
-                            sb.Append("<td></td>"); 
+                            sb.Append("<td></td>");
                             sb.Append("<td style='border:1px solid black;'><b>" + result.Obat + "</b></td>");
                             sb.Append("<td style='border:1px solid black;'>" + result.Total + "</td>");
                             sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
@@ -559,7 +572,7 @@ namespace SipoliDev5.Controllers
             return View(pengeluaranobat.ToList().ToPagedList(page ?? 1, 20));
         }
 
-        
+
 
         // GET: /PengeluaranObatDMG/Details/5
         public ActionResult Details(int? id)
@@ -577,23 +590,35 @@ namespace SipoliDev5.Controllers
         }
 
         // GET: /PengeluaranObatDMG/Create
+        [Authorize(Roles = "Admin,Staf,StafDramaga")]
         public ActionResult Create()
         {
             ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama");
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
             ViewBag.PasienID = new SelectList(db.Orang, "ID", "Nama");
+
+            ViewBag.count = 1;
+            string[] temp = new string[100];
+            ViewBag.Jumlah = temp;
+            ViewBag.JumlahError = "";
+            ViewBag.JumlahError2 = "";
+            ViewBag.Obat = temp;
+            ViewBag.ONama = temp;
+            ViewBag.ObatError = "";
+
             return View();
         }
 
         // POST: /PengeluaranObatDMG/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafDramaga")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(PengeluaranObat pengeluaranobat)
         {
             if (ModelState.IsValid)
             {
+                /*
                 int count = Int32.Parse(Request["count"]);
                 for (int kep = 1; kep <= count; kep++)
                 {
@@ -601,20 +626,218 @@ namespace SipoliDev5.Controllers
                     var ObatID = Request["ObatID" + kep + ""].ToString();
                     if (Jumlah == null)
                         Int32.Parse(Jumlah);
-                    pengeluaranobat.Jumlah = Int32.Parse(Jumlah);
-                    pengeluaranobat.ObatID = Int32.Parse(ObatID);
-                    db.PengeluaranObat.Add(pengeluaranobat);
+                    hispengeluaranobat.Jumlah= Int32.Parse(Jumlah);
+                    hispengeluaranobat.ObatID = Int32.Parse(ObatID);
+                    db.PengeluaranObat.Add(hispengeluaranobat);
                     db.SaveChanges();
                 }
                 return RedirectToAction("Index");
+                */
+
+                int count = Int32.Parse(Request["count"]);
+                ViewBag.count = count;
+                var arrayJumlah = new string[100];
+                var arrayObat = new string[100];
+                var arrayONama = new string[100];
+                int[] arrayObatIDInt = new int[100];
+                bool adaEN = false;
+                bool adaEJ = false;
+                bool adaEO = false;
+                bool adaEJ2 = false;
+                string baris1 = "", baris2 = "", baris3 = "";
+
+                var Nama = Request["PasienID"];
+                if (!String.IsNullOrEmpty(Nama))
+                {
+                    ViewBag.NamaError = "";
+                    ViewBag.Nama = Nama;
+                }
+                else
+                {
+                    ViewBag.Nama = "";
+                    adaEN = true;
+                }
+
+                for (int kepo = 1; kepo <= count; kepo++)
+                {
+                    var Jumlah = Request["Jumlah" + kepo + ""];
+                    if (!String.IsNullOrEmpty(Jumlah))
+                    {
+                        ViewBag.JumlahError = "";
+                        arrayJumlah[kepo] = Jumlah;
+                    }
+                    else
+                    {
+                        arrayJumlah[kepo] = "";
+                        adaEJ = true;
+                        if (baris1 == "")
+                            baris1 += kepo.ToString();
+                        else
+                            baris1 += ", " + kepo.ToString();
+                    }
+
+                    var ObatID = Request["ObatID" + kepo + ""];
+                    if (!String.IsNullOrEmpty(ObatID) && ObatID != "--Pilih Obat--")
+                    {
+                        //@ViewBag.JumlahError = "";
+                        string[] words = ObatID.Split('&');
+                        arrayObatIDInt[kepo] = int.Parse(words[0]);
+                        //ViewBag.word = ObatID;
+                        arrayONama[kepo] = words[1];
+                        arrayObat[kepo] = ObatID;
+
+                        string[] stok = words[1].Split(':', '[', ']');
+                        //ViewBag.Coba = stok[2];
+                        int now = 0;
+                        if (!String.IsNullOrEmpty(Jumlah))
+                        {
+                            now = int.Parse(Jumlah);
+                        }
+                        if (now > int.Parse(stok[2]))
+                        {
+                            adaEJ2 = true;
+                            if (baris3 == "")
+                                baris3 += kepo.ToString();
+                            else
+                                baris3 += ", " + kepo.ToString();
+                        }
+                    }
+                    else
+                    {
+                        //ViewBag.JumlahError = "Form nama obat tidak boleh kosong";
+                        arrayObat[kepo] = "";
+                        adaEO = true;
+                        if (baris2 == "")
+                            baris2 += kepo.ToString();
+                        else
+                            baris2 += ", " + kepo.ToString();
+                    }
+                }
+
+                if (adaEJ) ViewBag.JumlahError = "Jumlah obat harus diisi pada baris " + baris1 + ".";
+                if (adaEO) ViewBag.ObatError = "Nama obat harus diisi pada baris " + baris2 + ".";
+                if (adaEJ2) ViewBag.JumlahError2 = "Jumlah pengeluaran obat pada baris " + baris3 + " melebihi stok yang tersedia.";
+                if (adaEN) ViewBag.NamaError = "Nama pasien harus diisi.";
+
+                if (!adaEJ && !adaEO && !adaEJ2 && !adaEN)
+                {
+                    for (int kepo = 1; kepo <= count; kepo++)
+                    {
+                        pengeluaranobat.Jumlah = Int32.Parse(arrayJumlah[kepo]);
+                        pengeluaranobat.ObatID = arrayObatIDInt[kepo];
+                        db.PengeluaranObat.Add(pengeluaranobat);
+                        db.SaveChanges();
+                    }
+                    return RedirectToAction("Index");
+                }
+                ViewBag.Jumlah = arrayJumlah;
+                ViewBag.ONama = arrayONama;
+                ViewBag.Obat = arrayObat;
+
+                ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", pengeluaranobat.KlinikID);
+
+                return View(pengeluaranobat);
             }
-           
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama", pengeluaranobat.ObatID);
-            ViewBag.PasienID = new SelectList(db.Orang, "ID", "Nama", pengeluaranobat.PasienID);
-            return View(pengeluaranobat);
+            else
+            {
+                int count = Int32.Parse(Request["count"]);
+                ViewBag.count = count;
+                var arrayJumlah = new string[100];
+                var arrayObat = new string[100];
+                var arrayONama = new string[100];
+                int[] arrayObatIDInt = new int[100];
+                bool adaEN = false;
+                bool adaEJ = false;
+                bool adaEO = false;
+                bool adaEJ2 = false;
+                string baris1 = "", baris2 = "", baris3 = "";
+
+                var Nama = Request["PasienID"];
+                if (!String.IsNullOrEmpty(Nama))
+                {
+                    ViewBag.NamaError = "";
+                    ViewBag.Nama = Nama;
+                }
+                else
+                {
+                    ViewBag.Nama = "";
+                    adaEN = true;
+                }
+
+                for (int kepo = 1; kepo <= count; kepo++)
+                {
+                    var Jumlah = Request["Jumlah" + kepo + ""];
+                    if (!String.IsNullOrEmpty(Jumlah))
+                    {
+                        ViewBag.JumlahError = "";
+                        arrayJumlah[kepo] = Jumlah;
+                    }
+                    else
+                    {
+                        arrayJumlah[kepo] = "";
+                        adaEJ = true;
+                        if (baris1 == "")
+                            baris1 += kepo.ToString();
+                        else
+                            baris1 += ", " + kepo.ToString();
+                    }
+
+                    var ObatID = Request["ObatID" + kepo + ""];
+                    if (!String.IsNullOrEmpty(ObatID) && ObatID != "--Pilih Obat--")
+                    {
+                        //@ViewBag.JumlahError = "";
+                        string[] words = ObatID.Split('&');
+                        arrayObatIDInt[kepo] = int.Parse(words[0]);
+                        //ViewBag.word = ObatID;
+                        arrayONama[kepo] = words[1];
+                        arrayObat[kepo] = ObatID;
+
+                        string[] stok = words[1].Split(':', '[', ']');
+                        //ViewBag.Coba = stok[2];
+                        int now = 0;
+                        if (!String.IsNullOrEmpty(Jumlah))
+                        {
+                            now = int.Parse(Jumlah);
+                        }
+                        if (now > int.Parse(stok[2]))
+                        {
+                            adaEJ2 = true;
+                            if (baris3 == "")
+                                baris3 += kepo.ToString();
+                            else
+                                baris3 += ", " + kepo.ToString();
+                        }
+                    }
+                    else
+                    {
+                        //ViewBag.JumlahError = "Form nama obat tidak boleh kosong";
+                        arrayObat[kepo] = "";
+                        adaEO = true;
+                        if (baris2 == "")
+                            baris2 += kepo.ToString();
+                        else
+                            baris2 += ", " + kepo.ToString();
+                    }
+                }
+
+                if (adaEJ) ViewBag.JumlahError = "Jumlah obat harus diisi pada baris " + baris1 + ".";
+                if (adaEO) ViewBag.ObatError = "Nama obat harus diisi pada baris " + baris2 + ".";
+                if (adaEJ2) ViewBag.JumlahError2 = "Jumlah pengeluaran obat pada baris " + baris3 + " melebihi stok yang tersedia.";
+                if (adaEN) ViewBag.NamaError = "Nama pasien harus diisi.";
+
+                ViewBag.Jumlah = arrayJumlah;
+                ViewBag.ONama = arrayONama;
+                ViewBag.Obat = arrayObat;
+
+                ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", pengeluaranobat.KlinikID);
+
+                //return RedirectToAction("Index");
+                return View(pengeluaranobat);
+            }
         }
 
         // GET: /PengeluaranObatDMG/Edit/5
+        [Authorize(Roles = "Admin,Staf,StafDramaga")]
         public ActionResult Edit(int? id, bool? E, bool? E1, bool? E2, bool? E3, bool? E4, string S)
         {
             if (id == null)
@@ -626,8 +849,13 @@ namespace SipoliDev5.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama", pengeluaranobat.ObatID);
-            ViewBag.PasienID = new SelectList(db.Orang, "ID", "Nama", pengeluaranobat.PasienID);
+            var pasien = (from r in db.Orang
+                          from i in db.RekamMedik
+                          where r.ID == i.PasienID
+                          select new { Nama = r.Nama, ID = r.ID }).Distinct();
+            var obat = from r in db.StokObat where r.KlinikID == 1 where r.Stok > 0 select new { ID = r.Obat.ID, Nama = r.Obat.Nama, Stok = r.Stok };
+            ViewBag.ObatID = new SelectList(obat, "ID", "Nama", pengeluaranobat.ObatID);
+            ViewBag.PasienID = new SelectList(pasien, "ID", "Nama", pengeluaranobat.PasienID);
 
             //simpan jumlah stok sblm diedit
             ViewBag.jmlsblmedit = pengeluaranobat.Jumlah;
@@ -661,6 +889,7 @@ namespace SipoliDev5.Controllers
         // POST: /PengeluaranObatDMG/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafDramaga")]
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(int? id, PengeluaranObat pengeluaranobat, string jmlsblmedit)
@@ -735,10 +964,11 @@ namespace SipoliDev5.Controllers
                 }
             }
             //kalau gagal, kembali ke action edit
-            return RedirectToAction("Edit", new { E = ViewBag.E, E1 = ViewBag.E1, E2 = ViewBag.E2, E3 = ViewBag.E3, E4 = ViewBag.E4, S = ViewBag.stoksaatedit});
+            return RedirectToAction("Edit", new { E = ViewBag.E, E1 = ViewBag.E1, E2 = ViewBag.E2, E3 = ViewBag.E3, E4 = ViewBag.E4, S = ViewBag.stoksaatedit });
         }
 
         // GET: /PengeluaranObatDMG/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafDramaga")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -754,6 +984,7 @@ namespace SipoliDev5.Controllers
         }
 
         // POST: /PengeluaranObatDMG/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafDramaga")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

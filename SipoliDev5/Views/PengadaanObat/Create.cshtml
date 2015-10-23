@@ -1,13 +1,13 @@
 ﻿@model SipoliDev5.Models.PengadaanObat
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Tambah Pengadaan Obat";
 }
 
 @using (Html.BeginForm("Create", "PengadaanObat", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h2>Tambah Pengadaan Obat</h2>
         <hr />
@@ -28,7 +28,6 @@
                 @Html.ValidationMessageFor(model => model.PenyediaObatID)
             </div>
         </div>
-
         <table class="table table-striped">
             <tr>
                 <th class="text-primary">Nama Obat</th>
@@ -40,73 +39,109 @@
                 <td>
                     <div id='DropDownListGroup'>
                         @{
-                            for (int i = 1; i <= ViewBag.count;i++)
-                            {
-                                <br />
-                                <div id="DropDownListDiv1">
-                                    @*Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1", })*@
-                                    <select name="ObatID@{@i}" id="ObatID@{@i}" class="form-control"><option value="">--Pilih Obat--</option></select>
-                                    @Html.ValidationMessageFor(model => model.ObatID)
-                                </div>
-                            }
+    var arrayObat = ViewBag.Obat;
+    var arrayONama = ViewBag.ONama;
+    for (int i = 1; i <= ViewBag.count; i++)
+    {
+        <br />
+                            <div id="DropDownListDiv@{@i}">
+                                @*Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1", })*@
+                                <select name="ObatID@{@i}" id="ObatID@{@i}" class="form-control">
+                                    <option value="@arrayObat[i]">
+                                        @{
+        if (string.IsNullOrEmpty(arrayONama[i]))
+        {
+            <strong>--Pilih Obat--</strong>
+        }
+        else
+        {
+            @arrayONama[i];
+        }
+                                        }
+                                    </option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.ObatID)
+                            </div>
+    }
                         }
                     </div>
                 </td>
-               
-                        <td>
-                            <div id='TextBoxesGroup'>
-                            @{
-                        for(int i=1;i<=ViewBag.count;i++){
-                            <br />
-                            <div id="TextBoxDiv1">
-                                <input type="text" name="Jumlah@{@i}" class="form-control" id="Jumlah@{@i}" value="" />
-                                        @Html.ValidationMessageFor(model => model.Jumlah)
-                                    </div>
-                        }
-                    }
+
+                <td>
+                    <div id='TextBoxesGroup'>
+                        @{
+    var arrayJumlah = ViewBag.Jumlah;
+    for (int i = 1; i <= ViewBag.count; i++)
+    {
+        <br />
+                            <div id="TextBoxDiv@{@i}">
+                                <input type="number" min="1" name="Jumlah@{@i}" class="form-control" id="Jumlah@{@i}" value="@arrayJumlah[i]" />
+                                @Html.ValidationMessageFor(model => model.Jumlah)
                             </div>
-                        </td>
-                        <td>
-                            <div id='TextBoxes1Group'>
-                            @{
-                        for(int i=1;i<=ViewBag.count;i++){
-                            <br />
-                            <div id="TextBox1Div1">
-                                <input type="text" name="HargaAktual@{@i}" class="form-control" id="HargaAktual@{@i}" value="" />
-                                        @Html.ValidationMessageFor(model => model.HargaAktual)
-                                    </div>
+    }
                         }
-                    }
+                    </div>
+                </td>
+                <td>
+                    <div id='TextBoxes1Group'>
+                        @{
+    var arrayAktual = ViewBag.Aktual;
+    for (int i = 1; i <= ViewBag.count; i++)
+    {
+        <br />
+                            <div id="TextBox1Div@{@i}">
+                                <input type="number" min="0" name="HargaAktual@{@i}" class="form-control" id="HargaAktual@{@i}" value="@arrayAktual[i]" />
+                                @Html.ValidationMessageFor(model => model.HargaAktual)
                             </div>
-                        </td>
-                        <td>
-                            <div id='TextBoxes2Group'>
-                             @{
-                        for(int i=1;i<=ViewBag.count;i++){
-                            <br />
-                            <div id="TextBox2Div1">
-                                <input type="text" name="HET@{@i}" class="form-control" id="HET@{@i}" value="" />
-                                        @Html.ValidationMessageFor(model => model.HET)
-                                    </div>
+    }
                         }
-                     }
+                    </div>
+                </td>
+                <td>
+                    <div id='TextBoxes2Group'>
+                        @{
+    var arrayHET = ViewBag.HET;
+    for (int i = 1; i <= ViewBag.count; i++)
+    {
+        <br />
+                            <div id="TextBox2Div@{@i}">
+                                <input type="number" min="0" name="HET@{@i}" class="form-control" id="HET@{@i}" value="@arrayHET[i]" />
+                                @Html.ValidationMessageFor(model => model.HET)
                             </div>
-                            <br />
-                            <input type="hidden" id="count" value="@ViewBag.count" name="count" />
-                            <input type='button' value='Tambah Obat' id='addButton' class="btn btn-default">
-                            <input type='button' value='Hapus' id='removeButton' class="btn btn-default" />
-                            <input type="submit" value="Simpan" class="btn btn-primary" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
+    }
+                        }
+                    </div>
+                    <br />
+                    <input type="hidden" id="count" value="@ViewBag.count" name="count" />
+                    <input type='button' value='Tambah Obat' id='addButton' class="btn btn-default">
+                    <input type='button' value='Hapus' id='removeButton' class="btn btn-default" />
+                    <input type="submit" value="Simpan" class="btn btn-primary" />
+                </td>
+            </tr>
+        </table>
+    </div>
 }
 
-        <div>
-            @Html.ActionLink("Kembali", "Index")
+<div>
+    @if (!string.IsNullOrEmpty(ViewBag.JumlahError))
+    {
+        <div class="alert alert-danger alert-error">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> @ViewBag.JumlahError
         </div>
+    }
 
-        <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+    @if (!string.IsNullOrEmpty(ViewBag.ObatError))
+    {
+        <div class="alert alert-danger alert-error">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> @ViewBag.ObatError
+        </div>
+    }
+    <br />
+    @Html.ActionLink("Kembali", "Index")
+</div>
+
 <script type="text/javascript">
     $(document).ready(function () {
         var counter = $("#count").val();
@@ -116,23 +151,25 @@
         }
         j = 1;
         $("#addButton").click(function () {
+            var counter = $("#count").val();
+            //alert(counter);
             counter++;
             //textbox
             var newTextBoxDiv = $(document.createElement('div'))
                  .attr("id", 'TextBoxDiv' + counter);
-            newTextBoxDiv.after().html('<br/><input type="text" name="Jumlah' + counter + '" id="Jumlah' + counter + '" value="" class="form-control">');
+            newTextBoxDiv.after().html('<br/><input type="number" min="1" name="Jumlah' + counter + '" id="Jumlah' + counter + '" value="" class="form-control">');
             newTextBoxDiv.appendTo("#TextBoxesGroup");
 
             //textbox1
             var newTextBox1Div = $(document.createElement('div'))
                  .attr("id", 'TextBox1Div' + counter);
-            newTextBox1Div.after().html('<br/><input type="text" name="HargaAktual' + counter + '" id="Harga Aktual' + counter + '" value="" class="form-control">');
+            newTextBox1Div.after().html('<br/><input type="number" min="0" name="HargaAktual' + counter + '" id="Harga Aktual' + counter + '" value="" class="form-control">');
             newTextBox1Div.appendTo("#TextBoxes1Group");
 
             //textbox2
             var newTextBox2Div = $(document.createElement('div'))
                  .attr("id", 'TextBox2Div' + counter);
-            newTextBox2Div.after().html('<br/><input type="text" name="HET' + counter + '" id="HET' + counter + '" value="" class="form-control">');
+            newTextBox2Div.after().html('<br/><input type="number" min="0" name="HET' + counter + '" id="HET' + counter + '" value="" class="form-control">');
             newTextBox2Div.appendTo("#TextBoxes2Group");
 
             //dropdownlist
@@ -152,29 +189,21 @@
                 j++;
                 for (k = j; k <= counter; k++) {
                     for (var i = 0; i < data.length; i++) {
-                        $('#ObatID' + k).append("<option value='" + data[i].Value + "'>" + data[i].Text + " " + data[i].Stok + "</option>");
+                        $('#ObatID' + k).append("<option value='" + data[i].Value + "&" + data[i].Text + " [sisa:" + data[i].Stok + "]" + "'>" + data[i].Text + " [sisa:" + data[i].Stok + "]</option>");
                     }
                 }
 
             };
             options.error = function () { alert("Error retrieving states!"); };
             $.ajax(options);
-           
+
             $("#removeButton").show();
             $("#count").val(counter);
-            
-            if (counter > 10) {
-                $("#addButton").hide();
-                return false;
-            }
 
-            $('#ObatID' + counter).change(function () {
-                alert($('#ObatID' + counter + ' option:selected').val());
-            });
         });
-        
 
-        
+
+
 
         $(document).ready(function () {
             var options = {};
@@ -186,7 +215,7 @@
                 var count = $("#count").val();
                 for (var k = 1; k <= count; k++) {
                     for (var i = 0; i < data.length; i++) {
-                        $('#ObatID'+k).append("<option value='" + data[i].Value + "'>" + data[i].Text + " " + data[i].Stok + "</option>");
+                        $('#ObatID' + k).append("<option value='" + data[i].Value + "&" + data[i].Text + " [sisa:" + data[i].Stok + "]" + "'>" + data[i].Text + " [sisa:" + data[i].Stok + "]</option>");
                     }
                 }
             };
@@ -195,17 +224,18 @@
         });
 
         $("#removeButton").click(function () {
-            counter--;
+            var counter = $("#count").val();
+            //alert(counter);
             $("#TextBoxDiv" + counter).remove();
             $("#TextBox1Div" + counter).remove();
             $("#TextBox2Div" + counter).remove();
             $("#DropDownListDiv" + counter).remove();
             $("#addButton").show();
+            $("#count").val(counter - 1);
             if (counter == 2) {/*diganti jd 2*/
                 $("#removeButton").hide();
                 return false;
             }
-            $("#count").val(counter - 1);
         });
 
     });

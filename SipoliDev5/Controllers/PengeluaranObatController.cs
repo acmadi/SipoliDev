@@ -16,31 +16,47 @@ using System.Globalization;//view model
 
 namespace SipoliObat.Controllers
 {
+    [Authorize]
     public class PengeluaranObatController : Controller
     {
         private EntitiesConnection db = new EntitiesConnection();
 
         public JsonResult GetDataStokObat()
         {
-            var coba = from r in db.StokObat where r.KlinikID==2 where r.Stok>0 select new {Value=r.Obat.ID, Text=r.Obat.Nama, Stok=r.Stok };
+            var coba = from r in db.StokObat where r.KlinikID == 2 select new { Value = r.Obat.ID, Text = r.Obat.Nama, Stok = r.Stok };
             return Json(coba);
         }
-        
+
         public JsonResult GetDataPasien(string term)
         {
             var result = (from r in db.Orang
+                          from i in db.RekamMedik
+                          where r.ID == i.PasienID
                           where r.Nama.ToLower().Contains(term.ToLower())
-                          select new { label = r.Nama, value = r.Nama, id = r.ID });//query
+                          select new { label = r.Nama, value = r.Nama, id = r.ID }).Distinct();//query
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetDataObat(string term)
         {
-            var obat = (from r in db.Obat
-                          where r.Nama.ToLower().Contains(term.ToLower())
-                          select new { label = r.Nama, value = r.Nama, id = r.ID });//query
+            var obat = (from r in db.StokObat
+                        where r.Obat.Nama.ToLower().Contains(term.ToLower())
+                        where r.KlinikID == 2
+                        select new { label = r.Obat.Nama, value = r.Obat.Nama, id = r.ID }).Distinct();//query
             return Json(obat, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetDataPasienFilter(string term)
+        {
+            var result = (from r in db.Orang
+                          from j in db.PengeluaranObat
+                          where r.ID == j.PasienID
+                          where j.KlinikID == 2
+                          where r.Nama.ToLower().Contains(term.ToLower())
+                          select new { label = r.Nama, value = r.Nama, id = r.ID }).Distinct();//query
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
 
         // GET: /PengeluaranObat/
         public ActionResult Index(string Command, int? Report, string Obat, string Pasien, string Month, DateTime? Date, int? Year, string Sortby, int? page, bool? undeleteable, string stk, string jml)
@@ -65,28 +81,28 @@ namespace SipoliObat.Controllers
                                       SatuanObat = a.Obat.SatuanObat.Nama,
                                       Klinik = a.Klinik.Nama,
                                       TujuanKlinikID = a.TujuanKlinikID,
-                                      TujuanKlinik = a.Klinik1.Nama,
+                                      //TujuanKlinik = a.TujuanKlinik.Klinik.Nama,
                                   };
             if (Report != null)
             {
                 pengeluaranobat = from a in db.PengeluaranObat
-                                      where a.KlinikID == 2
-                                      where a.TujuanKlinikID == Report
-                                      select new PengeluaranObat_ViewModel()
-                                      {
-                                          ID = a.ID,
-                                          Tanggal = a.Tanggal,
-                                          PasienID = a.PasienID,
-                                          ObatID = a.ObatID,
-                                          KlinikID = a.KlinikID,
-                                          Jumlah = a.Jumlah,
-                                          Pasien = a.Orang.Nama,
-                                          Obat = a.Obat.Nama,
-                                          SatuanObat = a.Obat.SatuanObat.Nama,
-                                          Klinik = a.Klinik.Nama,
-                                          TujuanKlinikID = a.TujuanKlinikID,
-                                          //TujuanKlinik = a.Klinik1.Nama,
-                                      };
+                                  where a.KlinikID == 2
+                                  where a.TujuanKlinikID == Report
+                                  select new PengeluaranObat_ViewModel()
+                                  {
+                                      ID = a.ID,
+                                      Tanggal = a.Tanggal,
+                                      PasienID = a.PasienID,
+                                      ObatID = a.ObatID,
+                                      KlinikID = a.KlinikID,
+                                      Jumlah = a.Jumlah,
+                                      Pasien = a.Orang.Nama,
+                                      Obat = a.Obat.Nama,
+                                      SatuanObat = a.Obat.SatuanObat.Nama,
+                                      Klinik = a.Klinik.Nama,
+                                      TujuanKlinikID = a.TujuanKlinikID,
+                                      //TujuanKlinik = a.Klinik1.Nama,
+                                  };
             }
 
             //filtering
@@ -120,50 +136,50 @@ namespace SipoliObat.Controllers
                 pengeluaranobat = pengeluaranobat.Where(e => e.Tanggal.Value.Month == MonthInt);
             }
 
-                //sorting
-                ViewBag.SortTanggalParameter = Sortby == "Tanggal" ? "Tanggal Desc" : "Tanggal";
-                ViewBag.SortObatParameter = Sortby == "Obat" ? "Obat Desc" : "Obat";
-                ViewBag.SortPasienParameter = Sortby == "Pasien" ? "Pasien Desc" : "Pasien";
+            //sorting
+            ViewBag.SortTanggalParameter = Sortby == "Tanggal" ? "Tanggal Desc" : "Tanggal";
+            ViewBag.SortObatParameter = Sortby == "Obat" ? "Obat Desc" : "Obat";
+            ViewBag.SortPasienParameter = Sortby == "Pasien" ? "Pasien Desc" : "Pasien";
 
-                switch (Sortby)
-                {
-                    case "Tanggal":
-                        pengeluaranobat = pengeluaranobat.OrderBy(a => a.Tanggal);
-                        break;
-                    case "Tanggal Desc":
-                        pengeluaranobat = pengeluaranobat.OrderByDescending(a => a.Tanggal);
-                        break;
-                    case "Obat":
-                        pengeluaranobat = pengeluaranobat.OrderBy(b => b.Obat);
-                        break;
-                    case "Obat Desc":
-                        pengeluaranobat = pengeluaranobat.OrderByDescending(b => b.Obat);
-                        break;
-                    case "Pasien":
-                        pengeluaranobat = pengeluaranobat.OrderBy(c => c.Pasien);
-                        break;
-                    case "Pasien Desc":
-                        pengeluaranobat = pengeluaranobat.OrderByDescending(c => c.Pasien);
-                        break;
-                    default:
-                        pengeluaranobat = pengeluaranobat.OrderByDescending(g => g.ID);
-                        break;
-                }
+            switch (Sortby)
+            {
+                case "Tanggal":
+                    pengeluaranobat = pengeluaranobat.OrderBy(a => a.Tanggal);
+                    break;
+                case "Tanggal Desc":
+                    pengeluaranobat = pengeluaranobat.OrderByDescending(a => a.Tanggal);
+                    break;
+                case "Obat":
+                    pengeluaranobat = pengeluaranobat.OrderBy(b => b.Obat);
+                    break;
+                case "Obat Desc":
+                    pengeluaranobat = pengeluaranobat.OrderByDescending(b => b.Obat);
+                    break;
+                case "Pasien":
+                    pengeluaranobat = pengeluaranobat.OrderBy(c => c.Pasien);
+                    break;
+                case "Pasien Desc":
+                    pengeluaranobat = pengeluaranobat.OrderByDescending(c => c.Pasien);
+                    break;
+                default:
+                    pengeluaranobat = pengeluaranobat.OrderByDescending(g => g.ID);
+                    break;
+            }
 
-               
-            
-            if (Command == "Export" && Report!=null)
+
+
+            if (Command == "Export" && Report != null)
             {
                 //var pengeluaranobat = (List<PengeluaranObat_ViewModel>)Session["pengeluaranobats"];
                 //pengeluaranobat.ToList();
-                
+
                 pengeluaranobat.ToList<PengeluaranObat_ViewModel>();
                 StringBuilder sb = new StringBuilder();
                 string title = "";
                 int colspan1 = 5;
                 int colspan2 = 2;
                 var Month1 = "";
-                if (Report == 2){ title = "DATA PENGELUARAN OBAT POLIKLINIK BARANANGSIANG";}
+                if (Report == 2) { title = "DATA PENGELUARAN OBAT POLIKLINIK BARANANGSIANG"; }
                 else { title = "DISTRIBUSI OBAT POLIKLINIK BARANANGSIANG KE POLIKLINIK DRAMAGA"; colspan1 = 4; colspan2 = 1; }
                 if (pengeluaranobat != null && pengeluaranobat.Any())
                 {
@@ -173,7 +189,7 @@ namespace SipoliObat.Controllers
                     //row2
                     sb.Append("<tr>");
                     sb.Append("<td></td>");
-                    sb.Append("<td colspan='"+colspan1+"'style='border:1px solid black; width:120px', align='center'><b>"+title+"</b></td>");
+                    sb.Append("<td colspan='" + colspan1 + "'style='border:1px solid black; width:120px', align='center'><b>" + title + "</b></td>");
                     sb.Append("</tr>");
                     //row3
                     if (!string.IsNullOrEmpty(Obat) || !string.IsNullOrEmpty(Pasien) || Year != null || !string.IsNullOrEmpty(Month) || Date != null)
@@ -182,14 +198,14 @@ namespace SipoliObat.Controllers
                         sb.Append("<tr>");
                         sb.Append("<td style='width:15px'></td>");
                         sb.Append("<td style='width:150px; border:1px solid black'><b>TANGGAL</b></td>");
-                        sb.Append("<td style='width:300px; border:1px solid black'>"+Date+"</td>");
+                        sb.Append("<td style='width:300px; border:1px solid black'>" + Date + "</td>");
                         sb.Append("<td style='width:120px; border:1px solid black'><b>BULAN</b></td>");
-                        sb.Append("<td colspan='" + colspan2 + "'style='width:120px; border:1px solid black'>"+Month1+"</td>");
+                        sb.Append("<td colspan='" + colspan2 + "'style='width:120px; border:1px solid black'>" + Month1 + "</td>");
                         sb.Append("</tr>");
                         sb.Append("<tr>");
                         sb.Append("<td style='width:15px'></td>");
                         sb.Append("<td style='width:150px; border:1px solid black'><b>NAMA OBAT</b></td>");
-                        sb.Append("<td style='width:300px; border:1px solid black'>"+Obat+"</td>");
+                        sb.Append("<td style='width:300px; border:1px solid black'>" + Obat + "</td>");
                         sb.Append("<td style='width:120px; border:1px solid black'><b>TAHUN</b></td>");
                         sb.Append("<td colspan='" + colspan2 + "'style='width:120px; border:1px solid black;text-align: left;'>" + Year + "</td>");
                         sb.Append("</tr>");
@@ -198,7 +214,7 @@ namespace SipoliObat.Controllers
                             sb.Append("<tr>");
                             sb.Append("<td style='width:15px'></td>");
                             sb.Append("<td style='width:150px; border:1px solid black'><b>NAMA PASIEN</b></td>");
-                            sb.Append("<td style='width:120px; border:1px solid black'>"+Pasien+"</td>");
+                            sb.Append("<td style='width:120px; border:1px solid black'>" + Pasien + "</td>");
                             sb.Append("<td colspan='3' style='border:1px solid black'></td>");
                             sb.Append("</tr>");
                         }
@@ -226,86 +242,14 @@ namespace SipoliObat.Controllers
                     }
 
                     if (!string.IsNullOrEmpty(Obat) || !string.IsNullOrEmpty(Pasien) || Year != null || !string.IsNullOrEmpty(Month) || Date != null)
-                   {
-                       if (!string.IsNullOrEmpty(Obat))
-                       {
-                           pengeluaranobat = (from a in db.PengeluaranObat
-                                              where a.KlinikID == 2
-                                              where a.TujuanKlinikID == Report
-                                              where a.Obat.Nama == Obat
-                                              group a by new { b = Obat, c = a.Obat.SatuanObat.Nama } into g
-                                              select new PengeluaranObat_ViewModel()
-                                              {
-                                                  Obat = g.Key.b,
-                                                  SatuanObat = g.Key.c,
-                                                  Total = g.Select(m => m.Jumlah).Sum()
-                                              });
-                       }
-                       if (!string.IsNullOrEmpty(Pasien))
-                       {
-                           pengeluaranobat = (from a in db.PengeluaranObat
-                                              where a.KlinikID == 2
-                                              where a.TujuanKlinikID == Report
-                                              where a.Orang.Nama == Pasien
-                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
-                                              select new PengeluaranObat_ViewModel()
-                                              {
-                                                  Obat = g.Key.b,
-                                                  SatuanObat = g.Key.c,
-                                                  Total = g.Select(m => m.Jumlah).Sum()
-                                              });
-                       }
-                       if (Year != null)
-                       {
-                           pengeluaranobat = (from a in db.PengeluaranObat
-                                              where a.KlinikID == 2
-                                              where a.TujuanKlinikID == Report
-                                              where a.Tanggal.Value.Year == Year
-                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
-                                              select new PengeluaranObat_ViewModel()
-                                              {
-                                                  Obat = g.Key.b,
-                                                  SatuanObat = g.Key.c,
-                                                  Total = g.Select(m => m.Jumlah).Sum()
-                                              });
-                       }
-                       if (!string.IsNullOrEmpty(Month))
-                       {
-                           var intmonth = int.Parse(Month);
-                           pengeluaranobat = (from a in db.PengeluaranObat
-                                              where a.KlinikID == 2
-                                              where a.TujuanKlinikID == Report
-                                              where a.Tanggal.Value.Month == intmonth
-                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
-                                              select new PengeluaranObat_ViewModel()
-                                              {
-                                                  Obat = g.Key.b,
-                                                  SatuanObat = g.Key.c,
-                                                  Total = g.Select(m => m.Jumlah).Sum()
-                                              });
-                       }
-                       if (Date != null )
-                       {
-                           pengeluaranobat = (from a in db.PengeluaranObat
-                                              where a.KlinikID == 2
-                                              where a.TujuanKlinikID == Report
-                                              where a.Tanggal == Date
-                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
-                                              select new PengeluaranObat_ViewModel()
-                                              {
-                                                  Obat = g.Key.b,
-                                                  SatuanObat = g.Key.c,
-                                                  Total = g.Select(m => m.Jumlah).Sum()
-                                              });
-                       }
-                       if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Pasien))
+                    {
+                        if (!string.IsNullOrEmpty(Obat))
                         {
                             pengeluaranobat = (from a in db.PengeluaranObat
                                                where a.KlinikID == 2
                                                where a.TujuanKlinikID == Report
                                                where a.Obat.Nama == Obat
-                                               where a.Orang.Nama == Pasien
-                                               group a by new { b=a.Obat.Nama, c=a.Obat.SatuanObat.Nama} into g
+                                               group a by new { b = Obat, c = a.Obat.SatuanObat.Nama } into g
                                                select new PengeluaranObat_ViewModel()
                                                {
                                                    Obat = g.Key.b,
@@ -313,38 +257,110 @@ namespace SipoliObat.Controllers
                                                    Total = g.Select(m => m.Jumlah).Sum()
                                                });
                         }
-                       if (!string.IsNullOrEmpty(Obat) && Year != null)
-                       {
-                           pengeluaranobat = (from a in db.PengeluaranObat
-                                              where a.KlinikID == 2
-                                              where a.TujuanKlinikID == Report
-                                              where a.Obat.Nama == Obat
-                                              where a.Tanggal.Value.Year == Year
-                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
-                                              select new PengeluaranObat_ViewModel()
-                                              {
-                                                  Obat = g.Key.b,
-                                                  SatuanObat = g.Key.c,
-                                                  Total = g.Select(m => m.Jumlah).Sum()
-                                              });
-                       }
-                       if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Month))
-                       {
-                           var intmonth = int.Parse(Month);
-                           pengeluaranobat = (from a in db.PengeluaranObat
-                                              where a.KlinikID == 2
-                                              where a.TujuanKlinikID == Report
-                                              where a.Obat.Nama == Obat
-                                              where a.Tanggal.Value.Month == intmonth
-                                              group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
-                                              select new PengeluaranObat_ViewModel()
-                                              {
-                                                  Obat = g.Key.b,
-                                                  SatuanObat = g.Key.c,
-                                                  Total = g.Select(m => m.Jumlah).Sum()
-                                              });
-                       }
-                       if (!string.IsNullOrEmpty(Obat) && Date != null)
+                        if (!string.IsNullOrEmpty(Pasien))
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Orang.Nama == Pasien
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (Year != null)
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (Date != null)
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Tanggal == Date
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Pasien))
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Orang.Nama == Pasien
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && Year != null)
+                        {
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal.Value.Year == Year
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && !string.IsNullOrEmpty(Month))
+                        {
+                            var intmonth = int.Parse(Month);
+                            pengeluaranobat = (from a in db.PengeluaranObat
+                                               where a.KlinikID == 2
+                                               where a.TujuanKlinikID == Report
+                                               where a.Obat.Nama == Obat
+                                               where a.Tanggal.Value.Month == intmonth
+                                               group a by new { b = a.Obat.Nama, c = a.Obat.SatuanObat.Nama } into g
+                                               select new PengeluaranObat_ViewModel()
+                                               {
+                                                   Obat = g.Key.b,
+                                                   SatuanObat = g.Key.c,
+                                                   Total = g.Select(m => m.Jumlah).Sum()
+                                               });
+                        }
+                        if (!string.IsNullOrEmpty(Obat) && Date != null)
                         {
                             pengeluaranobat = (from a in db.PengeluaranObat
                                                where a.KlinikID == 2
@@ -544,9 +560,9 @@ namespace SipoliObat.Controllers
                             sb.Append("<td style='border:1px solid black;'>" + result.SatuanObat + "</td>");
                             sb.Append("</tr>");
                         }
-                   }
+                    }
 
-                    
+
                 }
                 string sFileName = "[" + DateTime.Now + "] DATA PENGELUARAN OBAT POLIKLINIK BARANANGSIANG.xls";
                 HttpContext.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName);
@@ -563,31 +579,53 @@ namespace SipoliObat.Controllers
 
 
         // GET: /PengeluaranObat/Create
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public ActionResult Create()
         {
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
             ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama");
+            ViewBag.count = 1;
+            string[] temp = new string[100];
+            ViewBag.Nama = "";
+            ViewBag.NamaError = "";
+            ViewBag.Jumlah = temp;
+            ViewBag.JumlahError = "";
+            ViewBag.JumlahError2 = "";
+            ViewBag.Obat = temp;
+            ViewBag.ONama = temp;
+            ViewBag.ObatError = "";
+
             return View();
         }
-
-        public PartialViewResult CreateBStoDMG()
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
+        public ActionResult CreateBStoDMG()
         {
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama");
             ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama");
-            return PartialView();
+            ViewBag.count = 1;
+            string[] temp = new string[100];
+            //ViewBag.Nama = "";
+            //ViewBag.NamaError = "";
+            ViewBag.Jumlah = temp;
+            ViewBag.JumlahError = "";
+            ViewBag.JumlahError2 = "";
+            ViewBag.Obat = temp;
+            ViewBag.ONama = temp;
+            ViewBag.ObatError = "";
+
+            return View();
         }
 
 
         // POST: /PengeluaranObat/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create( PengeluaranObat hispengeluaranobat)
+        public ActionResult Create(PengeluaranObat hispengeluaranobat)
         {
             if (ModelState.IsValid)
             {
+                /*
                 int count = Int32.Parse(Request["count"]);
                 for (int kep = 1; kep <= count; kep++)
                 {
@@ -601,16 +639,437 @@ namespace SipoliObat.Controllers
                     db.SaveChanges();
                 }
                 return RedirectToAction("Index");
+                */
+
+                int count = Int32.Parse(Request["count"]);
+                ViewBag.count = count;
+                var arrayJumlah = new string[100];
+                var arrayObat = new string[100];
+                var arrayONama = new string[100];
+                int[] arrayObatIDInt = new int[100];
+                bool adaEN = false;
+                bool adaEJ = false;
+                bool adaEO = false;
+                bool adaEJ2 = false;
+                string baris1 = "", baris2 = "", baris3 = "";
+
+                var Nama = Request["PasienID"];
+                if (!String.IsNullOrEmpty(Nama))
+                {
+                    ViewBag.NamaError = "";
+                    ViewBag.Nama = Nama;
+                }
+                else
+                {
+                    ViewBag.Nama = "";
+                    adaEN = true;
+                }
+
+                for (int kepo = 1; kepo <= count; kepo++)
+                {
+                    var Jumlah = Request["Jumlah" + kepo + ""];
+                    if (!String.IsNullOrEmpty(Jumlah))
+                    {
+                        ViewBag.JumlahError = "";
+                        arrayJumlah[kepo] = Jumlah;
+                    }
+                    else
+                    {
+                        arrayJumlah[kepo] = "";
+                        adaEJ = true;
+                        if (baris1 == "")
+                            baris1 += kepo.ToString();
+                        else
+                            baris1 += ", " + kepo.ToString();
+                    }
+
+                    var ObatID = Request["ObatID" + kepo + ""];
+                    if (!String.IsNullOrEmpty(ObatID) && ObatID != "--Pilih Obat--")
+                    {
+                        //@ViewBag.JumlahError = "";
+                        string[] words = ObatID.Split('&');
+                        arrayObatIDInt[kepo] = int.Parse(words[0]);
+                        //ViewBag.word = ObatID;
+                        arrayONama[kepo] = words[1];
+                        arrayObat[kepo] = ObatID;
+
+                        string[] stok = words[1].Split(':', '[', ']');
+                        //ViewBag.Coba = stok[2];
+                        int now = 0;
+                        if (!String.IsNullOrEmpty(Jumlah))
+                        {
+                            now = int.Parse(Jumlah);
+                        }
+                        if (now > int.Parse(stok[2]))
+                        {
+                            adaEJ2 = true;
+                            if (baris3 == "")
+                                baris3 += kepo.ToString();
+                            else
+                                baris3 += ", " + kepo.ToString();
+                        }
+                    }
+                    else
+                    {
+                        //ViewBag.JumlahError = "Form nama obat tidak boleh kosong";
+                        arrayObat[kepo] = "";
+                        adaEO = true;
+                        if (baris2 == "")
+                            baris2 += kepo.ToString();
+                        else
+                            baris2 += ", " + kepo.ToString();
+                    }
+                }
+
+                if (adaEJ) ViewBag.JumlahError = "Jumlah obat harus diisi pada baris " + baris1 + ".";
+                if (adaEO) ViewBag.ObatError = "Nama obat harus diisi pada baris " + baris2 + ".";
+                if (adaEJ2) ViewBag.JumlahError2 = "Jumlah pengeluaran obat pada baris " + baris3 + " melebihi stok yang tersedia.";
+                if (adaEN) ViewBag.NamaError = "Nama pasien harus diisi.";
+
+                if (!adaEJ && !adaEO && !adaEJ2 && !adaEN)
+                {
+                    for (int kepo = 1; kepo <= count; kepo++)
+                    {
+                        hispengeluaranobat.Jumlah = Int32.Parse(arrayJumlah[kepo]);
+                        hispengeluaranobat.ObatID = arrayObatIDInt[kepo];
+                        db.PengeluaranObat.Add(hispengeluaranobat);
+                        db.SaveChanges();
+                    }
+                    return RedirectToAction("Index");
+                }
+                ViewBag.Jumlah = arrayJumlah;
+                ViewBag.ONama = arrayONama;
+                ViewBag.Obat = arrayObat;
+
+                ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", hispengeluaranobat.KlinikID);
+
+                return View(hispengeluaranobat);
             }
+            else
+            {
+                int count = Int32.Parse(Request["count"]);
+                ViewBag.count = count;
+                var arrayJumlah = new string[100];
+                var arrayObat = new string[100];
+                var arrayONama = new string[100];
+                int[] arrayObatIDInt = new int[100];
+                bool adaEN = false;
+                bool adaEJ = false;
+                bool adaEO = false;
+                bool adaEJ2 = false;
+                string baris1 = "", baris2 = "", baris3 = "";
 
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama", hispengeluaranobat.ObatID);
-            ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", hispengeluaranobat.KlinikID);
+                var Nama = Request["PasienID"];
+                if (!String.IsNullOrEmpty(Nama))
+                {
+                    ViewBag.NamaError = "";
+                    ViewBag.Nama = Nama;
+                }
+                else
+                {
+                    ViewBag.Nama = "";
+                    adaEN = true;
+                }
 
-            return RedirectToAction("Index");
-            //return View(hispengeluaranobat);
+                for (int kepo = 1; kepo <= count; kepo++)
+                {
+                    var Jumlah = Request["Jumlah" + kepo + ""];
+                    if (!String.IsNullOrEmpty(Jumlah))
+                    {
+                        ViewBag.JumlahError = "";
+                        arrayJumlah[kepo] = Jumlah;
+                    }
+                    else
+                    {
+                        arrayJumlah[kepo] = "";
+                        adaEJ = true;
+                        if (baris1 == "")
+                            baris1 += kepo.ToString();
+                        else
+                            baris1 += ", " + kepo.ToString();
+                    }
+
+                    var ObatID = Request["ObatID" + kepo + ""];
+                    if (!String.IsNullOrEmpty(ObatID) && ObatID != "--Pilih Obat--")
+                    {
+                        //@ViewBag.JumlahError = "";
+                        string[] words = ObatID.Split('&');
+                        arrayObatIDInt[kepo] = int.Parse(words[0]);
+                        //ViewBag.word = ObatID;
+                        arrayONama[kepo] = words[1];
+                        arrayObat[kepo] = ObatID;
+
+                        string[] stok = words[1].Split(':', '[', ']');
+                        //ViewBag.Coba = stok[2];
+                        int now = 0;
+                        if (!String.IsNullOrEmpty(Jumlah))
+                        {
+                            now = int.Parse(Jumlah);
+                        }
+                        if (now > int.Parse(stok[2]))
+                        {
+                            adaEJ2 = true;
+                            if (baris3 == "")
+                                baris3 += kepo.ToString();
+                            else
+                                baris3 += ", " + kepo.ToString();
+                        }
+                    }
+                    else
+                    {
+                        //ViewBag.JumlahError = "Form nama obat tidak boleh kosong";
+                        arrayObat[kepo] = "";
+                        adaEO = true;
+                        if (baris2 == "")
+                            baris2 += kepo.ToString();
+                        else
+                            baris2 += ", " + kepo.ToString();
+                    }
+                }
+
+                if (adaEJ) ViewBag.JumlahError = "Jumlah obat harus diisi pada baris " + baris1 + ".";
+                if (adaEO) ViewBag.ObatError = "Nama obat harus diisi pada baris " + baris2 + ".";
+                if (adaEJ2) ViewBag.JumlahError2 = "Jumlah pengeluaran obat pada baris " + baris3 + " melebihi stok yang tersedia.";
+                if (adaEN) ViewBag.NamaError = "Nama pasien harus diisi.";
+
+                ViewBag.Jumlah = arrayJumlah;
+                ViewBag.ONama = arrayONama;
+                ViewBag.Obat = arrayObat;
+
+                ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", hispengeluaranobat.KlinikID);
+
+                //return RedirectToAction("Index");
+                return View(hispengeluaranobat);
+            }
+        }
+
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateBStoDMG(PengeluaranObat hispengeluaranobat)
+        {
+            if (ModelState.IsValid)
+            {
+                /*
+                int count = Int32.Parse(Request["count"]);
+                for (int kep = 1; kep <= count; kep++)
+                {
+                    var Jumlah = Request["Jumlah" + kep + ""].ToString();
+                    var ObatID = Request["ObatID" + kep + ""].ToString();
+                    if (Jumlah == null)
+                        Int32.Parse(Jumlah);
+                    hispengeluaranobat.Jumlah= Int32.Parse(Jumlah);
+                    hispengeluaranobat.ObatID = Int32.Parse(ObatID);
+                    db.PengeluaranObat.Add(hispengeluaranobat);
+                    db.SaveChanges();
+                }
+                return RedirectToAction("Index");
+                */
+
+                int count = Int32.Parse(Request["count"]);
+                ViewBag.count = count;
+                var arrayJumlah = new string[100];
+                var arrayObat = new string[100];
+                var arrayONama = new string[100];
+                int[] arrayObatIDInt = new int[100];
+                //bool adaEN = false;
+                bool adaEJ = false;
+                bool adaEO = false;
+                bool adaEJ2 = false;
+                string baris1 = "", baris2 = "", baris3 = "";
+                /*
+                var Nama = Request["PasienID"];
+                if (!String.IsNullOrEmpty(Nama))
+                {
+                    ViewBag.NamaError = "";
+                    ViewBag.Nama = Nama;
+                }
+                else
+                {
+                    ViewBag.Nama = "";
+                    adaEN = true;
+                }
+                */
+                for (int kepo = 1; kepo <= count; kepo++)
+                {
+                    var Jumlah = Request["Jumlah" + kepo + ""];
+                    if (!String.IsNullOrEmpty(Jumlah))
+                    {
+                        ViewBag.JumlahError = "";
+                        arrayJumlah[kepo] = Jumlah;
+                    }
+                    else
+                    {
+                        arrayJumlah[kepo] = "";
+                        adaEJ = true;
+                        if (baris1 == "")
+                            baris1 += kepo.ToString();
+                        else
+                            baris1 += ", " + kepo.ToString();
+                    }
+
+                    var ObatID = Request["ObatID" + kepo + ""];
+                    if (!String.IsNullOrEmpty(ObatID) && ObatID != "--Pilih Obat--")
+                    {
+                        //@ViewBag.JumlahError = "";
+                        string[] words = ObatID.Split('&');
+                        arrayObatIDInt[kepo] = int.Parse(words[0]);
+                        //ViewBag.word = ObatID;
+                        arrayONama[kepo] = words[1];
+                        arrayObat[kepo] = ObatID;
+
+                        string[] stok = words[1].Split(':', '[', ']');
+                        //ViewBag.Coba = stok[2];
+                        int now = 0;
+                        if (!String.IsNullOrEmpty(Jumlah))
+                        {
+                            now = int.Parse(Jumlah);
+                        }
+                        if (now > int.Parse(stok[2]))
+                        {
+                            adaEJ2 = true;
+                            if (baris3 == "")
+                                baris3 += kepo.ToString();
+                            else
+                                baris3 += ", " + kepo.ToString();
+                        }
+                    }
+                    else
+                    {
+                        //ViewBag.JumlahError = "Form nama obat tidak boleh kosong";
+                        arrayObat[kepo] = "";
+                        adaEO = true;
+                        if (baris2 == "")
+                            baris2 += kepo.ToString();
+                        else
+                            baris2 += ", " + kepo.ToString();
+                    }
+                }
+
+                if (adaEJ) ViewBag.JumlahError = "Jumlah obat harus diisi pada baris " + baris1 + ".";
+                if (adaEO) ViewBag.ObatError = "Nama obat harus diisi pada baris " + baris2 + ".";
+                if (adaEJ2) ViewBag.JumlahError2 = "Jumlah pengeluaran obat pada baris " + baris3 + " melebihi stok yang tersedia.";
+                //if (adaEN) ViewBag.NamaError = "Nama pasien harus diisi.";
+
+                if (!adaEJ && !adaEO && !adaEJ2)
+                {
+                    for (int kepo = 1; kepo <= count; kepo++)
+                    {
+                        hispengeluaranobat.Jumlah = Int32.Parse(arrayJumlah[kepo]);
+                        hispengeluaranobat.ObatID = arrayObatIDInt[kepo];
+                        db.PengeluaranObat.Add(hispengeluaranobat);
+                        db.SaveChanges();
+                    }
+                    return RedirectToAction("Index");
+                }
+                ViewBag.Jumlah = arrayJumlah;
+                ViewBag.ONama = arrayONama;
+                ViewBag.Obat = arrayObat;
+
+                ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", hispengeluaranobat.KlinikID);
+
+                return View(hispengeluaranobat);
+            }
+            else
+            {
+                int count = Int32.Parse(Request["count"]);
+                ViewBag.count = count;
+                var arrayJumlah = new string[100];
+                var arrayObat = new string[100];
+                var arrayONama = new string[100];
+                int[] arrayObatIDInt = new int[100];
+                //bool adaEN = false;
+                bool adaEJ = false;
+                bool adaEO = false;
+                bool adaEJ2 = false;
+                string baris1 = "", baris2 = "", baris3 = "";
+                /*
+                var Nama = Request["PasienID"];
+                if (!String.IsNullOrEmpty(Nama))
+                {
+                    ViewBag.NamaError = "";
+                    ViewBag.Nama = Nama;
+                }
+                else
+                {
+                    ViewBag.Nama = "";
+                    adaEN = true;
+                }
+                */
+                for (int kepo = 1; kepo <= count; kepo++)
+                {
+                    var Jumlah = Request["Jumlah" + kepo + ""];
+                    if (!String.IsNullOrEmpty(Jumlah))
+                    {
+                        ViewBag.JumlahError = "";
+                        arrayJumlah[kepo] = Jumlah;
+                    }
+                    else
+                    {
+                        arrayJumlah[kepo] = "";
+                        adaEJ = true;
+                        if (baris1 == "")
+                            baris1 += kepo.ToString();
+                        else
+                            baris1 += ", " + kepo.ToString();
+                    }
+
+                    var ObatID = Request["ObatID" + kepo + ""];
+                    if (!String.IsNullOrEmpty(ObatID) && ObatID != "--Pilih Obat--")
+                    {
+                        //@ViewBag.JumlahError = "";
+                        string[] words = ObatID.Split('&');
+                        arrayObatIDInt[kepo] = int.Parse(words[0]);
+                        //ViewBag.word = ObatID;
+                        arrayONama[kepo] = words[1];
+                        arrayObat[kepo] = ObatID;
+
+                        string[] stok = words[1].Split(':', '[', ']');
+                        //ViewBag.Coba = stok[2];
+                        int now = 0;
+                        if (!String.IsNullOrEmpty(Jumlah))
+                        {
+                            now = int.Parse(Jumlah);
+                        }
+                        if (now > int.Parse(stok[2]))
+                        {
+                            adaEJ2 = true;
+                            if (baris3 == "")
+                                baris3 += kepo.ToString();
+                            else
+                                baris3 += ", " + kepo.ToString();
+                        }
+                    }
+                    else
+                    {
+                        //ViewBag.JumlahError = "Form nama obat tidak boleh kosong";
+                        arrayObat[kepo] = "";
+                        adaEO = true;
+                        if (baris2 == "")
+                            baris2 += kepo.ToString();
+                        else
+                            baris2 += ", " + kepo.ToString();
+                    }
+                }
+
+                if (adaEJ) ViewBag.JumlahError = "Jumlah obat harus diisi pada baris " + baris1 + ".";
+                if (adaEO) ViewBag.ObatError = "Nama obat harus diisi pada baris " + baris2 + ".";
+                if (adaEJ2) ViewBag.JumlahError2 = "Jumlah pengeluaran obat pada baris " + baris3 + " melebihi stok yang tersedia.";
+                //if (adaEN) ViewBag.NamaError = "Nama pasien harus diisi.";
+
+                ViewBag.Jumlah = arrayJumlah;
+                ViewBag.ONama = arrayONama;
+                ViewBag.Obat = arrayObat;
+
+                ViewBag.KlinikID = new SelectList(db.Klinik, "ID", "Nama", hispengeluaranobat.KlinikID);
+
+                //return RedirectToAction("Index");
+                return View(hispengeluaranobat);
+            }
         }
 
         // GET: /PengeluaranObat/Edit/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public ActionResult Edit(int? id, bool? E, bool? E1, bool? E2, bool? E3, bool? E4, string S, bool? E5, string SD)
         {
             if (id == null)
@@ -623,8 +1082,13 @@ namespace SipoliObat.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.PasienID = new SelectList(db.Orang, "ID", "Nama", hispengeluaranobat.PasienID);
-            ViewBag.ObatID = new SelectList(db.Obat, "ID", "Nama", hispengeluaranobat.ObatID);
+            var pasien = (from r in db.Orang
+                          from i in db.RekamMedik
+                          where r.ID == i.PasienID
+                          select new { Nama = r.Nama, ID = r.ID }).Distinct();
+            var obat = from r in db.StokObat where r.KlinikID == 1 where r.Stok > 0 select new { ID = r.Obat.ID, Nama = r.Obat.Nama, Stok = r.Stok };
+            ViewBag.PasienID = new SelectList(pasien, "ID", "Nama", hispengeluaranobat.PasienID);
+            ViewBag.ObatID = new SelectList(obat, "ID", "Nama", hispengeluaranobat.ObatID);
 
             //simpan jumlah stok sblm diedit
             ViewBag.jmlsblmedit = hispengeluaranobat.Jumlah;
@@ -641,18 +1105,18 @@ namespace SipoliObat.Controllers
             if (E2 == true)
             {
                 ViewBag.E2 = true;
-            } 
+            }
             if (E3 == true)
             {
                 ViewBag.E3 = true;
-            } 
+            }
             if (E4 == true)
             {
                 ViewBag.stoksaat = S;
                 ViewBag.E4 = true;
             }
             if (E5 == true)
-            {     
+            {
                 ViewBag.E5 = true;
                 ViewBag.stoksaatdmg = SD;
                 ViewBag.stoksaat = S;
@@ -663,6 +1127,7 @@ namespace SipoliObat.Controllers
         // POST: /PengeluaranObat/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(int? id, PengeluaranObat pengeluaranobat, string jmlsblmedit)
@@ -685,11 +1150,11 @@ namespace SipoliObat.Controllers
 
             //jumlah obat harus bilangan positif
             string jumlah = pengeluaranobat.Jumlah.ToString();
-            if (pengeluaranobat.Jumlah != null) 
-            { 
-                if (!System.Text.RegularExpressions.Regex.IsMatch(jumlah, "^[0-9]+$")) 
+            if (pengeluaranobat.Jumlah != null)
+            {
+                if (!System.Text.RegularExpressions.Regex.IsMatch(jumlah, "^[0-9]+$"))
                 {
-                    ViewBag.E = true; 
+                    ViewBag.E = true;
                     ViewBag.E3 = true;
                 }
             }
@@ -715,14 +1180,14 @@ namespace SipoliObat.Controllers
             {
                 var jmlsaatedit = pengeluaranobat.Jumlah.ToString();
                 var intjmlsaatedit = int.Parse(jmlsaatedit);
-            
+
                 if (intjmlsaatedit > stoksaatedit)
                 {
-                    ViewBag.E = true; 
+                    ViewBag.E = true;
                     ViewBag.E4 = true;
                     ViewBag.stoksaatedit = stoksaatedit;
                 }
-                if (stoksaateditdmg < 0 && intjmlsaatedit<Math.Abs(stoksaateditdmg) && pengeluaranobat.TujuanKlinikID == 1)
+                if (stoksaateditdmg < 0 && intjmlsaatedit < Math.Abs(stoksaateditdmg) && pengeluaranobat.TujuanKlinikID == 1)
                 {
                     ViewBag.E = true;
                     ViewBag.E5 = true;
@@ -739,26 +1204,27 @@ namespace SipoliObat.Controllers
 
             var pengeluaranupdate = db.PengeluaranObat.Where(i => i.ID == id).Single();
             if (TryUpdateModel(pengeluaranupdate, "",
-                new string[] { "ID", "ObatID", "Jumlah", "Tanggal", "HET", "HargaAktual", "PenyediaObatID" }) && !ViewBag.E)
+                new string[] { "ID", "ObatID", "Jumlah", "Tanggal" }) && !ViewBag.E)
             {
-                    try
-                    {
-                        db.Entry(pengeluaranupdate).State = EntityState.Modified;
-                        db.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
-                    catch (RetryLimitExceededException)
-                    {
-                        //log the error, uncommend dex and add a line here to write a log.
-                        ModelState.AddModelError("", "Unable to save changes. Try Again, and if the problem persists, see your system administrator.");
-                    }
+                try
+                {
+                    db.Entry(pengeluaranupdate).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (RetryLimitExceededException)
+                {
+                    //log the error, uncommend dex and add a line here to write a log.
+                    ModelState.AddModelError("", "Unable to save changes. Try Again, and if the problem persists, see your system administrator.");
+                }
             }
             //kalau gagal, kembali ke action edit
-            return RedirectToAction("Edit", new { E = ViewBag.E, E1 = ViewBag.E1, E2 = ViewBag.E2, E3 = ViewBag.E3, E4 = ViewBag.E4, S = ViewBag.stoksaatedit, E5 = ViewBag.E5, SD = ViewBag.stoksaateditdmg});
+            return RedirectToAction("Edit", new { E = ViewBag.E, E1 = ViewBag.E1, E2 = ViewBag.E2, E3 = ViewBag.E3, E4 = ViewBag.E4, S = ViewBag.stoksaatedit, E5 = ViewBag.E5, SD = ViewBag.stoksaateditdmg });
         }
 
 
         // GET: /PengeluaranObat/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -774,13 +1240,14 @@ namespace SipoliObat.Controllers
         }
 
         // POST: /PengeluaranObat/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
             ViewBag.Error = false;
             PengeluaranObat hispengeluaranobat = db.PengeluaranObat.Find(id);
-            if (hispengeluaranobat.TujuanKlinikID == 1 && hispengeluaranobat.KlinikID==2)
+            if (hispengeluaranobat.TujuanKlinikID == 1 && hispengeluaranobat.KlinikID == 2)
             {
                 var jumlah = hispengeluaranobat.Jumlah.ToString();
                 var stoks = (from r in db.StokObat
@@ -799,13 +1266,13 @@ namespace SipoliObat.Controllers
                 }
             }
 
-            if(!ViewBag.Error)
+            if (!ViewBag.Error)
             {
                 db.PengeluaranObat.Remove(hispengeluaranobat);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return RedirectToAction("Index", new {undeleteable = ViewBag.Error, stk=ViewBag.stringstoks, jml=ViewBag.stringjumlah});
+            return RedirectToAction("Index", new { undeleteable = ViewBag.Error, stk = ViewBag.stringstoks, jml = ViewBag.stringjumlah });
         }
         protected override void Dispose(bool disposing)
         {
@@ -1053,6 +1520,6 @@ namespace SipoliObat.Controllers
             return RedirectToAction("Index");
         }*/
 
-        
+
     }
 }

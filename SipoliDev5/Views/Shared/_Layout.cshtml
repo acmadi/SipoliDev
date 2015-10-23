@@ -91,8 +91,8 @@
                                         </li>
                                         <!-- Dropdown Pendaftaran-->
                                         @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
-                                    ViewContext.HttpContext.User.IsInRole("Staf") ||
-                                    ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
+                                             ViewContext.HttpContext.User.IsInRole("Staf") ||
+                                             ViewContext.HttpContext.User.IsInRole("Pemeriksa"))
                                         {
                                             <li class="panel panel-default" id="dropdown">
                                                 <a @*data-toggle="collapse"*@ href="#pendaftaran-lvl1">
@@ -112,7 +112,9 @@
 
                                         
                                         <!-- Dropdown Pemeriksaan-->
-                                        
+                                        @if (ViewContext.HttpContext.User.IsInRole("Admin") ||ViewContext.HttpContext.User.IsInRole("Staf") ||
+                                            ViewContext.HttpContext.User.IsInRole("Pemeriksa") )
+                                        {
                                             <li class="panel panel-default" id="dropdown">
                                                 <a @*data-toggle="collapse"*@ href="#pemeriksaan-lvl1">
                                                     <span class="glyphicon glyphicon-eye-open"></span> Pemeriksaan <span class="caret"></span>
@@ -135,28 +137,57 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                            
-                                        
-                                        <!----hehe-->
                                         <li><a href="@Url.Action("Index","Rujukan")"><span class="glyphicon glyphicon-edit"></span> Rujukan Pasien</a></li>
+                                        }    
+                                            
                                         <li><a href="@Url.Action("Index","Obat")"><span class="glyphicon glyphicon-book"></span> Data Obat</a></li>
+                                        
+                                        @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                                        {
                                         <li><a href="@Url.Action("Index","PengadaanObat")"><span class="glyphicon glyphicon-shopping-cart"></span> Pengadaan Obat</a></li>
+                                        }
+                                        
+                                        @if (ViewContext.HttpContext.User.IsInRole("StafDramaga"))
+                                        {
+                                            <li><a href="@Url.Action("Index","PengeluaranObat")"><span class="glyphicon glyphicon-shopping-cart"></span> Pemasukan Obat</a></li>
+                                        }
+                                        
+                                        @if (ViewContext.HttpContext.User.IsInRole("StafDramaga"))
+                                        {
+                                            <li><a href="@Url.Action("Index","PengeluaranObatDMG")"><span class="glyphicon glyphicon-eye-open"></span> Pengeluaran Obat</a></li>
+                                        }
+                                        
+                                        @if (ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                                        {
+                                            <li><a href="@Url.Action("Index","PengeluaranObat")"><span class="glyphicon glyphicon-eye-open"></span> Pengeluaran Obat</a></li>
+                                        }
+
                                         <!-- Dropdown Perjalanan Harian Obat-->
+                                        @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+                                        {
                                         <li class="panel panel-default" id="dropdown">
                                             <a data-toggle="collapse" href="#perjalananObatHarian-lvl1">
-                                                <span class="glyphicon glyphicon-eye-open"></span> Perjalanan Harian Obat <span class="caret"></span>
+                                                <span class="glyphicon glyphicon-eye-open"></span> Pengeluaran Obat <span class="caret"></span>
                                             </a>
                                             <!-- Dropdown level 1 -->
                                             <div id="perjalananObatHarian-lvl1" class="panel-collapse collapse">
                                                 <div class="panel-body">
                                                     <ul class="nav navbar-nav">
-                                                        <li><a href="@Url.Action("Index", "PengeluaranObat")"><span class="glyphicon glyphicon-chevron-right"></span> Klinik Darmaga</a></li>
-                                                        <li><a href="@Url.Action("Index", "PengeluaranObatBS")"><span class="glyphicon glyphicon-chevron-right"></span> Klinik Baranangsiang</a></li>
+                                                        <li><a href="@Url.Action("Index", "PengeluaranObat")"><span class="glyphicon glyphicon-chevron-right"></span> Klinik Baranangsiang</a></li>
+                                                        <li><a href="@Url.Action("Index", "PengeluaranObatDMG")"><span class="glyphicon glyphicon-chevron-right"></span> Klinik Dramaga</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
                                         </li>
+                                        }
+                                        
+
+                                        <li><a href="@Url.Action("Index", "StokObat")"><span class="glyphicon glyphicon-chevron-right"></span> Stok Obat</a></li>
+
+                                        @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                                        {
                                         <li><a href="@Url.Action("Index","PenyediaObat")"><span class="glyphicon glyphicon-user"></span> Data Penyedia Obat</a></li>
+                                        }
 
                                         @if (ViewContext.HttpContext.User.IsInRole("Admin") ||
                                     ViewContext.HttpContext.User.IsInRole("Staf") ||

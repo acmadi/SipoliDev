@@ -14,6 +14,7 @@ using SipoliDev5.Models.ViewModels;//view model
 
 namespace SipoliDev3.Controllers
 {
+    [Authorize]
     public class PenyediaObatController : Controller
     {
         private EntitiesConnection db = new EntitiesConnection();
@@ -35,6 +36,15 @@ namespace SipoliDev3.Controllers
         public JsonResult GetDataKotaKabupaten(string term)
         {
             var kotakabupaten = (from r in db.KotaKabupaten
+                                 where r.Nama.ToLower().Contains(term.ToLower())
+                                 select new { label = r.Nama, value = r.Nama, id = r.ID });//query
+            return Json(kotakabupaten, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetDataKotaKabupatenFilter(string term)
+        {
+            var kotakabupaten = (from r in db.KotaKabupaten
+                                 from i in db.PenyediaObat
+                                 where r.Nama == i.KotaKabupaten.Nama
                         where r.Nama.ToLower().Contains(term.ToLower())
                         select new { label = r.Nama, value = r.Nama, id = r.ID });//query
             return Json(kotakabupaten, JsonRequestBehavior.AllowGet);
@@ -158,6 +168,8 @@ namespace SipoliDev3.Controllers
             byte[] buffer = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
             return File(buffer, "application/vnd.ms-excel");
         }
+
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public PartialViewResult _Create()
         {
             ViewBag.KotaKabupatenID = new SelectList(db.KotaKabupaten, "ID", "Nama");
@@ -168,6 +180,7 @@ namespace SipoliDev3.Controllers
         // POST: /PenyediaObat/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(PenyediaObat penyediaobat)
@@ -233,6 +246,7 @@ namespace SipoliDev3.Controllers
         }
 
         // GET: /PenyediaObat/Edit/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -252,6 +266,7 @@ namespace SipoliDev3.Controllers
         // POST: /PenyediaObat/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(PenyediaObat penyediaobat, string before)
@@ -306,6 +321,7 @@ namespace SipoliDev3.Controllers
         }
 
         // GET: /PenyediaObat/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -322,6 +338,7 @@ namespace SipoliDev3.Controllers
         }
 
         // POST: /PenyediaObat/Delete/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

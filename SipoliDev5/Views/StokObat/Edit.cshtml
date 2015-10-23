@@ -7,7 +7,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h2>Ubah Stok Obat</h2>
         <hr />
@@ -15,17 +15,18 @@
         @Html.HiddenFor(model => model.ID)
         @Html.HiddenFor(model => model.KlinikID)
         @Html.HiddenFor(model => model.ObatID)
-       
+
         <div class="form-group">
-            @Html.LabelFor(model => model.Tanggal, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Tanggal, new { @class = "col-md-2" })
             <div class="col-md-4">
-                @Html.TextBox("Tanggal", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", @type="date"})
+                @Html.TextBox("Tanggal", DateTime.Now.ToString("yyyy-MM-dd"), new { @class = "form-control", @type = "date" })
+                @Html.ValidationMessageFor(model => model.Tanggal)
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.Stok, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Stok, new { @class = "col-md-2" })
             <div class="col-md-4">
-                @Html.TextBox("Stok", null, new {@class="form-control" })
+                @Html.TextBox("Stok", null, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Stok)
             </div>
         </div>
@@ -44,6 +45,10 @@
         @if (ViewBag.E1 == true)
         {
             <p><strong>Error!</strong> Jumlah obat harus bilangan positif.</p>
+        }
+        @if (ViewBag.E2 == true)
+        {
+            <p><strong>Error!</strong> Jumlah obat tidak boleh kosong.</p>
         }
     </div>
 }

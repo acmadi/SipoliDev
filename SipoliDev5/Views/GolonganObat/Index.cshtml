@@ -5,7 +5,10 @@
 }
 <div class="row">
     <div class="col-lg-8"><h4>Daftar Golongan Obat</h4></div>
-    <div class="col-lg-4">@Html.ActionLink("Tambah", "Create", "", new { @class = "btn btn-default btn-xs" })</div>
+@if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+{
+    <div class="col-lg-4" style="margin-top:10px; margin-left:-15px">@Html.ActionLink("Tambah", "Create", "", new { @class = "btn btn-default btn-xs" })</div>
+}
 </div>
 
     
@@ -23,10 +26,13 @@
         <td>
             @Html.DisplayFor(modelItem => item.Nama)
         </td>
+@if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+{
         <td>
             @Html.ActionLink("Ubah", "Edit", new { id=item.ID }) |
             @Html.ActionLink("Hapus", "Delete", new { id=item.ID })
         </td>
+}
     </tr>
 }
 

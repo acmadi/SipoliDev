@@ -43,109 +43,22 @@
                                 <div class="form-group">
                                     <label class="col-md-2">Nama</label>
                                     <div class="col-md-4">
-                                        <input type="hidden" class="Nama" name="Nama" />
+                                        <input type="hidden" class="Nama"/>
                                         @Html.TextBox("Nama", null, new { @id = "Penyedia", @class = "form-control", @placeholder="Masukkan nama penyedia" })
-                                        <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-                                        <script type="text/javascript">
-                                            $(document).ready(function () {
-                                                $("#Penyedia").autocomplete({//id textbox
-                                                    source: function (request, response) {
-                                                        $.ajax({
-                                                            url: "/PenyediaObat/GetDataPenyedia",//URL action
-                                                            type: "POST",
-                                                            dataType: "json",
-                                                            data: { term: request.term },
-                                                            success: function (data) {
-                                                                response($.map(data, function (item) {
-                                                                    return {
-                                                                        label: item.label,
-                                                                        value: item.value,
-                                                                        id: item.id,
-                                                                    };
-                                                                }));
-                                                            },
-                                                            //
-                                                        })
-                                                    },
-                                                    select: function (event, ui) {
-                                                        //    //update the jquery selector here to your target hidden field
-                                                        $("input.Nama").val(ui.item.id);//class RatingID
-                                                    }
-                                                });
-                                            });
-                                        </script>
                                     </div>
 
                                     <label class="col-md-2 control-label">CP</label>
                                     <div class="col-md-4">
-                                        <input type="hidden" class="CP" name="CP" />
+                                        <input type="hidden" class="CP"/>
                                         @Html.TextBox("CP", null, new { @id = "CP", @class = "form-control", @placeholder = "Masukkan nama CP" })
-                                        <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-                                        <script type="text/javascript">
-                                            $(document).ready(function () {
-                                                $("#CP").autocomplete({//id textbox
-                                                    source: function (request, response) {
-                                                        $.ajax({
-                                                            url: "/PenyediaObat/GetDataCP",//URL action
-                                                            type: "POST",
-                                                            dataType: "json",
-                                                            data: { term: request.term },
-                                                            success: function (data) {
-                                                                response($.map(data, function (item) {
-                                                                    return {
-                                                                        label: item.label,
-                                                                        value: item.value,
-                                                                        id: item.id,
-                                                                    };
-                                                                }));
-                                                            },
-                                                            //
-                                                        })
-                                                    },
-                                                    select: function (event, ui) {
-                                                        //    //update the jquery selector here to your target hidden field
-                                                        $("input.CP").val(ui.item.id);//class RatingID
-                                                    }
-                                                });
-                                            });
-                                        </script>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Kota/Kabupaten</label>
                                     <div class="col-md-4">
                                         @*Html.DropDownList("Kota", (IEnumerable<SelectListItem>)ViewBag.Kota, "-- Pilih Kota/Kabupaten --", new { @class = "form-control" })*@
-                                        <input type="hidden" class="KotaKabupaten" name="KotaKabupaten" />
+                                        <input type="hidden" class="KotaKabupaten"/>
                                         @Html.TextBox("Kota", null, new { @id = "KotaKabupaten", @class = "form-control", @placeholder = "Masukkan kota/kabupaten" })
-                                        <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-                                        <script type="text/javascript">
-                                            $(document).ready(function () {
-                                                $("#KotaKabupaten").autocomplete({//id textbox
-                                                    source: function (request, response) {
-                                                        $.ajax({
-                                                            url: "/PenyediaObat/GetDataKotaKabupaten",//URL action
-                                                            type: "POST",
-                                                            dataType: "json",
-                                                            data: { term: request.term },
-                                                            success: function (data) {
-                                                                response($.map(data, function (item) {
-                                                                    return {
-                                                                        label: item.label,
-                                                                        value: item.value,
-                                                                        id: item.id,
-                                                                    };
-                                                                }));
-                                                            },
-                                                            //
-                                                        })
-                                                    },
-                                                    select: function (event, ui) {
-                                                        //    //update the jquery selector here to your target hidden field
-                                                        $("input.KotaKabupaten").val(ui.item.id);//class RatingID
-                                                    }
-                                                });
-                                            });
-                                        </script>
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-4">
@@ -286,30 +199,95 @@
         </div>
     </div>
 </div>  
+                     <script type="text/javascript">
+                         $(document).ready(function () {
+                             $("#KotaKabupaten").autocomplete({//id textbox
+                                 source: function (request, response) {
+                                     $.ajax({
+                                         url: "/PenyediaObat/GetDataKotaKabupatenFilter",//URL action
+                                         type: "POST",
+                                         dataType: "json",
+                                         data: { term: request.term },
+                                         success: function (data) {
+                                             response($.map(data, function (item) {
+                                                 return {
+                                                     label: item.label,
+                                                     value: item.value,
+                                                     id: item.id,
+                                                 };
+                                             }));
+                                         },
+                                         //
+                                     })
+                                 },
+                                 select: function (event, ui) {
+                                     //    //update the jquery selector here to your target hidden field
+                                     $("input.KotaKabupaten").val(ui.item.id);//class RatingID
+                                 }
+                             });
+                         });
+                     </script>
 
-<div class="modal fade" id="modal-container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+                     <script type="text/javascript">
+                         $(document).ready(function () {
+                             $("#Penyedia").autocomplete({//id textbox
+                                 source: function (request, response) {
+                                     $.ajax({
+                                         url: "/PenyediaObat/GetDataPenyedia",//URL action
+                                         type: "POST",
+                                         dataType: "json",
+                                         data: { term: request.term },
+                                         success: function (data) {
+                                             response($.map(data, function (item) {
+                                                 return {
+                                                     label: item.label,
+                                                     value: item.value,
+                                                     id: item.id,
+                                                 };
+                                             }));
+                                         },
+                                         //
+                                     })
+                                 },
+                                 select: function (event, ui) {
+                                     //    //update the jquery selector here to your target hidden field
+                                     $("input.Nama").val(ui.item.id);//class RatingID
+                                 }
+                             });
+                         });
+                     </script>
+                     <script type="text/javascript">
+                         $(document).ready(function () {
+                             $("#CP").autocomplete({//id textbox
+                                 source: function (request, response) {
+                                     $.ajax({
+                                         url: "/PenyediaObat/GetDataCP",//URL action
+                                         type: "POST",
+                                         dataType: "json",
+                                         data: { term: request.term },
+                                         success: function (data) {
+                                             response($.map(data, function (item) {
+                                                 return {
+                                                     label: item.label,
+                                                     value: item.value,
+                                                     id: item.id,
+                                                 };
+                                             }));
+                                         },
+                                         //
+                                     })
+                                 },
+                                 select: function (event, ui) {
+                                     //    //update the jquery selector here to your target hidden field
+                                     $("input.CP").val(ui.item.id);//class RatingID
+                                 }
+                             });
+                         });
+                     </script>
 
-<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-    $(function () {
-        $('body').on('click', '.modal-link', function (e) {
-            e.preventDefault();
-            $(this).attr('data-target', '#modal-container');
-            $(this).attr('data-toggle', 'modal');
-        });
-        // Attach listener to .modal-close-btn's so that when the button is pressed the modal dialog disappears
-        $('body').on('click', '.modal-close-btn', function () {
-            $('#modal-container').modal('hide');
-        });
-        //clear modal cache, so that new content can be loaded
-        $('#modal-container').on('hidden.bs.modal', function () {
-            $(this).removeData('bs.modal');
-        });
-        $('#CancelModal').on('click', function () {
-            return false;
-        });
-    });
-</script>
+<!--munculin modal-->
+<!--<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>-->
+
 
 
 

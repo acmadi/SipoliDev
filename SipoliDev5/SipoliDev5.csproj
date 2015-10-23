@@ -795,6 +795,9 @@
     <Content Include="Views\GolonganObat\Edit.cshtml" />
     <Content Include="Views\GolonganObat\Index.cshtml" />
     <Content Include="Views\GolonganObat\_Index.cshtml" />
+    <Content Include="Views\Obat\Delete.cshtml" />
+    <Content Include="Views\Obat\_Index.cshtml" />
+    <Content Include="Views\PengadaanObat\Create3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

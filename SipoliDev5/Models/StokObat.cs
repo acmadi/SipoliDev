@@ -11,11 +11,13 @@ namespace SipoliDev5.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class StokObat
     {
         public int ID { get; set; }
         public Nullable<int> ObatID { get; set; }
+        [Required(ErrorMessage = "Tidak boleh kosong")]
         public Nullable<System.DateTime> Tanggal { get; set; }
         public Nullable<int> KlinikID { get; set; }
         public Nullable<int> Stok { get; set; }

@@ -13,13 +13,12 @@
         }
     }
 </script>-->
-
 @using (Html.BeginForm("Create", "PengeluaranObatDMG", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h2>Tambah Pengeluaran Obat</h2>
+        <h2>Tambah Pengeluaran Obat Dramaga</h2>
         <hr />
         @Html.ValidationSummary(true)
         @Html.TextBoxFor(model => model.KlinikID, new { @Value = "1", @type = "hidden" })
@@ -42,8 +41,6 @@
                 <input type="hidden" class="PasienID" name="PasienID" />
                 @Html.TextBox("SelectedPasien2", null, new { @id = "SelectedPasien2", @class = "form-control" })
                 @*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
-                <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-
                 <script type="text/javascript">
                     $(document).ready(function () {
                         $("#SelectedPasien2").autocomplete({//id textbox
@@ -84,22 +81,49 @@
             <tr>
                 <td>
                     <div id='DropDownListGroup'>
-                        <div id="DropDownListDiv1">
-                            @*Html.DropDownList("ObatID1", (IEnumerable<SelectListItem>)ViewBag.ObatID, "-- Pilih Obat --", new { @class = "chosen-select form-control", @id = "ObatID1" })*@
-                            <select name="ObatID1" id="ObatID1" class="form-control"><option value="">--Pilih Obat--</option></select>
-                            @Html.ValidationMessageFor(model => model.ObatID)
-                        </div>
+                        @{
+    var arrayObat = ViewBag.Obat;
+    var arrayONama = ViewBag.ONama;
+    for (int i = 1; i <= ViewBag.count; i++)
+    {
+        <br />
+                            <div id="DropDownListDiv@{@i}">
+                                <select name="ObatID@{@i}" id="ObatID@{@i}" class="form-control">
+                                    <option value="@arrayObat[i]">
+                                        @{
+        if (string.IsNullOrEmpty(arrayONama[i]))
+        {
+            <strong>--Pilih Obat--</strong>
+        }
+        else
+        {
+            @arrayONama[i];
+        }
+                                        }
+                                    </option>
+                                </select>
+                                @Html.ValidationMessageFor(model => model.ObatID)
+                            </div>
+    }
+                        }
                     </div>
                 </td>
                 <td>
                     <div id='TextBoxesGroup'>
-                        <div id="TextBoxDiv1">
-                            <input type="text" name="Jumlah1" class="form-control" id="Jumlah1" />
-                            @Html.ValidationMessageFor(model => model.Jumlah)
-                        </div>
+                        @{
+    var arrayJumlah = ViewBag.Jumlah;
+    for (int i = 1; i <= ViewBag.count; i++)
+    {
+        <br />
+                            <div id="TextBoxDiv@{@i}">
+                                <input type="number" name="Jumlah@{@i}" class="form-control" id="Jumlah@{@i}" min="1" value="@arrayJumlah[i]" />
+                                @Html.ValidationMessageFor(model => model.Jumlah)
+                            </div>
+    }
+                        }
                     </div>
                     <br />
-                    <input type="hidden" id="count" name="count" />
+                    <input type="hidden" id="count" value="@ViewBag.count" name="count" />
                     <input type='button' value='Tambah Obat' id='addButton' class="btn btn-default">
                     <input type='button' value='Hapus' id='removeButton' class="btn btn-default" />
                     <input type="submit" value="Simpan" class="btn btn-primary" />
@@ -108,25 +132,56 @@
         </table>
     </div>
 }
+
 <div>
+    @if (!string.IsNullOrEmpty(ViewBag.NamaError))
+    {
+        <div class="alert alert-danger alert-error">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> @ViewBag.NamaError
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(ViewBag.JumlahError))
+    {
+        <div class="alert alert-danger alert-error">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> @ViewBag.JumlahError
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(ViewBag.ObatError))
+    {
+        <div class="alert alert-danger alert-error">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> @ViewBag.ObatError
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(ViewBag.JumlahError2))
+    {
+        <div class="alert alert-danger alert-error">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Error!</strong> @ViewBag.JumlahError2
+        </div>
+    }
+    <br />
     @Html.ActionLink("Kembali", "Index")
 </div>
 
-<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
-        var counter = 2;
-        if (counter == 2) {
+        var counter = $("#count").val();
+        //alert(counter);
+        if (counter == 1) {
             $("#removeButton").hide();
-            $("#count").val(1);
-
         }
         j = 1;
         $("#addButton").click(function () {
-            //textbox
+            var counter = $("#count").val();
+            //alert(counter);
+            counter++;
             var newTextBoxDiv = $(document.createElement('div'))
                  .attr("id", 'TextBoxDiv' + counter);
-            newTextBoxDiv.after().html('<br/><input type="text" name="Jumlah' + counter + '" id="Jumlah' + counter + '" value="" class="form-control">');
+            newTextBoxDiv.after().html('<br/><input type="number" min="1" name="Jumlah' + counter + '" id="Jumlah' + counter + '" value="" class="form-control">');
             //newTextBoxDiv.after().html('lalala');
             newTextBoxDiv.appendTo("#TextBoxesGroup");
 
@@ -145,9 +200,9 @@
             options.success = function (data) {
 
                 j++;
-                for (k = j; k < counter; k++) {
+                for (k = j; k <= counter; k++) {
                     for (var i = 0; i < data.length; i++) {
-                        $('#ObatID' + k).append("<option value='" + data[i].Value + "'>" + data[i].Text + " " + data[i].Stok + "</option>");
+                        $('#ObatID' + k).append("<option value='" + data[i].Value + "&" + data[i].Text + " [sisa:" + data[i].Stok + "]" + "'>" + data[i].Text + " [sisa:" + data[i].Stok + "]</option>");
                     }
                 }
 
@@ -157,7 +212,7 @@
 
             $("#removeButton").show();
             $("#count").val(counter);
-            counter++;
+
             if (counter > 10) {
                 $("#addButton").hide();
                 return false;
@@ -175,7 +230,7 @@
                 var count = $("#count").val();
                 for (var k = 1; k <= count; k++) {
                     for (var i = 0; i < data.length; i++) {
-                        $('#ObatID' + k).append("<option value='" + data[i].Value + "'>" + data[i].Text + " " + data[i].Stok + "</option>");
+                        $('#ObatID' + k).append("<option value='" + data[i].Value + "&" + data[i].Text + " [sisa:" + data[i].Stok + "]" + "'>" + data[i].Text + " [sisa:" + data[i].Stok + "]</option>");
                     }
                 }
             };
@@ -184,17 +239,16 @@
         });
 
         $("#removeButton").click(function () {
-            counter--;
+            var counter = $("#count").val();
             $("#TextBoxDiv" + counter).remove();
             $("#DropDownListDiv" + counter).remove();
             $("#addButton").show();
+            $("#count").val(counter - 1);
             if (counter == 2) {/*diganti jd 2*/
                 $("#removeButton").hide();
                 return false;
             }
-            $("#count").val(counter - 1);
         });
-
     });
 </script>
 

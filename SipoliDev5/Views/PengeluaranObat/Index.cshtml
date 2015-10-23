@@ -9,10 +9,17 @@
 
 <style type="text/css">
     ::-webkit-input-placeholder {
-    font-style: italic;
+        font-style: italic;
     }
 </style>
+@if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+{
 <h2>Data Pengeluaran Obat</h2>
+}
+@if (ViewContext.HttpContext.User.IsInRole("StafDramaga"))
+{
+    <h2>Pemasukan Obat Klinik Dramaga</h2>
+}
 <hr />
 <div class="row">
     <div class="col-lg-8">
@@ -24,7 +31,30 @@
                         <div class="panel-title">
                             <div class="row">
                                 <div class="col-lg-12">
+                                    @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                                    {
                                     <strong>Daftar Pengeluaran Obat Klinik Baranangsiang</strong>
+                                    }
+                                    @if (ViewContext.HttpContext.User.IsInRole("StafDramaga"))
+                                    {
+                                    <strong>Daftar Pemasukan Obat Klinik Dramaga</strong>
+                                    }
+                                    <!-- Single button -->
+                                    @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                                    {
+                                    <div class="btn-group" style="margin-left:130px">
+                                        <button type="button" class="btn btn-default dropdown-toggle btn btn-success col-lg-12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Tambah Pengeluaran <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>@Html.ActionLink("Tambah Pengeluaran Obat untuk Pasien BS", "Create", "PengeluaranObat", null)</li>
+                                            <li role="separator" class="divider"></li>
+                                            <!--li>@*Html.ActionLink("Tambah Pengeluaran Obat untuk Pasien Dramaga", "CreateBStoDMG", "PengeluaranObat", null)*@</!--li>
+                                            <li role="separator" class="divider"></li-->
+                                            <li>@Html.ActionLink("Tambah Distribusi Obat ke Klinik Dramaga", "CreateBStoDMG", "PengeluaranObat", null)</li>
+                                        </ul>
+                                    </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -39,12 +69,18 @@
                                 @ViewBag.PesanDelete
                             </div>
                         }
+                        
                         <ul class="nav nav-tabs">
-                            <li class="nav"><a href="#A" data-toggle="tab">Pengeluaran Obat untuk Pasien Baranangsiang</a></li>
+                            @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                            {
+                            <li class="nav active"><a href="#A" data-toggle="tab">Pengeluaran Obat untuk Pasien Baranangsiang</a></li>
+                            }
                             <li class="nav"><a href="#B" data-toggle="tab">Distribusi Obat untuk Klinik Dramaga</a></li>
                         </ul>
                         <br />
                         <div class="tab-content">
+                            @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                            {
                             <div class="tab-pane fade in active" id="A">
                                 <p>
                                     Daftar Pengeluaran Obat di Poliklinik IPB.
@@ -141,6 +177,8 @@
                                 }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayPageCountAndCurrentLocation = true, MaximumPageNumbersToDisplay = 5 })
                                 </center>
                             </div>
+                            }
+                          
                             <div class="tab-pane fade" id="B">
                                 <p>
                                     Daftar Pengeluaran Obat di Poliklinik IPB.
@@ -205,15 +243,17 @@
                                             </td>
 
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.TujuanKlinik)
+                                                Dramaga@*Html.DisplayFor(modelItem => item.TujuanKlinikID)*@
                                             </td>
-
+                                            @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                                            {
                                             <td>
                                                 <div class="btn-group-vertical" role="group" aria-label="...">
                                                     @Html.ActionLink("Ubah", "Edit", new { id = item.ID }, new { @class = "btn btn-warning btn-xs" })
                                                     @Html.ActionLink("Hapus", "Delete", new { @id = item.ID }, new { @class = "modal-link btn btn-danger btn-xs" })
                                                 </div>
                                             </td>
+                                            }
                                         </tr>
                                     }
                                 </table>
@@ -241,78 +281,51 @@
     <div class="col-lg-4">
         <div class="row">
             <div class="col-lg-12">
-                <h4><strong>Pengeluaran Obat untuk Pasien BS</strong></h4>
-                <hr />
-                <h4>@Html.ActionLink("Tambah Pengeluaran Obat untuk Pasien BS", "Create", "PengeluaranObat", null, new { @class = "btn btn-success col-lg-12" })</h4>
-            </div>
-        </div>
-
-        
-        <div class="row">
-            <div class="col-lg-12">
-                <h4><strong>Pengeluaran Obat untuk Klinik DMG</strong></h4>
-                <hr />
-                <h4>@Html.ActionLink("Tambah Distribusi Obat untuk Klinik Dramaga", "CreateBStoDMG", "PengeluaranObat", null, new { @class = "btn btn-success col-lg-12" })</h4>
-            </div>
-        </div>
-        
-
-        <br />
-        <div class="row">
-            <div class="col-lg-12">
                 @using (Html.BeginForm("Index", "PengeluaranObat", FormMethod.Get, new { enctype = "multipart/form-data" }))
                 {
                     <div class="form-horizontal">
-                        <h4><strong>Filter dan Ekspor Data Pengeluaran Obat</strong></h4><!-- berubah -->
+                        @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                        {
+                        <h4><strong>Filter dan Ekspor Data Pengeluaran Obat</strong></h4>
+                        }
+                        @if (ViewContext.HttpContext.User.IsInRole("StafDramaga"))
+                        {
+                          <h4><strong>Filter dan Ekspor Data Pemasukan Obat</strong></h4>  
+                        }
                         <hr />
+                        @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                        {
                         <div class="form-group">
                             <label class="col-md-3">Pilih Data</label>
                             <div class="col-md-9">
                                @Html.DropDownList("Report", new List<SelectListItem> {
-                                                             new SelectListItem{Text = "Pengeluaran Klinik BS", Value="2"},
+                                                             new SelectListItem{Text = "Pengeluaran Obat Untuk Pasien BS", Value="2"},
                                                              new SelectListItem{Text = "Distribusi Obat DMG", Value="1"},
                                                              }, "--Pilih Data--", new { @class = "form-control", @id="pilih" })
                             </div>
                         </div>
+                        }
+                        @if (ViewContext.HttpContext.User.IsInRole("StafDramaga"))
+                        {
+                        <div class="form-group">
+                            <label class="col-md-3">Pilih Data</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("Report", new List<SelectListItem> {
+                                                             new SelectListItem{Text = "Distribusi Obat DMG", Value="1"},
+                                                             }, new { @class = "form-control", @id = "pilih" })
+                            </div>
+                        </div>
+                        }
                         <div class="form-group">
                             <label class="col-md-3">Nama Obat</label>
                             <div class="col-md-9">
                                 @*Html.TextBox("Obat", "", new { @class = "form-control col-md-10" })*@
-
                                 <input type="hidden" class="ObatID"/>
                                 @Html.TextBox("Obat", null, new { @id = "Obat", @class = "form-control pilihan1", @disabled="disabled", @placeholder="Masukkan nama obat" })
-                                @*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
-                                <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-                                <script type="text/javascript">
-                                    $(document).ready(function () {
-                                        $("#Obat").autocomplete({//id textbox
-                                            source: function (request, response) {
-                                                $.ajax({
-                                                    url: "/PengeluaranObat/GetDataObat",//URL action
-                                                    type: "POST",
-                                                    dataType: "json",
-                                                    data: { term: request.term },
-                                                    success: function (data) {
-                                                        response($.map(data, function (item) {
-                                                            return {
-                                                                label: item.label,
-                                                                value: item.value,
-                                                                id: item.id,
-                                                            };
-                                                        }));
-                                                    },
-                                                    //
-                                                })
-                                            },
-                                            select: function (event, ui) {
-                                                //    //update the jquery selector here to your target hidden field
-                                                $("input.ObatID").val(ui.item.id);//class RatingID
-                                            }
-                                        });
-                                    });
-                                </script>
                             </div>
                         </div>
+                        @if (ViewContext.HttpContext.User.IsInRole("Admin") || ViewContext.HttpContext.User.IsInRole("StafBaranangsiang"))
+                        {
                         <div class="form-group">
                             <label class="col-md-3">Nama Pasien</label>
                             <div class="col-md-9">
@@ -320,38 +333,10 @@
 
                                 <input type="hidden" class="PasienID"/>
                                 @Html.TextBox("Pasien", null, new { @id = "Pasien", @class = "form-control pilihan2", @disabled = "disabled", @placeholder="Masukkan nama pasien" })
-                                @*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
-                                <script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
-                                <script type="text/javascript">
-                                    $(document).ready(function () {
-                                        $("#Pasien").autocomplete({//id textbox
-                                            source: function (request, response) {
-                                                $.ajax({
-                                                    url: "/PengeluaranObat/GetDataPasien",//URL action
-                                                    type: "POST",
-                                                    dataType: "json",
-                                                    data: { term: request.term },
-                                                    success: function (data) {
-                                                        response($.map(data, function (item) {
-                                                            return {
-                                                                label: item.label,
-                                                                value: item.value,
-                                                                id: item.id,
-                                                            };
-                                                        }));
-                                                    },
-                                                    //
-                                                })
-                                            },
-                                            select: function (event, ui) {
-                                                //    //update the jquery selector here to your target hidden field
-                                                $("input.PasienID").val(ui.item.id);//class RatingID
-                                            }
-                                        });
-                                    });
-                                </script>
+                                
                             </div>
                         </div>
+                        }
                         <div class="form-group">
                             <label class="col-md-3">Bulan</label>
                             <div class="col-md-9">
@@ -380,13 +365,14 @@
                         <div class="form-group">
                             <label class="col-md-3">Tanggal</label>
                             <div class="col-md-9">
-                                @Html.TextBox("Date", null, new { @class = "form-control col-md-10 pilihan5", @disabled = "disabled" })
+                                @Html.TextBox("Date", null, new { @class = "form-control col-md-10 pilihan5", @disabled = "disabled", @type = "date" })
                             </div>
                         </div>
                             <div class="col-md-3"></div>
                             <div class="col-lg-9">
-                                <button class="btn btn-default pilihan7" type="submit" id="btnSave" name="Command" value="Filter">Filter</button>
-                                <button class="btn btn-primary pilihan6" type="submit" id="btnSave" name="Command" value="Export">Ekspor</button>
+                                <button class="btn btn-default pilihan6" style="margin-left:-10px" type="submit" id="btnSave" name="Command" value="Filter" disabled>Filter</button>
+                                @Html.ActionLink("Reset", "Index", "PengeluaranObat", new { @class ="btn btn-md btn-default"})
+                                <button class="pilihan6 btn btn-primary" type="submit" id="btnSave" name="Command" value="Export" disabled>Ekspor</button>
                                  <!--<button class="btn btn-primary col-lg-12" type="submit" name="Export" id="Export"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Cetak ke Excel</button>-->
                             </div>
                     </div>
@@ -395,45 +381,66 @@
         </div>
     </div>
 </div>
-
-
-<div class="modal fade" id="modal-container" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
-
-<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>
+@*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
 <script type="text/javascript">
-    $(function () {
-        $('body').on('click', '.modal-link', function (e) {
-            e.preventDefault();
-            $(this).attr('data-target', '#modal-container');
-            $(this).attr('data-toggle', 'modal');
-        });
-        // Attach listener to .modal-close-btn's so that when the button is pressed the modal dialog disappears
-        $('body').on('click', '.modal-close-btn', function () {
-            $('#modal-container').modal('hide');
-        });
-        //clear modal cache, so that new content can be loaded
-        $('#modal-container').on('hidden.bs.modal', function () {
-            $(this).removeData('bs.modal');
-        });
-        $('#CancelModal').on('click', function () {
-            return false;
+    $(document).ready(function () {
+        $("#Obat").autocomplete({//id textbox
+            source: function (request, response) {
+                $.ajax({
+                    url: "/PengeluaranObat/GetDataObat",//URL action
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.label,
+                                value: item.value,
+                                id: item.id,
+                            };
+                        }));
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.ObatID").val(ui.item.id);//class RatingID
+            }
         });
     });
 </script>
+@*JS untuk autocomplete sivitas IPB menggunakan jquery UI*@
 <script type="text/javascript">
-    /*$(document).ready(function () {
-        if (location.hash) {
-            $('a[href=' + location.hash + ']').tab('show');
-        }
-        $(document.body).on("click", "a[data-toggle]", function (event) {
-            location.hash = this.getAttribute("href");
+    $(document).ready(function () {
+        $("#Pasien").autocomplete({//id textbox
+            source: function (request, response) {
+                $.ajax({
+                    url: "/PengeluaranObat/GetDataPasienFilter",//URL action
+                    type: "POST",
+                    dataType: "json",
+                    data: { term: request.term },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.label,
+                                value: item.value,
+                                id: item.id,
+                            };
+                        }));
+                    },
+                    //
+                })
+            },
+            select: function (event, ui) {
+                //    //update the jquery selector here to your target hidden field
+                $("input.PasienID").val(ui.item.id);//class RatingID
+            }
         });
     });
-    $(window).on('popstate', function () {
-        var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
-        $('a[href=' + anchor + ']').tab('show');   
-    });
-    window.scrollTo(0, 0);*/
+</script>
+
+<script type="text/javascript">
     $(function() { 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             localStorage.setItem('lastTab', $(this).attr('href'));
@@ -478,8 +485,8 @@
     $("#pilih").change(update_pizza);
    
 </script>
-
-
+<!--munculin modal-->
+<!--<script src="~/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>-->
 
 
 

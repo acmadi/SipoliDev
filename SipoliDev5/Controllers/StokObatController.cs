@@ -15,6 +15,7 @@ using System.Reflection;//view model
 
 namespace SipoliDev5.Controllers
 {
+    [Authorize]
     public class StokObatController : Controller
     {
         private EntitiesConnection db = new EntitiesConnection();
@@ -59,7 +60,7 @@ namespace SipoliDev5.Controllers
             
             }
 
-            if (Klinik!=null)
+            if (!String.IsNullOrEmpty(Klinik))
             {
                 stokobat = stokobat.Where(b => b.Klinik == Klinik);
             }
@@ -174,7 +175,7 @@ namespace SipoliDev5.Controllers
                 sb.Append("<td style='width:300px;border:1px solid black;background-color: yellow;'><center><b>NAMA OBAT</b></center></td>");
                 sb.Append("<td style='width:150px;border:1px solid black;background-color: yellow;'><center><b>STOK OBAT</b></center></td>");
                 sb.Append("<td style='width:150px;border:1px solid black;background-color: yellow;'><center><b>SATUAN OBAT</b></center></td>");
-                sb.Append("<td style='width:210px;border:1px solid black;background-color: yellow;'><center><b>KLINIK</b></center></td>");
+                sb.Append("<td style='width:200px;border:1px solid black;background-color: yellow;'><center><b>KLINIK</b></center></td>");
                 sb.Append("</tr>");
 
                 int i = 1;
@@ -203,6 +204,7 @@ namespace SipoliDev5.Controllers
         }
 
         // GET: /StokObat/Edit/5
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang,StafDramaga")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -222,6 +224,7 @@ namespace SipoliDev5.Controllers
         // POST: /StokObat/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Staf,StafBaranangsiang,StafDramaga")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(StokObat stokobat)
@@ -229,6 +232,11 @@ namespace SipoliDev5.Controllers
             ViewBag.E = false;
             //jumlah obat harus bilangan positif
             string jumlah = stokobat.Stok.ToString();
+            if (String.IsNullOrEmpty(jumlah))
+            {
+                ViewBag.E = true;
+                ViewBag.E2 = true;
+            }
             if (stokobat.Stok != null)
             {
                 if (!System.Text.RegularExpressions.Regex.IsMatch(jumlah, "^[0-9]+$"))
